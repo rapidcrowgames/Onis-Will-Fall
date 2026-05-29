@@ -28,6 +28,7 @@ idle_timer_change       = 2; //2 Segundos
 
 //Variáveis do estado RUN
 run_timer_change        = 4; //3 segundos
+destiny_x               = noone;
 
 
 #endregion
@@ -125,11 +126,11 @@ state_enemy       = enemy_state.IDLE;
 update_state_enemy = function()
 {
     switch (state_enemy) {
-    	case enemy_state.IDLE; state_idle(); break;
-    	case enemy_state.RUN; state_run(); break;
-    	case enemy_state.ATTACK; state_attack(); break;
-    	case enemy_state.HURT; state_hurt(); break;
-    	case enemy_state.DIE; state_die(); break;
+    	case enemy_state.IDLE: state_idle(); break;
+    	case enemy_state.RUN: state_run(); break;
+    	case enemy_state.ATTACK: state_attack(); break;
+    	case enemy_state.HURT: state_hurt(); break;
+    	case enemy_state.DIE: state_die(); break;
     }
 }
 
@@ -149,10 +150,9 @@ state_idle = function() // PARADO
     //SE o timer chegar no 0, ele escolhe se fica parado ou se troca de estado
     if (idle_timer_change <= 0)
     {
-        state_enemy = choose(enemy_state.IDLE, enemy_state.RUN);
-        
         //Reseta o timer
         idle_timer_change = 2;
+        state_enemy = choose(enemy_state.IDLE, enemy_state.RUN);
     }
 }
 

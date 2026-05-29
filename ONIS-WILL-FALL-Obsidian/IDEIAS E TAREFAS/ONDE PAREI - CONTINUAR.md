@@ -1,3 +1,3 @@
 - Ainda fazer o estado de cutscene da câmera
 - Fazer estado de morte do player
-- Fazer o inimigo comum do jogo
+- Fazer o ESTADO DE MOVIMENTO DO INIMIGO
