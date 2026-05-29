@@ -1,0 +1,200 @@
+{
+  "main": {
+    "id": "7d60a713df1ce96f",
+    "type": "split",
+    "children": [
+      {
+        "id": "d744dc48eece2f99",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c5b626aabde37547",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "IDEIAS E TAREFAS/ONDE PAREI - CONTINUAR.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "ONDE PAREI - CONTINUAR"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "cbd3323a481c930b",
+    "type": "split",
+    "children": [
+      {
+        "id": "4be2b183244e88a2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bc080240af634e36",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorador de arquivos"
+            }
+          },
+          {
+            "id": "e3c8a0b28a1289e8",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Procurar"
+            }
+          },
+          {
+            "id": "509c7fa503f16589",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Marcadores"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "328e2fd5fbf3b499",
+    "type": "split",
+    "children": [
+      {
+        "id": "0f26b56b4c485b2d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9b1e79cb18df0f98",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "IDEIAS.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Links inversos para IDEIAS"
+            }
+          },
+          {
+            "id": "da59e1fe9b348ec3",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "IDEIAS.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Links de saída para IDEIAS"
+            }
+          },
+          {
+            "id": "c05022eec3849023",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Etiquetas"
+            }
+          },
+          {
+            "id": "528b8ccd55934156",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Todas as propriedades"
+            }
+          },
+          {
+            "id": "24008fa8816a973e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "IDEIAS.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Sumário de IDEIAS"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir a troca rápida": false,
+      "graph:Abrir visualização em gráfico": false,
+      "canvas:Criar novo canvas": false,
+      "daily-notes:Abrir a nota de hoje": false,
+      "templates:Inserir modelo": false,
+      "command-palette:Abrir paleta de comandos": false,
+      "bases:Criar nova base": false
+    }
+  },
+  "active": "bc080240af634e36",
+  "lastOpenFiles": [
+    "LÓGICAS DE GAMEPLAY/ESTADOS E LÓGICA PLAYER.canvas",
+    "LÓGICAS DE GAMEPLAY",
+    "SITES E RECURSOS/SITE PARA RESOLUÇÃO.md",
+    "CÓDIGOS/CÓDIGO DE ATAQUE.md",
+    "SITES E RECURSOS",
+    "IDEIAS E TAREFAS/IDEIAS.md",
+    "CÓDIGOS",
+    "IDEIAS E TAREFAS/ONDE PAREI - CONTINUAR.md",
+    "CÓDIGOS/FAZER CUTSCENE.md",
+    "IDEIAS E TAREFAS",
+    "Bem-vindo.md"
+  ]
+}
