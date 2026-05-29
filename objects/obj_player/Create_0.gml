@@ -63,7 +63,7 @@ get_inputs = function()
 ////////////////////////////////
 #region Inicia objetos com o player
 
-//Inicia a câmera com o player
+//Inicia a câmera com o player SE ainda não foi iniciado
 instance_create_layer(x, y, layer, obj_camera);
 
 //Se a câmera existe, já inicia com ela seguindo o player

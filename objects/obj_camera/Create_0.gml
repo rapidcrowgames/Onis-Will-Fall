@@ -14,6 +14,7 @@ vel_cam		= 0; //Define a velocidade da câmera em Cutscene
 
 #endregion
 
+show_message("criou")
 
 //////////////////////////
 // ENUM E STATE MACHINE //

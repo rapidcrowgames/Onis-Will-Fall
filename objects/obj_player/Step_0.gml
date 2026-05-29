@@ -28,7 +28,6 @@ if (DEBUG_MODE)
 {
 	//show_debug_message(life);	
     
-    show_debug_overlay(true);
 }
 
 
