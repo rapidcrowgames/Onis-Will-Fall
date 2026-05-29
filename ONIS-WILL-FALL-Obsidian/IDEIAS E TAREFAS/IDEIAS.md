@@ -119,3 +119,4 @@ Após isso, vemos que Ryuma ficou completamente abalado após a perda de sua mã
 Até que chega o dia em que ele pega a Katana que era de sua mãe, veste seu manto, e sai daquele que um dia foi seu lar, agora mais velho (20 anos) e mais experiente, Ryuma se vê a caminha da grande cidade (feudal / cyberpunk) e promete vingança abandonando qualquer código de honra, e sim prometendo apenas morte e sangue, e termina a cutscene com ele dizendo.
 
 "Todos os Onis vão cair perante mim!"
+
