@@ -5,7 +5,10 @@
     {"$GMAudioGroup":"v1","%Name":"audiogroup_default","exportDir":"","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
   ],
   "configs":{
-    "children":[],
+    "children":[
+      {"children":[],"name":"windows_normal",},
+      {"children":[],"name":"windows_debug",},
+    ],
     "name":"Default",
   },
   "defaultScriptType":1,
