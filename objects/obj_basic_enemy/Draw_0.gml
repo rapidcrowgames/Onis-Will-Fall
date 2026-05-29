@@ -1,6 +1,14 @@
 
-//Me desenho
-draw_self();
+//se desenhando
+draw_sprite_ext(sprite, 
+image_ind, 
+x, 
+y, 
+image_xscale, 
+image_yscale, 
+image_angle, 
+image_blend, 
+image_alpha);
 
 if (DEBUG_MODE)
 {

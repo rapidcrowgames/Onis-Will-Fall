@@ -8,7 +8,7 @@ life = 5;
 
 velh        = 0;
 velv        = 0;
-max_velh    = 3;
+max_velh    = 1.5;
 max_velv    = 6;
 grav        = 0.3;
 grav_atual  = grav;
@@ -103,6 +103,18 @@ animations = [
 
 #endregion
 
+///////////////////////////////////////////////////
+/// ARRUMA A DIREÇÃO QUE O INIMIGO ESTÁ OLHANDO //
+/////////////////////////////////////////////////   
+#region Corrige a direção que ele está olhando
+
+dir = image_xscale;
+
+if (velh < 0) dir  = -1;
+if (velh >= 0) dir =  1;
+
+#endregion
+
 /////////////////////////////////
 /// ENUM E ESTADOS DO INIMIGO //
 ///////////////////////////////
@@ -144,6 +156,9 @@ state_idle = function() // PARADO
     //Muda sprite para parado
     change_sprites(0);
     
+    //Define a velocidade da sprite
+    image_spd = image_speed / 9;
+    
     //Diminui o timer para trocar de estado
     if (idle_timer_change > 0) idle_timer_change -= delta_time / 1000000;
     
@@ -156,13 +171,15 @@ state_idle = function() // PARADO
     }
 }
 
-state_run = function() // CAMINHANDO / CORRENDO
+state_run = function() // CORRENDO
 {
     //Debug de estado
     debug_enemy_state = "Run";
     
-    //Muda sprite para correndo
+    //Muda sprite
     change_sprites(1);
+    
+    //Define a velocidade da sprite
+    image_spd = image_speed / 7;
 }
-
 #endregion
