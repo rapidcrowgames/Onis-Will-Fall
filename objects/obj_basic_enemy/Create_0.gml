@@ -6,14 +6,14 @@
 //Variáveis de vida
 life = 5;
 
-velh        = 0;
-velv        = 0;
-max_velh    = 1.5;
-max_velv    = 6;
-grav        = 0.3;
-grav_atual  = grav;
-chao        = false;
-dir         = 1; //Direção em que está olhando --- 1 (Direita) / -1 (Esquerda)
+velh                = 0;
+velv                = 0;
+max_velh            = 1.5;
+max_velv            = 6;
+grav                = 0.3;
+grav_atual          = grav;
+chao                = false;
+dir                 = 1; //Direção em que está olhando --- 1 (Direita) / -1 (Esquerda)
 
 //Variáveis de animação
 sprite				= sprite_index;
@@ -24,11 +24,24 @@ current_animation	= noone;
 attack_done			= false;
 
 //Variáveis do estado IDLE
-idle_timer_change       = 1; //2 Segundos
+idle_timer_change   = 1; //2 Segundos
 
 //Variáveis do estado RUN
-run_timer_change        = 3; //3 segundos
-destiny_x               = noone;
+run_timer_change    = 10; //10 segundos
+destiny_x           = noone;
+
+//Variáveis do estado de ataque
+attack_done         = false;
+create_hitbox       = false;
+
+//Variáveis da detecção do player com a zona de colisão do
+//Inimigo
+radius              = 20; //Tamanho do raio de colisão circular
+in_chase            = false; //Avisa se está ou não em CHASE com o player
+
+//Variáveis do estado de CHASE
+target              = noone; //O alvo que está perseguindo
+
 
 
 #endregion
@@ -116,6 +129,38 @@ correct_direction = function()
 
 #endregion
 
+///////////////////////////////////
+/// ZONA DE DETECÇÃO DO PLAYER ///
+/////////////////////////////////
+#region Zona que detecta se o player está no raio de visão
+
+player_zone_vission = function()
+{
+    //Cria um hitbox em formato de circulo
+    colission = collision_circle(x, y, radius, obj_player, false, true)
+    
+    //SE eu colidir, ele entra no estado de perseguir o player
+    if (colission)
+    {
+        //Eu passo a perseguir o player
+        state_enemy = enemy_state.CHASE;
+        
+        //Está em chase
+        in_chase = true;
+    }
+    else {
+        
+    	//ele não está mais em chase
+        in_chase = false;
+        
+        //Aqui não altera o estado, quem faz isso é o próprio estado, após o fim do timer
+    }
+    
+}
+
+#endregion
+
+
 /////////////////////////////////
 /// ENUM E ESTADOS DO INIMIGO //
 ///////////////////////////////
@@ -126,6 +171,8 @@ enum enemy_state
 {
     IDLE,
     RUN,
+    CHASE,
+    LOAD_ATTACK,
     ATTACK,
     HURT,
     DIE
@@ -139,11 +186,13 @@ state_enemy       = enemy_state.IDLE;
 update_state_enemy = function()
 {
     switch (state_enemy) {
-    	case enemy_state.IDLE: state_idle(); break;
-    	case enemy_state.RUN: state_run(); break;
-    	case enemy_state.ATTACK: state_attack(); break;
-    	case enemy_state.HURT: state_hurt(); break;
-    	case enemy_state.DIE: state_die(); break;
+    	case enemy_state.IDLE:         state_idle();           break;
+    	case enemy_state.RUN:          state_run();            break;
+        case enemy_state.CHASE:        state_chase();          break;
+    	case enemy_state.LOAD_ATTACK:  state_load_attack();    break;
+    	case enemy_state.ATTACK:       state_attack();         break;
+    	case enemy_state.HURT:         state_hurt();           break;
+    	case enemy_state.DIE:          state_die();            break;
     }
 }
 
@@ -186,6 +235,9 @@ state_run = function() // CORRENDO
     //Define a velocidade da animação
     image_spd = image_speed / 5;
     
+    //Diminui o tempo do timer para ele voltar a ficar parado
+    if (run_timer_change > 0) run_timer_change -= delta_time / 1000000;
+    
     //Se ele colidir com a parede, ele muda de direção
     if (place_meeting(x + sign(dir), y, obj_colisao))
     {
@@ -195,5 +247,97 @@ state_run = function() // CORRENDO
     
     //Faço ele começar se movendo para direita
     velh = (max_velh * sign(dir));
+    
+    //Se o timer chegar a 0, então ele volta para o estado parado
+    if (run_timer_change <= 0)
+    {
+        //Reseta o timer
+        run_timer_change = 10; //10 segundos
+        state_enemy = enemy_state.IDLE;
+    }
 }
+
+state_chase = function() //PERSEGUIÇÃO
+{
+    //Debuga o estado
+    debug_enemy_state = "Chase";
+    
+    //Altera a sprite para se movendo
+    change_sprites(1);
+    
+    //define a velocidade da animação
+    image_spd = image_speed / 5;
+    
+    //Eu defino o player como ALVO se ele EXISTIR
+    if (instance_exists(obj_player)) target = obj_player;
+        
+    //SE eu tenho um alvo
+    if (target != noone)
+    {
+        //Eu passo a seguir ele
+        velh += target.x * max_velh;
+    }
+    
+    //Checa a distância para o alvo
+    var _dist = point_distance(x, y, target.x, target.y);
+    
+    //Verifica em qual distância estão
+    
+    
+}
+
+state_attack = function() // ATACANDO
+{
+    //Debuga o estado
+    debug_enemy_state = "attack";
+    
+    //Roda apenas uma vez a sprite do ataque
+    change_sprites_once(2);
+    
+    //define a velocidade da animação
+    image_spd = image_speed / 5;
+    
+    //Pega os frames da sprite e guarda em uma variável
+    var _frame = floor(image_ind);
+    
+    //Cria a hitbox no Frame 2 da animação e se ainda não tiver criado a hitbox
+    if (_frame == 2 && !create_hitbox)
+    {
+        //Então eu crio a hitbox na minha posição
+        instance_create_layer(x + 6 * dir, y - sprite_height, layer, obj_hitbox_enemy);
+        
+        create_hitbox = true; //Criei ela
+    }
+    
+    //SE criei a hitbox, eu destruo ela no 3 frame da animação
+    if (_frame == 3 && create_hitbox)
+    {
+        //Destruo ela
+        instance_destroy(obj_hitbox_enemy);
+        create_hitbox = false;
+    }
+    
+    //SE acabou a animação, eu volto para o estado normal
+    if (image_ind >= sprite_get_number(sprite) - 1)
+    {
+        //garante que a hitbox vai ser destruida se ainda existir
+        if (create_hitbox)
+        {
+            //Destruo ela
+            instance_destroy(obj_hitbox_enemy);
+            create_hitbox = false;
+        }
+        
+        //Já terminou o ataque
+        attack_done = true;
+    }
+    
+    //SE o ataque já terminou, eu volto para o estado de parado
+    if (attack_done)
+    {
+        attack_done = false; //reset
+        state_enemy = enemy_state.IDLE;
+    }
+}
+
 #endregion

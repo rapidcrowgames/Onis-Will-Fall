@@ -12,6 +12,9 @@ image_alpha);
 
 if (DEBUG_MODE)
 {
-    draw_circle(destiny_x, y, 15, false);
+    //Debuga o estado em que está
     draw_text(x, y - sprite_height - 20, debug_enemy_state);
+    
+    //Desenha a colisão circular
+    draw_circle(x, y, radius, true);
 }

@@ -1,0 +1,31 @@
+{
+	"nodes":[
+		{"id":"30d37cfa9f4886f1","type":"text","text":" LÓGICA DE INIMIGOS COMUNS","x":-186,"y":-49,"width":250,"height":60,"color":"#ff0000"},
+		{"id":"f89c74882421ad51","type":"text","text":"FICAR PARADO","x":-186,"y":140,"width":250,"height":60,"color":"1"},
+		{"id":"e809fcbc7fedcaa5","type":"text","text":"ANDAR / PATRULHAR","x":160,"y":140,"width":250,"height":60,"color":"1"},
+		{"id":"febae5f9cb3170a3","type":"text","text":"PLAYER ENTRA NO RAIO DE VISÃO","x":520,"y":280,"width":250,"height":60},
+		{"id":"a2f8a8269180689f","type":"text","text":"PERSEGUIR PLAYER","x":520,"y":420,"width":250,"height":60,"color":"#ff0000"},
+		{"id":"d39abb6145b9fece","type":"text","text":"CHEGOU UM POUCO PRÓXIMO DO PLAYER","x":520,"y":620,"width":250,"height":60},
+		{"id":"15f9853338287649","type":"text","text":"PRÉ ATAQUE","x":160,"y":720,"width":250,"height":60,"color":"#ff0000"},
+		{"id":"92ab2c7d84d3ba43","type":"text","text":"ATACA O PLAYER","x":-186,"y":720,"width":250,"height":60,"color":"#eb0000"},
+		{"id":"5127306a04308926","type":"text","text":"COOLDOWN","x":-520,"y":620,"width":250,"height":60,"color":"4"},
+		{"id":"f7295b841ec98506","type":"text","text":"SE O PLAYER SAIR DO RAIO DE ATAQUE","x":-680,"y":420,"width":250,"height":60,"color":"4"},
+		{"id":"9fd583b8e54d9b4e","type":"text","text":"SE O PLAYER CONTINUAR NO RAIO DE  ATAQUE","x":-360,"y":420,"width":250,"height":60,"color":"1"}
+	],
+	"edges":[
+		{"id":"d867515c14e126c5","fromNode":"30d37cfa9f4886f1","fromSide":"bottom","toNode":"f89c74882421ad51","toSide":"top","color":"#ff0000"},
+		{"id":"6b427aaa6e95e28b","fromNode":"f89c74882421ad51","fromSide":"right","toNode":"e809fcbc7fedcaa5","toSide":"left","color":"1"},
+		{"id":"6f110386b58d3142","fromNode":"e809fcbc7fedcaa5","fromSide":"right","toNode":"febae5f9cb3170a3","toSide":"top","color":"1"},
+		{"id":"de331d9b45b03314","fromNode":"febae5f9cb3170a3","fromSide":"bottom","toNode":"a2f8a8269180689f","toSide":"top"},
+		{"id":"8b71eb5d902b0b1b","fromNode":"febae5f9cb3170a3","fromSide":"left","toNode":"a2f8a8269180689f","toSide":"left"},
+		{"id":"6e2aac64d5413c31","fromNode":"febae5f9cb3170a3","fromSide":"right","toNode":"a2f8a8269180689f","toSide":"right"},
+		{"id":"77a5bea5ad5e2083","fromNode":"a2f8a8269180689f","fromSide":"bottom","toNode":"d39abb6145b9fece","toSide":"top","color":"#ff0000"},
+		{"id":"474c118590cd1583","fromNode":"d39abb6145b9fece","fromSide":"bottom","toNode":"15f9853338287649","toSide":"right"},
+		{"id":"f41cdaa921b50feb","fromNode":"15f9853338287649","fromSide":"left","toNode":"92ab2c7d84d3ba43","toSide":"right","color":"#ff0000"},
+		{"id":"b3ab0f05c86e776a","fromNode":"f7295b841ec98506","fromSide":"top","toNode":"f89c74882421ad51","toSide":"left","color":"4"},
+		{"id":"1a826e7f3116d5fc","fromNode":"9fd583b8e54d9b4e","fromSide":"right","toNode":"a2f8a8269180689f","toSide":"left","color":"#ff0000"},
+		{"id":"8500125b83d1006d","fromNode":"92ab2c7d84d3ba43","fromSide":"left","toNode":"5127306a04308926","toSide":"bottom","color":"#ff0000"},
+		{"id":"80ac69068241d91b","fromNode":"5127306a04308926","fromSide":"top","toNode":"f7295b841ec98506","toSide":"bottom","color":"4"},
+		{"id":"10d60b66436a1b34","fromNode":"5127306a04308926","fromSide":"top","toNode":"9fd583b8e54d9b4e","toSide":"bottom","color":"4"}
+	]
+}

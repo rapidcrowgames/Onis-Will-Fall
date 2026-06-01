@@ -18,6 +18,7 @@
     {"name":"Sprites","order":1,"path":"folders/Sprites.yy",},
     {"name":"enemies","order":3,"path":"folders/Sprites/enemies.yy",},
     {"name":"basic_enemie","order":1,"path":"folders/Sprites/enemies/basic_enemie.yy",},
+    {"name":"hitbox_enemy","order":2,"path":"folders/Sprites/enemies/hitbox_enemy.yy",},
     {"name":"player","order":2,"path":"folders/Sprites/player.yy",},
     {"name":"hitbox","order":2,"path":"folders/Sprites/player/hitbox.yy",},
     {"name":"player_animations","order":1,"path":"folders/Sprites/player/player_animations.yy",},
@@ -27,6 +28,7 @@
   ],
   "ResourceOrderSettings":[
     {"name":"obj_basic_enemy","order":1,"path":"objects/obj_basic_enemy/obj_basic_enemy.yy",},
+    {"name":"obj_hitbox_enemy","order":2,"path":"objects/obj_hitbox_enemy/obj_hitbox_enemy.yy",},
     {"name":"obj_player_entity","order":2,"path":"objects/obj_player_entity/obj_player_entity.yy",},
     {"name":"obj_player_hitbox","order":3,"path":"objects/obj_player_hitbox/obj_player_hitbox.yy",},
     {"name":"obj_player","order":1,"path":"objects/obj_player/obj_player.yy",},

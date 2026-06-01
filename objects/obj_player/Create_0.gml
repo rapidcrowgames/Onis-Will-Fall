@@ -8,20 +8,20 @@
 life = 5; //Inicialmente 5 vidas
 
 //Variáveis de fisíca
-velh		= 0;
-velv		= 0;
-max_velh	= 4;
-max_velv	= 8;
-grav		= 0.3;
-grav_atual	= grav;
-chao		= noone;
-dir			= 1 // 1 - Direita / -1 Esquerda
+velh		         = 0;
+velv	          	 = 0;
+max_velh	         = 4;
+max_velv	         = 8;
+grav		         = 0.3;
+grav_atual	         = grav;
+chao		         = noone;
+dir			         = 1 // 1 - Direita / -1 Esquerda
 
 //Variáveis de estados
 hurt = false; //Identifica se sofreu dano ou não
 
 //Variáveis do estado de ataque
-create_hitbox	= false; //Cria a hitbox
+create_hitbox	    = false; //Cria a hitbox
 
 //Variáveis do estado HURT / machucado
 hurt_invencible		= false;
