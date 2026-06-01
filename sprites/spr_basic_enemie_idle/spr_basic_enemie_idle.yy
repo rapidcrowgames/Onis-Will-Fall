@@ -3,7 +3,7 @@
   "%Name":"spr_basic_enemie_idle",
   "bboxMode":2,
   "bbox_bottom":28,
-  "bbox_left":20,
+  "bbox_left":19,
   "bbox_right":38,
   "bbox_top":0,
   "collisionKind":1,

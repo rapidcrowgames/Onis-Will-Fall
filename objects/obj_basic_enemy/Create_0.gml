@@ -24,10 +24,10 @@ current_animation	= noone;
 attack_done			= false;
 
 //Variáveis do estado IDLE
-idle_timer_change       = 2; //2 Segundos
+idle_timer_change       = 1; //2 Segundos
 
 //Variáveis do estado RUN
-run_timer_change        = 4; //3 segundos
+run_timer_change        = 3; //3 segundos
 destiny_x               = noone;
 
 
@@ -107,11 +107,12 @@ animations = [
 /// ARRUMA A DIREÇÃO QUE O INIMIGO ESTÁ OLHANDO //
 /////////////////////////////////////////////////   
 #region Corrige a direção que ele está olhando
-
-dir = image_xscale;
-
-if (velh < 0) dir  = -1;
-if (velh >= 0) dir =  1;
+correct_direction = function()
+{
+    image_xscale = dir;
+    if (velh < 0)  dir  = -1;
+    if (velh >= 0) dir  =  1;
+}
 
 #endregion
 
@@ -159,6 +160,9 @@ state_idle = function() // PARADO
     //Define a velocidade da sprite
     image_spd = image_speed / 9;
     
+    //Fica parado
+    velh = 0;
+    
     //Diminui o timer para trocar de estado
     if (idle_timer_change > 0) idle_timer_change -= delta_time / 1000000;
     
@@ -173,13 +177,23 @@ state_idle = function() // PARADO
 
 state_run = function() // CORRENDO
 {
-    //Debug de estado
+    //Debuga o estado
     debug_enemy_state = "Run";
     
-    //Muda sprite
+    //Muda a sprite para se movendo
     change_sprites(1);
     
-    //Define a velocidade da sprite
-    image_spd = image_speed / 7;
+    //Define a velocidade da animação
+    image_spd = image_speed / 5;
+    
+    //Se ele colidir com a parede, ele muda de direção
+    if (place_meeting(x + sign(dir), y, obj_colisao))
+    {
+        dir = dir * -1;
+        x += dir //Empurra um pixel para fora na nova direção
+    }
+    
+    //Faço ele começar se movendo para direita
+    velh = (max_velh * sign(dir));
 }
 #endregion
