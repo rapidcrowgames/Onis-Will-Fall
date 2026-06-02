@@ -6,41 +6,45 @@
 //Variáveis de vida
 life = 5;
 
-velh                = 0;
-velv                = 0;
-max_velh            = 1.5;
-max_velv            = 6;
-grav                = 0.3;
-grav_atual          = grav;
-chao                = false;
-dir                 = 1; //Direção em que está olhando --- 1 (Direita) / -1 (Esquerda)
+velh                 = 0;
+velv                 = 0;
+max_velh             = 1.5;
+max_velv             = 6;
+grav                 = 0.3;
+grav_atual           = grav;
+chao                 = false;
+dir                  = 1; //Direção em que está olhando --- 1 (Direita) / -1 (Esquerda)
 
 //Variáveis de animação
-sprite				= sprite_index;
-image_numb			= image_number;
-image_ind			= image_index;
-image_spd			= image_speed / 3;
-current_animation	= noone;
-attack_done			= false;
+sprite				 = sprite_index;
+image_numb			 = image_number;
+image_ind			 = image_index;
+image_spd			 = image_speed / 3;
+current_animation	 = noone;
+attack_done			 = false;
 
 //Variáveis do estado IDLE
-idle_timer_change   = 1; //2 Segundos
+idle_timer_change    = 1; //2 Segundos
 
 //Variáveis do estado RUN
-run_timer_change    = 10; //10 segundos
-destiny_x           = noone;
+run_timer_change     = 10; //10 segundos
+destiny_x            = noone;
 
-//Variáveis do estado de ataque
-attack_done         = false;
-create_hitbox       = false;
+//Variáveis do estado de ATTACK
+attack_done          = false;
+create_hitbox        = false;
 
 //Variáveis da detecção do player com a zona de colisão do
 //Inimigo
-radius              = 20; //Tamanho do raio de colisão circular
-in_chase            = false; //Avisa se está ou não em CHASE com o player
+radius               = 100; //Tamanho do raio de colisão circular
+in_chase             = false; //Avisa se está ou não em CHASE com o player
 
 //Variáveis do estado de CHASE
-target              = noone; //O alvo que está perseguindo
+target               = noone; //O alvo que está perseguindo
+player_last_position = noone; //Pega a última posição do player
+
+//Variáveis do estado LOAD_ATTACK
+timer_load_attack    = 0.7; //0.7 segundos
 
 
 
@@ -124,7 +128,7 @@ correct_direction = function()
 {
     image_xscale = dir;
     if (velh < 0)  dir  = -1;
-    if (velh >= 0) dir  =  1;
+    if (velh > 0) dir  =  1;
 }
 
 #endregion
@@ -137,13 +141,13 @@ correct_direction = function()
 player_zone_vission = function()
 {
     //Cria um hitbox em formato de circulo
-    colission = collision_circle(x, y, radius, obj_player, false, true)
+    colission = collision_circle(x, y - sprite_height, radius, obj_player, false, true)
     
     //SE eu colidir, ele entra no estado de perseguir o player
     if (colission)
     {
-        //Eu passo a perseguir o player
-        state_enemy = enemy_state.CHASE;
+        //Eu passo a perseguir o player SE já não estiver seguindo
+        if (!in_chase) state_enemy = enemy_state.CHASE;
         
         //Está em chase
         in_chase = true;
@@ -222,6 +226,9 @@ state_idle = function() // PARADO
         idle_timer_change = 2;
         state_enemy = choose(enemy_state.IDLE, enemy_state.RUN);
     }
+    
+    //Muda para o estado de CHASE se eu entrar no raio de visão
+    player_zone_vission();
 }
 
 state_run = function() // CORRENDO
@@ -255,6 +262,9 @@ state_run = function() // CORRENDO
         run_timer_change = 10; //10 segundos
         state_enemy = enemy_state.IDLE;
     }
+    
+    //Muda para o estado de CHASE se eu entrar no raio de visão
+    player_zone_vission();
 }
 
 state_chase = function() //PERSEGUIÇÃO
@@ -275,15 +285,62 @@ state_chase = function() //PERSEGUIÇÃO
     if (target != noone)
     {
         //Eu passo a seguir ele
-        velh += target.x * max_velh;
+        velh = (max_velh * sign(target.x - x));
     }
     
     //Checa a distância para o alvo
     var _dist = point_distance(x, y, target.x, target.y);
+
+    //SE a minha distância para o player for menor que 60, eu entro no
+    //estado de LOAD_ATTACK / pré ataque
+    if (_dist < 60)
+    {
+        //Pego a posição do player por último
+        player_last_position = target.x;
+        state_enemy = enemy_state.LOAD_ATTACK;
+    }
     
-    //Verifica em qual distância estão
+    //Verifica ainda se estou ou não dentro do raio de visão
+    player_zone_vission();
     
+    //SE não estou mais em chase, ele volta para o estado se movendo
+    if (!colission && !in_chase)
+    {
+        //Volta para o estado parado
+        state_enemy = enemy_state.IDLE;
+    }
     
+}
+
+state_load_attack = function() // PRÉ ATAQUE
+{
+    //Debuga o estado
+    debug_enemy_state = "load_attack";
+    
+    //Muda para sprite parado
+    change_sprites(0);
+    
+    //Define a velocidade da animação
+    image_spd = image_speed / 9;
+    
+    //Primeiro eu fico parado
+    velh = 0;
+    
+    //Diminui o timer
+    if (timer_load_attack > 0) timer_load_attack -= delta_time / 1000000;
+        
+    //SE o timer chegar a 0, ele ataca na última posição que o player estava
+    if (timer_load_attack <= 0)
+    {
+        //Aumento um pouco a velocidade
+        velh = (max_velh * 2 * sign(player_last_position - x));
+        
+        //Reseto o timer
+        timer_load_attack = 0.7;
+        
+        //Vou para estado do ataque
+        state_enemy = enemy_state.ATTACK;
+    }
 }
 
 state_attack = function() // ATACANDO
@@ -335,6 +392,7 @@ state_attack = function() // ATACANDO
     //SE o ataque já terminou, eu volto para o estado de parado
     if (attack_done)
     {
+        in_chase = false;
         attack_done = false; //reset
         state_enemy = enemy_state.IDLE;
     }

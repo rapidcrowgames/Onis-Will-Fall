@@ -1,3 +1,4 @@
 - Ainda fazer o estado de cutscene da câmera
-- Fazer estado de morte do player
-- Fazer o ESTADO DE MOVIMENTO DO INIMIGO
+- Fazer estado de morte e dano no player
+- ESTADOS DO INIMIGO FUNCIONADO
+- Fazer o dano no inimigo e estado de dano e morte

@@ -28,17 +28,14 @@
             "id": "97562a86e1e1b949",
             "type": "leaf",
             "state": {
-              "type": "canvas",
+              "type": "markdown",
               "state": {
-                "file": "LÓGICAS DE GAMEPLAY/LÓGICA DOS INIMIGOS.canvas",
-                "viewState": {
-                  "x": 242.61997947962465,
-                  "y": 471.3851838433807,
-                  "zoom": -0.3333333333333333
-                }
+                "file": "IDEIAS E TAREFAS/ONDE PAREI - CONTINUAR.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-layout-dashboard",
-              "title": "LÓGICA DOS INIMIGOS"
+              "icon": "lucide-file",
+              "title": "ONDE PAREI - CONTINUAR"
             }
           }
         ],
@@ -206,8 +203,8 @@
   },
   "active": "97562a86e1e1b949",
   "lastOpenFiles": [
-    "Sem título.md",
     "LÓGICAS DE GAMEPLAY/LÓGICA DOS INIMIGOS.canvas",
+    "Sem título.md",
     "LÓGICAS DE GAMEPLAY/ESTADOS E LÓGICA PLAYER.canvas",
     "LÓGICAS DE GAMEPLAY/LÓGICAS DE GAMEPLAY.md",
     "IDEIAS E TAREFAS/IDEIAS.md",
