@@ -4,6 +4,8 @@
 ////////////////////////
 #region
 
+if (global.hitstop) return;
+
 //Movimenta o player
 if (!global.cutscene) move_player();
 

@@ -4,6 +4,8 @@
 ////////////////////////////
 #region Utiliza os métodos
 
+if (global.hitstop) return;
+    
 //Atualiza os estados do inimigo
 update_state_enemy();
 
@@ -11,3 +13,5 @@ update_state_enemy();
 correct_direction();
 
 #endregion
+
+show_debug_message(life)

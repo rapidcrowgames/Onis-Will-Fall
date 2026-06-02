@@ -7,6 +7,9 @@
 //Variávis de personagem (vida, mana, etc...)
 life = 5; //Inicialmente 5 vidas
 
+//Variáveis de DANO
+dano                 = 1;
+
 //Variáveis de fisíca
 velh		         = 0;
 velv	          	 = 0;

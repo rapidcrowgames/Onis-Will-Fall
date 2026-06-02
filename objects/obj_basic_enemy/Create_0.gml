@@ -46,6 +46,9 @@ player_last_position = noone; //Pega a última posição do player
 //Variáveis do estado LOAD_ATTACK
 timer_load_attack    = 0.7; //0.7 segundos
 
+//Variáveis do estado HURT
+damage_done          = false; //Garante que sofreu o dano apenas uma vez
+
 
 
 #endregion
@@ -178,6 +181,7 @@ enum enemy_state
     CHASE,
     LOAD_ATTACK,
     ATTACK,
+    LOAD_HURT,
     HURT,
     DIE
 }
@@ -195,6 +199,7 @@ update_state_enemy = function()
         case enemy_state.CHASE:        state_chase();          break;
     	case enemy_state.LOAD_ATTACK:  state_load_attack();    break;
     	case enemy_state.ATTACK:       state_attack();         break;
+    	case enemy_state.LOAD_HURT:    state_load_hurt();         break;
     	case enemy_state.HURT:         state_hurt();           break;
     	case enemy_state.DIE:          state_die();            break;
     }
@@ -229,6 +234,12 @@ state_idle = function() // PARADO
     
     //Muda para o estado de CHASE se eu entrar no raio de visão
     player_zone_vission();
+    
+    //SE entrar em contato com a hitbox do player, entra no estado de dano
+    if (place_meeting(x, y, obj_player_hitbox))
+    {
+       state_enemy = enemy_state.LOAD_HURT;
+    }
 }
 
 state_run = function() // CORRENDO
@@ -265,6 +276,12 @@ state_run = function() // CORRENDO
     
     //Muda para o estado de CHASE se eu entrar no raio de visão
     player_zone_vission();
+    
+    //SE entrar em contato com a hitbox do player, entra no estado de dano
+    if (place_meeting(x, y, obj_player_hitbox))
+    {
+       state_enemy = enemy_state.LOAD_HURT;
+    }
 }
 
 state_chase = function() //PERSEGUIÇÃO
@@ -291,9 +308,9 @@ state_chase = function() //PERSEGUIÇÃO
     //Checa a distância para o alvo
     var _dist = point_distance(x, y, target.x, target.y);
 
-    //SE a minha distância para o player for menor que 60, eu entro no
+    //SE a minha distância para o player for menor que 35, eu entro no
     //estado de LOAD_ATTACK / pré ataque
-    if (_dist < 60)
+    if (_dist < 35)
     {
         //Pego a posição do player por último
         player_last_position = target.x;
@@ -310,6 +327,11 @@ state_chase = function() //PERSEGUIÇÃO
         state_enemy = enemy_state.IDLE;
     }
     
+    //SE entrar em contato com a hitbox do player, entra no estado de dano
+    if (place_meeting(x, y, obj_player_hitbox))
+    {
+       state_enemy = enemy_state.LOAD_HURT;
+    }
 }
 
 state_load_attack = function() // PRÉ ATAQUE
@@ -340,6 +362,12 @@ state_load_attack = function() // PRÉ ATAQUE
         
         //Vou para estado do ataque
         state_enemy = enemy_state.ATTACK;
+    }
+    
+    //SE entrar em contato com a hitbox do player, entra no estado de dano
+    if (place_meeting(x, y, obj_player_hitbox))
+    {
+       state_enemy = enemy_state.LOAD_HURT;
     }
 }
 
@@ -394,6 +422,63 @@ state_attack = function() // ATACANDO
     {
         in_chase = false;
         attack_done = false; //reset
+        state_enemy = enemy_state.IDLE;
+    }
+}
+
+state_load_hurt = function() // SOFRE O ATAQUE DO INIMIGO
+{
+    //Debuga o estado
+    debug_enemy_state = "Load hurt";
+    
+    //Muda a sprite para dano
+    change_sprites_once(3); 
+    
+    //Fica parado
+    velh = 0;
+    
+    //Faz ele ficar virado para o player
+    dir = sign(target.x - x);
+    
+    //Define a velocidade da animação
+    image_spd = image_speed / 3;
+    
+    //No fim da animação, ele vai para o estado HURT
+    if (image_ind >= sprite_get_number(sprite) - 1)
+    {
+        //Causa o HITSTOP
+        global.hitstop = true;
+        state_enemy = enemy_state.HURT;
+    }
+}
+
+state_hurt = function() // SOFRE O DANO
+{
+    //Debuga o estado
+    debug_enemy_state = "hurt";
+    
+    //Joga o inimigo para trás
+    if (!global.hitstop)
+    {
+        if (dir ==  1) velh -= 40;
+        if (dir == -1) velh += 40;
+    }
+    
+    //Aplica o dano que o inimigo causa apenas 1 vez
+    if (!damage_done)
+    {
+        //Pega o dano que o player causa
+        var _dmg_player = obj_player.dano;
+        
+        life = -_dmg_player;  
+        
+        damage_done = true; //Sofreu o ataque
+    }
+    
+    //SE já sofreu o dano, volta para o estado parado
+    if (damage_done)
+    {
+        damage_done = false;
         state_enemy = enemy_state.IDLE;
     }
 }
