@@ -13,7 +13,7 @@ image_alpha);
 if (DEBUG_MODE)
 {
     //Debuga o estado em que está
-    draw_text(x, y - sprite_height - 20, debug_enemy_state);
+    draw_text(x, y - sprite_height - 20, life);
     
     //Desenha a colisão circular
     draw_circle(x, y, radius, true);

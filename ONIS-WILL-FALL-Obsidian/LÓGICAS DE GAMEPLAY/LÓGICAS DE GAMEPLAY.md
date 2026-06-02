@@ -3,8 +3,8 @@
 
 O player vai causar um dano no inimigo que vai tirar a vida dele, porém dependendo do upgrade de dano, tira uma quantidade especifica no máximo até 3 de vida das 5 que o inimigo terá.
 
-Inimigo comum básico: 5 vidas
-Inimigo médio: 7 vidas
+Inimigo comum básico: 3 vidas
+Inimigo médio: 5 vidas
 Inimigo forte: 10 vidas
 
 Chefes teram bem mais, e terão um HUD visual e especifico

@@ -26,15 +26,15 @@ repeat(abs(velh))
 	else
 	{
 		//Se ainda não colidi, então me movo 1 pixel por vez.
-		x += _velh;	
+		if (!global.hitstop) x += _velh;	
 	}
 }
 
 //Colisão vertical
 var _velv = sign(velv);
 
-//Laço de repetição
-repeat(abs(velv))
+//Laço de repetição 
+repeat(abs(velv)) 
 {
 	//Checando até 1 pixel de distância do objeto
 	if (place_meeting(x, y + _velv, obj_colisao))
@@ -48,7 +48,7 @@ repeat(abs(velv))
 	else
 	{
 		//Se ainda não colidi, então me movo um pixel por vez
-		y += _velv;
+		if (!global.hitstop) y += _velv;
 	}
 }
 

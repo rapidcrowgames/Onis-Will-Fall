@@ -4,7 +4,7 @@
 #region Variáveis de controle
 
 //Variáveis de vida
-life = 5;
+life = 3;
 
 velh                 = 0;
 velv                 = 0;
@@ -44,7 +44,7 @@ target               = noone; //O alvo que está perseguindo
 player_last_position = noone; //Pega a última posição do player
 
 //Variáveis do estado LOAD_ATTACK
-timer_load_attack    = 0.7; //0.7 segundos
+timer_load_attack    = 0.3; //0.3 segundos
 
 //Variáveis do estado HURT
 damage_done          = false; //Garante que sofreu o dano apenas uma vez
@@ -108,6 +108,7 @@ change_sprites_once = function(_sprites_index = 0)
 
 #endregion
 
+
 ////////////////////////////////////
 /// TODAS ANIMAÇÕES DO INIMIGO ////
 //////////////////////////////////
@@ -123,6 +124,7 @@ animations = [
 
 #endregion
 
+
 ///////////////////////////////////////////////////
 /// ARRUMA A DIREÇÃO QUE O INIMIGO ESTÁ OLHANDO //
 /////////////////////////////////////////////////   
@@ -135,6 +137,7 @@ correct_direction = function()
 }
 
 #endregion
+
 
 ///////////////////////////////////
 /// ZONA DE DETECÇÃO DO PLAYER ///
@@ -308,9 +311,9 @@ state_chase = function() //PERSEGUIÇÃO
     //Checa a distância para o alvo
     var _dist = point_distance(x, y, target.x, target.y);
 
-    //SE a minha distância para o player for menor que 35, eu entro no
+    //SE a minha distância para o player for menor que 48, eu entro no
     //estado de LOAD_ATTACK / pré ataque
-    if (_dist < 35)
+    if (_dist < 48)
     {
         //Pego a posição do player por último
         player_last_position = target.x;
@@ -324,7 +327,7 @@ state_chase = function() //PERSEGUIÇÃO
     if (!colission && !in_chase)
     {
         //Volta para o estado parado
-        state_enemy = enemy_state.IDLE;
+        state_enemy = enemy_state.RUN;
     }
     
     //SE entrar em contato com a hitbox do player, entra no estado de dano
@@ -355,10 +358,10 @@ state_load_attack = function() // PRÉ ATAQUE
     if (timer_load_attack <= 0)
     {
         //Aumento um pouco a velocidade
-        velh = (max_velh * 2 * sign(player_last_position - x));
+        velh = (max_velh * 3 * sign(player_last_position - x));
         
         //Reseto o timer
-        timer_load_attack = 0.7;
+        timer_load_attack = 0.3;
         
         //Vou para estado do ataque
         state_enemy = enemy_state.ATTACK;
@@ -381,6 +384,9 @@ state_attack = function() // ATACANDO
     
     //define a velocidade da animação
     image_spd = image_speed / 5;
+    
+    //Fica parado
+    velh = 0;
     
     //Pega os frames da sprite e guarda em uma variável
     var _frame = floor(image_ind);
@@ -462,24 +468,52 @@ state_hurt = function() // SOFRE O DANO
     {
         if (dir ==  1) velh -= 40;
         if (dir == -1) velh += 40;
-    }
-    
-    //Aplica o dano que o inimigo causa apenas 1 vez
-    if (!damage_done)
-    {
-        //Pega o dano que o player causa
-        var _dmg_player = obj_player.dano;
-        
-        life = -_dmg_player;  
-        
-        damage_done = true; //Sofreu o ataque
+            
+        //Aplica o dano que o inimigo causa apenas 1 vez
+        if (!damage_done)
+        {
+            //Pega o dano que o player causa
+            var _dmg_player = obj_player.dano;
+            
+            life -= _dmg_player;  
+            
+            damage_done = true; //Sofreu o ataque
+        }
     }
     
     //SE já sofreu o dano, volta para o estado parado
     if (damage_done)
     {
         damage_done = false;
-        state_enemy = enemy_state.IDLE;
+        state_enemy = enemy_state.CHASE;
+    }
+    
+    //SE a vida acabou, então ele vai para o estado de DIE / MORTE
+    if (life <= 0)
+    {
+        damage_done = false;
+        state_enemy = enemy_state.DIE;
+    }
+}
+
+state_die = function() // MORRE
+{
+    //Debuga o estado
+    debug_enemy_state = "Die";
+    
+    //Exibe uma vez a animação de morte
+    change_sprites_once(4);
+    
+    //Define a velocidade de animação
+    image_spd = image_speed / 5
+    
+    //Fica parado
+    velh = 0;
+    
+    //Deleta o inimigo após o fim da animação
+    if (image_ind > sprite_get_number(sprite) - 1)
+    {
+        instance_destroy(id);
     }
 }
 

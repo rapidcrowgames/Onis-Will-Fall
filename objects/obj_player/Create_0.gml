@@ -160,7 +160,9 @@ change_sprites_once = function(_sprites_index = 0)
 
 move_player = function()
 {
-	//Pega os inputs
+    if (global.hitstop) return;
+        
+	//Pega os inputs SE não estiver no hitstop
 	get_inputs();
 	
 	//Movimento horizontal
@@ -280,7 +282,11 @@ state_idle = function() //Estado PARADO / IDLE
 	if (input_attack) state = player_state.ATTACK;
 	
 	//Se ele sofrer dano, vai para o estado de HURT
-	if (hurt) state = player_state.HURT;
+	if (hurt) 
+    {
+        global.hitstop = true;
+        state = player_state.HURT;
+    }
 	
 	//Se perder todas vidas, vai para o estado de morte
 	if (life <= 0) state = player_state.DEATH;
@@ -306,7 +312,11 @@ state_run = function() //Estado MOVIMENTO / RUN
 	if (input_attack) state = player_state.ATTACK;
 	
 	//Se ele sofrer dano, vai para o estado de HURT
-	if (hurt) state = player_state.HURT;
+	if (hurt) 
+    {
+        global.hitstop = true;
+        state = player_state.HURT;
+    }
 	
 	//Se perder todas vidas, vai para o estado de morte
 	if (life <= 0) state = player_state.DEATH;
@@ -385,30 +395,42 @@ state_attack = function() //Estado ATAQUE / ATTACK
 
 state_hurt = function() //Estado MACHUCADO / HURT
 {
-	//Debug do estado
-	debug_state = "Hurt";
-	
-	//Velocidade da animação
-	image_spd = image_speed / 6;
-	
-	//Altera para animação 1 vez para de machucado
-	change_sprites_once(3);
-	
-	//Joga o player para trás
-	if (dir == -1) velh += 35; //Joga ele para direita
-	if (dir == 1)  velh -= 35; //Joga ele para esquerda
-	
-	//Perde vida SE não estiver invencivel
-	if (!hurt_invencible) life--; //Perde 1 vida
-	
-	//Fica invencivel
-	hurt_invencible = true;
-	
-	//Diminui a opacidade do player
-	image_alpha = 0.5;
-	
-	//Volta para o estado parado
-	if (hurt_invencible) state = player_state.IDLE; 
+    //Debug do estado
+    debug_state = "Hurt";
+    
+    //Velocidade da animação
+    image_spd = image_speed / 6;
+    
+    //Altera para animação 1 vez para de machucado
+    change_sprites_once(3);
+    
+    //Perde vida e joga para trás apenas UMA VEZ (quando não é invencivel ainda)
+    if (!hurt_invencible)
+    {
+        //Perde vida
+        life--;
+        
+        //Joga o player para trás
+        if (dir == -1)  velh += 35; //Joga ele para direita
+        if (dir ==  1)  velh -= 35; //Joga ele para esquerda
+        
+        //Fica invencivel e opaco
+        hurt_invencible = true;
+        image_alpha = 0.5;
+    }
+    
+    //Se a vida chegar a 0 vai para o estado de DEATH
+    if (life <= 0)
+    {
+        state = player_state.DEATH;
+    }
+    
+    //No fim da animação, volta para o estado parado
+    if (image_ind >= sprite_get_number(sprite) - 1)
+    {
+        hurt = false; //Não estou mais machucado
+        state = player_state.IDLE;
+    }
 }
 
 /////// EXTRA: Invencibilidade do dano sofrido //////////
@@ -428,6 +450,24 @@ step_damage = function()
 		hurt_invencible = false;
 		hurt_timer		= 1; //1 segundo novamente
 	}
+}
+
+state_death = function() //Estado MORTE / DIE
+{
+    //Debuga o estado
+    state_debug = "Death";
+    
+    //Alterar para animação de morte apenas uma vez
+    //Colocar aqui quando tiver
+    
+    //Define a velocidade da sprite
+    image_spd = image_speed / 5;
+    
+    //Reseta o jogo
+    game_restart();
+    
+    //Mas aqui fazer diferente a tela de morte, levando a uma room só para isso
+    //com uma animação especifica
 }
 
 state_cutscene = function() //Estado CENA / CUTSCENE
