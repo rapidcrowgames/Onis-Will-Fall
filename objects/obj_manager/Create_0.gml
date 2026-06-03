@@ -4,7 +4,7 @@
 #region Variáveis de controle
 
 //Variáveis do hitstop
-hitstop_timer       = 0.1; //0.1 segundos
+hitstop_timer       = 0.05; //0.1 segundos
 
 #endregion
 
@@ -26,7 +26,7 @@ hitstop = function() //Método de HITSTOP dos danos
         //SE o timer chegar a 0, então o hitstop para
         if (hitstop_timer <= 0) 
         { 
-            hitstop_timer = 0.1;
+            hitstop_timer = 0.05;
             global.hitstop = false;
         }
     }

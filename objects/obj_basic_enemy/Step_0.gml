@@ -12,6 +12,7 @@ update_state_enemy();
 //Atualiza a direção que ele está olhando
 correct_direction();
 
-#endregion
+//Atualiza a destruição das particulas
+destroy_particles();
 
-show_debug_message(life)
+#endregion

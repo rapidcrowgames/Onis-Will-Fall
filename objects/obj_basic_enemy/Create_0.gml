@@ -51,6 +51,12 @@ timer_load_attack    = 0.3; //0.3 segundos
 damage_done          = false; //Garante que sofreu o dano apenas uma vez
 
 
+//Variáveis de particulas
+particula            = noone; //Variável que cuida da criação especifica de uma particula
+part_exists          = false; //Identifica se já foi criada a particula
+part_timer           = 1.2; //Tempo para deletar a particula após ser criada
+
+
 
 #endregion
 
@@ -410,6 +416,11 @@ state_attack = function() // ATACANDO
             double_parry = true;
             
             //Cria a particula
+            particula = part_system_create(ps_double_parry);
+            part_system_position(particula, x + 6 * dir, y - sprite_height);
+            
+            //Foi criada a particula
+            part_exists = true;
             
             //Joga ambos para trás
             if (dir == -1) velh += 50;
@@ -468,6 +479,21 @@ state_attack = function() // ATACANDO
     }
 }
 
+/////////// EXTRA - DESTRUIR PARTÍCULAS /////////
+destroy_particles = function()
+{
+    //SE a particula já foi criada começa a diminuir o timer
+    if (part_exists && part_timer > 0) part_timer -= delta_time / 1000000;
+        
+    //Quando o timer zerar, ele destroi a partícula
+    if (part_timer <= 0)
+    {
+        part_system_destroy(particula)
+        part_timer = 1.2;
+        part_exists = false;
+    }
+}
+
 state_load_hurt = function() // SOFRE O ATAQUE DO INIMIGO
 {
     //Debuga o estado
@@ -485,11 +511,19 @@ state_load_hurt = function() // SOFRE O ATAQUE DO INIMIGO
     //Define a velocidade da animação
     image_spd = image_speed / 3;
     
+    //Pega os frames da animação
+    var _frame = floor(image_ind);
+    
+    //Se estiver no primeiro frame ele da o HITSTOP
+    if (_frame == 1)
+    {
+        //Causa o HITSTOP
+        global.hitstop = true
+    }
+    
     //No fim da animação, ele vai para o estado HURT
     if (image_ind >= sprite_get_number(sprite) - 1)
     {
-        //Causa o HITSTOP
-        global.hitstop = true;
         state_enemy = enemy_state.HURT;
     }
 }
@@ -540,6 +574,9 @@ state_die = function() // MORRE
     
     //Exibe uma vez a animação de morte
     change_sprites_once(4);
+    
+    //Faz ele ficar virado para o player
+    dir = sign(target.x - x);
     
     //Define a velocidade de animação
     image_spd = image_speed / 5
