@@ -23,8 +23,10 @@ dir			         = 1 // 1 - Direita / -1 Esquerda
 //Variáveis de estados
 hurt = false; //Identifica se sofreu dano ou não
 
-//Variáveis do estado de ataque
+//Variáveis do estado de ATTACK
 create_hitbox	    = false; //Cria a hitbox
+combo_count         = 0;
+double_parry        = false; //identifica se ambos atacaram no mesmo momento
 
 //Variáveis do estado HURT / machucado
 hurt_invencible		= false;
@@ -360,7 +362,7 @@ state_attack = function() //Estado ATAQUE / ATTACK
     var _frame = floor(image_ind);
     
     // Cria a hitbox no frame ativo (ex: frame 2 da animação)
-    if (_frame == 2 && !create_hitbox) 
+    if (_frame == 3 && !create_hitbox) 
 	{
         instance_create_layer(x + 6 * dir, y - sprite_height, layer, obj_player_hitbox);
         create_hitbox = true; // flag: "já foi criada"
@@ -407,7 +409,9 @@ state_hurt = function() //Estado MACHUCADO / HURT
     //Perde vida e joga para trás apenas UMA VEZ (quando não é invencivel ainda)
     if (!hurt_invencible)
     {
-        //Perde vida
+        if (double_parry) return;
+        
+        //Perde vida SE não estão em parry duplo
         life--;
         
         //Joga o player para trás

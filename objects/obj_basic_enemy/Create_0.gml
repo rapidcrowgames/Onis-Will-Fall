@@ -33,6 +33,7 @@ destiny_x            = noone;
 //Variáveis do estado de ATTACK
 attack_done          = false;
 create_hitbox        = false;
+double_parry         = false;
 
 //Variáveis da detecção do player com a zona de colisão do
 //Inimigo
@@ -400,12 +401,47 @@ state_attack = function() // ATACANDO
         create_hitbox = true; //Criei ela
     }
     
+    //SE minha hitbox colidir com a hitbox do Player SE ela existir, temos um "parry duplo"
+    if (instance_exists(obj_player_hitbox))
+    {
+        if (place_meeting(x, y, obj_player_hitbox))
+        {
+            //Define que ocorreu o parry duplo
+            double_parry = true;
+            
+            //Cria a particula
+            
+            //Joga ambos para trás
+            if (dir == -1) velh += 50;
+            if (dir ==  1) velh -= 50;
+                
+            with (obj_player) //Joga o player para trás
+            {
+                double_parry = true;
+                if (dir == -1) velh += 50;
+                if (dir ==  1) velh -= 50;
+            }
+            
+        } 
+    }
+        
     //SE criei a hitbox, eu destruo ela no 3 frame da animação
     if (_frame == 3 && create_hitbox)
     {
         //Destruo ela
         instance_destroy(obj_hitbox_enemy);
         create_hitbox = false;
+        
+        //SE deu o double parry e desativo ele
+        if (double_parry)
+        {
+            double_parry = false;
+            
+            with (obj_player) 
+            {
+                double_parry = false;	
+            }
+        }
     }
     
     //SE acabou a animação, eu volto para o estado normal
@@ -475,7 +511,8 @@ state_hurt = function() // SOFRE O DANO
             //Pega o dano que o player causa
             var _dmg_player = obj_player.dano;
             
-            life -= _dmg_player;  
+            //Perde vida se não estiver no DOUBLE PARRY
+            if (!double_parry) life -= _dmg_player;  
             
             damage_done = true; //Sofreu o ataque
         }
