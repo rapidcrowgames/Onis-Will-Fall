@@ -9,5 +9,3 @@ hitstop(); //Método de HitStop
 screenshake(); //Método do screenshake / tremer a tela
 
 #endregion
-
-show_debug_message(global.hitstop);

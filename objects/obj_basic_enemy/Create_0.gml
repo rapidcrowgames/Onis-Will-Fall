@@ -178,6 +178,19 @@ player_zone_vission = function()
 #endregion
 
 
+//////////////////////////////////////
+/// APLICA A GRAVIDADE NO INIMIGO ///
+////////////////////////////////////
+#region Aplica a gravidade em tempo real
+
+gravity_real_time = function()
+{
+    velv += grav_atual;
+}
+
+#endregion
+
+
 /////////////////////////////////
 /// ENUM E ESTADOS DO INIMIGO //
 ///////////////////////////////
@@ -364,6 +377,9 @@ state_load_attack = function() // PRÉ ATAQUE
     //SE o timer chegar a 0, ele ataca na última posição que o player estava
     if (timer_load_attack <= 0)
     {
+        //Faz ele ficar virado para o player
+        dir = sign(target.x - x);
+        
         //Aumento um pouco a velocidade
         velh = (max_velh * 3 * sign(player_last_position - x));
         
@@ -394,6 +410,9 @@ state_attack = function() // ATACANDO
     
     //Fica parado
     velh = 0;
+    
+    //Faz ele ficar virado para o player
+    dir = sign(target.x - x);
     
     //Pega os frames da sprite e guarda em uma variável
     var _frame = floor(image_ind);

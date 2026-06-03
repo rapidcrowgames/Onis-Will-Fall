@@ -15,4 +15,7 @@ correct_direction();
 //Atualiza a destruição das particulas
 destroy_particles();
 
+//Aplica a gravidade
+gravity_real_time();
+
 #endregion

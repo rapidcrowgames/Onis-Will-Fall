@@ -28,8 +28,17 @@ step_damage();
 
 if (DEBUG_MODE)
 {
-	//show_debug_message(life);	
+    //Reseta a room
+    if (keyboard_check_pressed(ord("R")))
+    {
+        room_restart();
+    }
     
+    //Reseta o jogo
+    if (keyboard_check_pressed(ord("T")))
+    {
+        game_restart();
+    }
 }
 
 
