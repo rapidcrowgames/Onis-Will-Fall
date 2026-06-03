@@ -6,7 +6,7 @@
 -
 - Fazer uma espécie de parry de golpe quando o inimigo e o player atacam ao mesmo tempo, fazer ambos darem uma recuada e uma partícula de espada - FEITO
 -
-- Fazer o parry com uma sprite improvisada 
+- Fazer o parry com uma sprite improvisada - FEITO
 -
 - Arrumar agora o feeling (screenshake e pensar em outros como sangue)
 -

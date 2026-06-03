@@ -31,12 +31,13 @@ double_parry         = false; //identifica se ambos atacaram no mesmo momento
 //Variáveis do estado HURT / machucado
 hurt_invencible		 = false;
 hurt_timer			 = 1 // 1 segundos
+attacker             = noone; //Variável que salva quem foi que me atacou
 
 //Variável do estado de CUTSCENE
 cutscene_action      = noone; //Define qual ação do SWITCH da cutscene
 
 //Variáveis do estado de parry
-parry_timer          = 0.3;
+parry_timer          = 0.5;
 parry                = false;
 
 //Variáveis de animação
@@ -62,6 +63,7 @@ get_inputs = function()
 	input_left			= keyboard_check(ord("A")) or keyboard_check(vk_left);
 	input_jump			= keyboard_check(ord("W")) or keyboard_check(vk_space);
 	input_attack		= keyboard_check_pressed(ord("J")) or keyboard_check_pressed(ord("Z"));
+    input_parry         = keyboard_check_pressed(ord("K")) or keyboard_check_pressed(ord("X"));
 }
 
 #endregion
@@ -296,6 +298,9 @@ state_idle = function() //Estado PARADO / IDLE
         global.hitstop = true;
         state = player_state.HURT;
     }
+    
+    //SE apertar o botão do parry, ele vai para PARRY
+    if (input_parry) state = player_state.PARRY;
 	
 	//Se perder todas vidas, vai para o estado de morte
 	if (life <= 0) state = player_state.DEATH;
@@ -326,6 +331,9 @@ state_run = function() //Estado MOVIMENTO / RUN
         global.hitstop = true;
         state = player_state.HURT;
     }
+    
+    //SE apertar o botão do parry, ele vai para PARRY
+    if (input_parry) state = player_state.PARRY;
 	
 	//Se perder todas vidas, vai para o estado de morte
 	if (life <= 0) state = player_state.DEATH;
@@ -411,12 +419,15 @@ state_hurt = function() //Estado MACHUCADO / HURT
     image_spd = image_speed / 6;
     
     //Altera para animação 1 vez para de machucado
-    change_sprites_once(3);
+    change_sprites_once(4);
     
     //Perde vida e joga para trás apenas UMA VEZ (quando não é invencivel ainda)
     if (!hurt_invencible)
     {
-        if (double_parry) return;
+        if (double_parry or parry) return;
+        
+        //treme a tela
+        tremor(4);
         
         //Perde vida SE não estão em parry duplo
         life--;
@@ -452,23 +463,57 @@ state_parry = function() //Estado DEFESA / PARRY
     //Define a animação de parry
     change_sprites_once(3);
     
+    //Fica parado
+    velh = 0;
+    
     //Define a velocidade da animação
     image_spd = image_speed / 6;
     
     //Pega os frames da imagem
     var _frame = floor(image_ind);
     
-    //A partir da 3 sprite que abre o timer para o parry
-    if (_frame == 3)
+    //A partir do frame 2 que abre a janela de parry
+    if (_frame >= 3 && !parry)
     {
-        //Estou no parry
         parry = true;
     }
     
-    //SE estou no parry começa a diminuir o tempo
+    //SE estou na janela de parry
     if (parry)
     {
-        
+        if (parry_timer > 0) parry_timer -= delta_time / 1000000;
+            
+        //SE eu sofrer dano dentro deste tempo jogo quem me atacou para longe
+        var _hitbox = instance_place(x, y, obj_hitbox_enemy);
+        if (_hitbox != noone)
+        {
+            with (_hitbox.owner)
+            {
+                //treme a tela
+                tremor(8);
+                if (dir == -1) velh += 40;
+                if (dir ==  1) velh -= 40;
+            }
+            //Reseta o parry após executar
+            hurt = false;
+            parry = false;
+            parry_timer = 0.5;
+        }
+    }
+    
+    //SE o tempo esgotar sem parry, fecha a janela
+    if (parry_timer <= 0)
+    {
+        parry_timer = 0.5;
+        parry = false;
+    }
+    
+    //No fim da animação volta para IDLE
+    if (image_ind >= sprite_get_number(sprite) - 1)
+    {
+        parry = false;        // garante reset
+        parry_timer = 0.5;    // garante reset
+        state = player_state.IDLE;
     }
 }
 

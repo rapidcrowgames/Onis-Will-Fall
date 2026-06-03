@@ -402,7 +402,8 @@ state_attack = function() // ATACANDO
     if (_frame == 2 && !create_hitbox)
     {
         //Então eu crio a hitbox na minha posição
-        instance_create_layer(x + 6 * dir, y - sprite_height, layer, obj_hitbox_enemy);
+        var _hitbox = instance_create_layer(x + 6 * dir, y - sprite_height, layer, obj_hitbox_enemy);
+        _hitbox.owner = id; //Eu (inimigo) sou o criador dessa hitbox
         
         create_hitbox = true; //Criei ela
     }
@@ -414,6 +415,9 @@ state_attack = function() // ATACANDO
         {
             //Define que ocorreu o parry duplo
             double_parry = true;
+            
+            //treme a tela
+            tremor(8);
             
             //Cria a particula
             particula = part_system_create(ps_double_parry);
@@ -519,6 +523,9 @@ state_load_hurt = function() // SOFRE O ATAQUE DO INIMIGO
     {
         //Causa o HITSTOP
         global.hitstop = true
+        
+        //treme a tela
+        tremor(5);
     }
     
     //No fim da animação, ele vai para o estado HURT

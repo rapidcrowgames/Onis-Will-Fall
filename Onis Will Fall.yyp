@@ -61,6 +61,7 @@
     {"id":{"name":"obj_trigger","path":"objects/obj_trigger/obj_trigger.yy",},},
     {"id":{"name":"ps_double_parry","path":"particles/ps_double_parry/ps_double_parry.yy",},},
     {"id":{"name":"Room_testes","path":"rooms/Room_testes/Room_testes.yy",},},
+    {"id":{"name":"scr_functions","path":"scripts/scr_functions/scr_functions.yy",},},
     {"id":{"name":"scr_globais","path":"scripts/scr_globais/scr_globais.yy",},},
     {"id":{"name":"scr_macros","path":"scripts/scr_macros/scr_macros.yy",},},
     {"id":{"name":"spr_basic_enemie_attack","path":"sprites/spr_basic_enemie_attack/spr_basic_enemie_attack.yy",},},

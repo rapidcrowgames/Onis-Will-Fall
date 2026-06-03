@@ -6,6 +6,9 @@
 //Variáveis do hitstop
 hitstop_timer       = 0.05; //0.1 segundos
 
+//Variáveis para screenshake
+treme = 0;
+
 #endregion
 
 
@@ -30,6 +33,33 @@ hitstop = function() //Método de HITSTOP dos danos
             global.hitstop = false;
         }
     }
+}
+
+screenshake = function()
+{
+   //Tremendo a tela
+    if (treme > 0.1)
+    {
+    	//Ele treme a tela 
+    	var _x = random_range(-treme, treme) //Altera no eixo X entre positivo e negativo
+    	var _y = random_range(-treme, treme) //altera no eixo Y entre positivo e negativo
+    	
+    	view_set_xport(view_current, _x); //Mexe a câmera atual no eixo X 
+    	view_set_yport(view_current, _y); //Mexe a câmare atual no eixo Y
+    		
+    }
+    else //Chego perto de zero, eu garanto que seja zerada
+    {
+    	treme = 0;
+    	view_set_xport(view_current, 0); 
+    	view_set_yport(view_current, 0);
+    	
+    }
+    
+    
+    //Lerp faz a tela parar de tremer gradativamente.
+    treme = lerp(treme, 0, 0.1);
+     
 }
 
 #endregion
