@@ -40,6 +40,11 @@ cutscene_action      = noone; //Define qual ação do SWITCH da cutscene
 parry_timer          = 0.5;
 parry                = false;
 
+//Variáveis de particulas
+particula            = noone; //Variável que cuida da criação especifica de uma particula
+part_exists          = false; //Identifica se já foi criada a particula
+part_timer           = 1.2; //Tempo para deletar a particula após ser criada
+
 //Variáveis de animação
 sprite				 = sprite_index;
 image_numb			 = image_number;
@@ -487,6 +492,14 @@ state_parry = function() //Estado DEFESA / PARRY
         var _hitbox = instance_place(x, y, obj_hitbox_enemy);
         if (_hitbox != noone)
         {
+            
+            //Cria a particula
+            particula = part_system_create(ps_parry);
+            part_system_position(particula, x + 20 * dir, y - sprite_height);
+            
+            //Foi criada a particula
+            part_exists = true;
+            
             with (_hitbox.owner)
             {
                 //treme a tela
@@ -514,6 +527,21 @@ state_parry = function() //Estado DEFESA / PARRY
         parry = false;        // garante reset
         parry_timer = 0.5;    // garante reset
         state = player_state.IDLE;
+    }
+}
+
+/////////// EXTRA - DESTRUIR PARTÍCULAS /////////
+destroy_particles = function()
+{
+    //SE a particula já foi criada começa a diminuir o timer
+    if (part_exists && part_timer > 0) part_timer -= delta_time / 1000000;
+        
+    //Quando o timer zerar, ele destroi a partícula
+    if (part_timer <= 0)
+    {
+        part_system_destroy(particula)
+        part_timer = 1.2;
+        part_exists = false;
     }
 }
 

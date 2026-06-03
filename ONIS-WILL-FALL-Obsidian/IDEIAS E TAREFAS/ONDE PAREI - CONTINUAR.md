@@ -8,7 +8,7 @@
 -
 - Fazer o parry com uma sprite improvisada - FEITO
 -
-- Arrumar agora o feeling (screenshake e pensar em outros como sangue)
+- Arrumar agora o feeling (screenshake e pensar em outros como sangue) - FEITO 
 -
 - Adicionar o estado de finalização
 -
