@@ -75,6 +75,7 @@
     {"id":{"name":"spr_player_hitbox","path":"sprites/spr_player_hitbox/spr_player_hitbox.yy",},},
     {"id":{"name":"spr_player_hurt","path":"sprites/spr_player_hurt/spr_player_hurt.yy",},},
     {"id":{"name":"spr_player_idle","path":"sprites/spr_player_idle/spr_player_idle.yy",},},
+    {"id":{"name":"spr_player_parry","path":"sprites/spr_player_parry/spr_player_parry.yy",},},
     {"id":{"name":"spr_player_run","path":"sprites/spr_player_run/spr_player_run.yy",},},
     {"id":{"name":"spr_trigger","path":"sprites/spr_trigger/spr_trigger.yy",},},
   ],

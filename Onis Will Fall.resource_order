@@ -42,6 +42,7 @@
     {"name":"spr_fundo","order":2,"path":"sprites/spr_fundo/spr_fundo.yy",},
     {"name":"spr_player_attack","order":1,"path":"sprites/spr_player_attack/spr_player_attack.yy",},
     {"name":"spr_player_hurt","order":2,"path":"sprites/spr_player_hurt/spr_player_hurt.yy",},
+    {"name":"spr_player_parry","order":4,"path":"sprites/spr_player_parry/spr_player_parry.yy",},
     {"name":"spr_player_run","order":3,"path":"sprites/spr_player_run/spr_player_run.yy",},
     {"name":"spr_trigger","order":1,"path":"sprites/spr_trigger/spr_trigger.yy",},
   ],

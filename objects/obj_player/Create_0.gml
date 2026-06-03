@@ -24,24 +24,28 @@ dir			         = 1 // 1 - Direita / -1 Esquerda
 hurt = false; //Identifica se sofreu dano ou não
 
 //Variáveis do estado de ATTACK
-create_hitbox	    = false; //Cria a hitbox
-combo_count         = 0;
-double_parry        = false; //identifica se ambos atacaram no mesmo momento
+create_hitbox	     = false; //Cria a hitbox
+combo_count          = 0;
+double_parry         = false; //identifica se ambos atacaram no mesmo momento
 
 //Variáveis do estado HURT / machucado
-hurt_invencible		= false;
-hurt_timer			= 1 // 1 segundos
+hurt_invencible		 = false;
+hurt_timer			 = 1 // 1 segundos
 
 //Variável do estado de CUTSCENE
-cutscene_action = noone; //Define qual ação do SWITCH da cutscene
+cutscene_action      = noone; //Define qual ação do SWITCH da cutscene
+
+//Variáveis do estado de parry
+parry_timer          = 0.3;
+parry                = false;
 
 //Variáveis de animação
-sprite				= sprite_index;
-image_numb			= image_number;
-image_ind			= image_index;
-image_spd			= image_speed / 3;
-current_animation	= noone;
-attack_done			= false;
+sprite				 = sprite_index;
+image_numb			 = image_number;
+image_ind			 = image_index;
+image_spd			 = image_speed / 3;
+current_animation	 = noone;
+attack_done			 = false;
 
 #endregion
 
@@ -93,6 +97,7 @@ animations =
 	[spr_player_idle], //Animação parado
 	[spr_player_run], //Animação se movendo
 	[spr_player_attack], //animação atacando
+	[spr_player_parry], //animação defesa
 	[spr_player_hurt] //animação machucado
 ]
 
@@ -239,6 +244,7 @@ enum player_state
 	JUMP, //Estado de pulo
 	HURT, //Estado sofrendo dano
 	ATTACK, //Estado de ataque
+    PARRY, //Estado de parry / defesa
 	DEATH, //Esta de morte
 	CUTSCENE //Estado de cena / cutscene
 }
@@ -252,13 +258,14 @@ update_state = function()
 {
 	switch(state) //Máquina de estados
 	{
-		case player_state.IDLE: state_idle(); break; //estado parado	
-		case player_state.RUN: state_run(); break;	 //estado correndo / se movendo
-		case player_state.JUMP: state_jump(); break; //estado de pulo
-		case player_state.HURT: state_hurt(); break; //estado sofrendo dano	
-		case player_state.ATTACK: state_attack(); break; //estado atacando	
-		case player_state.DEATH: state_death(); break;	//estado de morte
-		case player_state.CUTSCENE: state_cutscene(); break; //estado de cutscene
+		case player_state.IDLE:       state_idle();       break; //estado parado	
+		case player_state.RUN:        state_run();        break; //estado correndo / se movendo
+		case player_state.JUMP:       state_jump();       break; //estado de pulo
+		case player_state.HURT:       state_hurt();       break; //estado sofrendo dano	
+		case player_state.ATTACK:     state_attack();     break; //estado atacando	
+		case player_state.PARRY:      state_parry();      break; //estado atacando	
+		case player_state.DEATH:      state_death();      break; //estado de morte
+		case player_state.CUTSCENE:   state_cutscene();   break; //estado de cutscene
 	}
 }
 
@@ -434,6 +441,34 @@ state_hurt = function() //Estado MACHUCADO / HURT
     {
         hurt = false; //Não estou mais machucado
         state = player_state.IDLE;
+    }
+}
+
+state_parry = function() //Estado DEFESA / PARRY
+{
+    //Debuga o estado 
+    state_debug = "Parry";
+    
+    //Define a animação de parry
+    change_sprites_once(3);
+    
+    //Define a velocidade da animação
+    image_spd = image_speed / 6;
+    
+    //Pega os frames da imagem
+    var _frame = floor(image_ind);
+    
+    //A partir da 3 sprite que abre o timer para o parry
+    if (_frame == 3)
+    {
+        //Estou no parry
+        parry = true;
+    }
+    
+    //SE estou no parry começa a diminuir o tempo
+    if (parry)
+    {
+        
     }
 }
 
