@@ -5,8 +5,8 @@
 - FAZER AGORA ANIMAÇÕES PRÓPRIAS DO PLAYER para prosseguir com o processo de criação 
 - IDLE - RUN - JUMP (Subindo, e caindo) - ATTACK  1, 2, 3 - DAMAGE - DEATH - WALL JUMP - PENDURADO - FINALIZAÇÃO (pelo menos 1)
 
-- Fazer combo simples de 3 golpes estilo blasphemous
+- Fazer combo simples de 3 golpes estilo blasphemous.
 
-- Adicionar o estado de finalização
+- Adicionar o estado de finalização.
 
 - Adicionar os controles.

@@ -136,6 +136,7 @@ animations = [
 /// ARRUMA A DIREÇÃO QUE O INIMIGO ESTÁ OLHANDO //
 /////////////////////////////////////////////////   
 #region Corrige a direção que ele está olhando
+
 correct_direction = function()
 {
     image_xscale = dir;

@@ -429,7 +429,11 @@ state_hurt = function() //Estado MACHUCADO / HURT
     //Perde vida e joga para trás apenas UMA VEZ (quando não é invencivel ainda)
     if (!hurt_invencible)
     {
-        if (double_parry or parry) return;
+        if (double_parry or parry) 
+        {
+            hurt = false;
+            return;
+        }
         
         //treme a tela
         tremor(4);
