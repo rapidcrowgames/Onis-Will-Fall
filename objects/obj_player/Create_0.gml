@@ -103,11 +103,15 @@ if (instance_exists(obj_camera))
 
 animations = 
 [
-	[spr_player_idle], //Animação parado
-	[spr_player_run], //Animação se movendo
-	[spr_player_attack], //animação atacando
-	[spr_player_parry], //animação defesa
-	[spr_player_hurt] //animação machucado
+	[spr_player_idle], //Animação parado - 0
+	[spr_player_run], //Animação se movendo - 1
+	[spr_player_attack], //animação atacando - 2
+	[spr_player_parry], //animação defesa - 3
+	[spr_player_hurt], //animação machucado - 4
+    
+    //Novas animações [Pulo, queda, ataque 1 e 2, Parede]
+    [spr_player_jump], //Animação de pulo (subida) - 5
+    [spr_player_fall] //Animação de pulo (queda) - 6
 ]
 
 #endregion
@@ -197,7 +201,7 @@ move_player = function()
 	//Identifica se está ou não no chão		   //Está no chão	 //Não está no chão
 	if (place_meeting(x, y + 1, obj_colisao))  {chao = true;} else {chao = false;}
 	
-    //Identifica se está ou não na parede
+    //Identifica se está ou não na parede            //Está na parede      //Não está na parede
     if (place_meeting(x + sign(dir), y, obj_colisao))  {parede = true;} else {parede = false;}
 	
 	
@@ -239,6 +243,12 @@ move_player = function()
 		grav_atual = grav;
         is_jumping = false;
 	}
+    
+    //SE estou pulando, vou para o estado de pulo
+    if (is_jumping)
+    {
+        state = player_state.JUMP;
+    }
 	
 	#endregion
     
@@ -372,16 +382,25 @@ state_jump = function() //Estado PULANDO / JUMP
 	state_debug = "jump";
 	
 	//Muda para a sprite de pulo (quando tiver)
-	//-
+	if (is_jumping)
+    {
+        change_sprites_once(5)
+    }
+    
+    //Quando já estiver mais alto e em queda, muda para sprite de queda
+    if (!is_jumping)
+    {
+        change_sprites(6);
+    }
+    
+    //define a velocidade das animações
+    image_spd = image_speed / 5;
 	
-	//Se apertar a tecla / botão de ataque vai para estado de ATTACK
-	//if (input_attack) state = player_state.ATTACK; <--- ARRUMAR DEPOIS QUANDO TIVER MAIS SPRITES
-	
-	////Se ele sofrer dano, vai para o estado de HURT <--- ARRUMAR DEPOIS QUANDO TIVER MAIS SPRITES
-	//if (hurt) state = player_state.HURT;
+	////Se ele sofrer dano, vai para o estado de HURT
+	if (hurt) state = player_state.HURT;
 	
 	////Se perder todas vidas, vai para o estado de morte 
-	//if (life <= 0) state = player_state.DEATH; <--- ARRUMAR DEPOIS QUANDO TIVER MAIS SPRITES
+	if (life <= 0) state = player_state.DEATH;
 	
 	//Se estiver no chão volta para o estado de parado
 	if (chao) state = player_state.IDLE;
