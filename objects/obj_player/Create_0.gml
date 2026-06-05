@@ -321,7 +321,7 @@ state_run = function() //Estado MOVIMENTO / RUN
 	change_sprites(1);
 	
 	//Se move na velocidade normal a sprite
-	image_spd = image_speed / 3;
+	image_spd = image_speed / 7;
 	
 	//Se soltar as teclas ou analógico de movimento, volta
 	//para o estado parado
