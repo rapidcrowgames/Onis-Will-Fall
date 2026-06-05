@@ -18,6 +18,8 @@ max_velv	         = 8;
 grav		         = 0.3;
 grav_atual	         = grav;
 chao		         = noone;
+parede               = noone;
+is_jumping           = false; //Verifica se estou pulando
 dir			         = 1 // 1 - Direita / -1 Esquerda
 
 //Variáveis de estados
@@ -195,12 +197,15 @@ move_player = function()
 	//Identifica se está ou não no chão		   //Está no chão	 //Não está no chão
 	if (place_meeting(x, y + 1, obj_colisao))  {chao = true;} else {chao = false;}
 	
+    //Identifica se está ou não na parede
+    if (place_meeting(x + sign(dir), y, obj_colisao))  {parede = true;} else {parede = false;}
+	
 	
 	/////////////////////////
 	// LÓGICA DO PULO //////
 	///////////////////////
 	#region Lógica do pulo
-	
+    	
 	//SE estou no chão e aperto ou seguro o botão / tecla de pular
 	if (chao)
 	{
@@ -208,12 +213,14 @@ move_player = function()
 		{
 			//Executa o pulo com valor máximo de max_velv
 			velv -= max_velv;
+            //Estou pulando
+            is_jumping = true;
 		}
 		
 	}
 	
 	//Se não estou mais no chão
-	if (velv < 0)
+	if (velv < 0 && is_jumping)
 	{
 		//E se ainda estou segurando o botão a gravidade fica mais baixa
 		if (input_jump)
@@ -222,7 +229,7 @@ move_player = function()
 		}
 		else
 		{
-			//SE eu soltar o botão a gravidade volta a ficar mais baixa
+			//SE eu soltar o botão a gravidade volta a ficar mais alta
 			grav_atual = 1;	
 		}
 	}
@@ -230,9 +237,23 @@ move_player = function()
 	{
 		//A gravidade volta a ficar normal
 		grav_atual = grav;
+        is_jumping = false;
 	}
 	
 	#endregion
+    
+    /////////////////////////////////
+    ////// LÓGICA DA PAREDE ////////
+    ///////////////////////////////
+    #region Lógica da parede
+    
+    //SE estou na parede, a gravidade me puxa para baixo
+    if (parede && !chao)
+    {
+        is_jumping = false;
+    }
+    
+    #endregion
 	
 }
 
@@ -321,7 +342,7 @@ state_run = function() //Estado MOVIMENTO / RUN
 	change_sprites(1);
 	
 	//Se move na velocidade normal a sprite
-	image_spd = image_speed / 7;
+	image_spd = image_speed / 4;
 	
 	//Se soltar as teclas ou analógico de movimento, volta
 	//para o estado parado
