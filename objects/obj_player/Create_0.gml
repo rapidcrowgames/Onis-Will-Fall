@@ -423,7 +423,7 @@ state_attack = function()
     //Criação da hitbox no frame ativo
     if (floor(image_ind) == 2 && !create_hitbox)
     {
-        instance_create_layer(x + 6 * dir, y - sprite_height, layer, obj_player_hitbox);
+        instance_create_layer(x + 6 * dir, y - sprite_height + 10, layer, obj_player_hitbox);
         create_hitbox = true;
     }
     
@@ -436,18 +436,17 @@ state_attack = function()
     
     //Animação terminou
     if (image_ind >= sprite_get_number(sprite) - 1)
-    {
-        //Apertou o botão de novo durante a animação? Avança o combo
+    { 
+        combo_count = 0;
+        attack_done = true;
+    }
+    else {
+    	//SE a animação ainda não terminou e eu apertei o botão de ataque mais
+        //Uma vez, eu aumento o combo
         if (input_attack && combo_count < 2) // máximo 3 golpes (0, 1, 2)
         {
-            combo_count++;
             image_ind = 0; //Reinicia a animação pro próximo golpe
-        }
-        else
-        {
-            //Não apertou ou chegou no último golpe, finaliza o combo
-            combo_count = 0;
-            attack_done = true;
+            combo_count++;
         }
     }
     
