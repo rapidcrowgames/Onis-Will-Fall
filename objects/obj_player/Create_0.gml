@@ -105,13 +105,15 @@ animations =
 [
 	[spr_player_idle], //Animação parado - 0
 	[spr_player_run], //Animação se movendo - 1
-	[spr_player_attack], //animação atacando - 2
-	[spr_player_parry], //animação defesa - 3
-	[spr_player_hurt], //animação machucado - 4
+	[spr_player_attack_1], //animação atacando - 2
+	[spr_player_attack_2], //animação atacando - 3 combo cout
+	[spr_player_attack_3], //animação atacando - 4 combo cout
+	[spr_player_parry], //animação defesa - 5
+	[spr_player_hurt], //animação machucado - 6
     
     //Novas animações [Pulo, queda, ataque 1 e 2, Parede]
-    [spr_player_jump], //Animação de pulo (subida) - 5
-    [spr_player_fall] //Animação de pulo (queda) - 6
+    [spr_player_jump], //Animação de pulo (subida) - 7
+    [spr_player_fall] //Animação de pulo (queda) - 8
 ]
 
 #endregion
@@ -384,13 +386,13 @@ state_jump = function() //Estado PULANDO / JUMP
 	//Muda para a sprite de pulo (quando tiver)
 	if (is_jumping)
     {
-        change_sprites_once(5)
+        change_sprites_once(7)
     }
     
     //Quando já estiver mais alto e em queda, muda para sprite de queda
     if (!is_jumping)
     {
-        change_sprites(6);
+        change_sprites(8);
     }
     
     //define a velocidade das animações
@@ -407,51 +409,52 @@ state_jump = function() //Estado PULANDO / JUMP
 	
 }
 
-state_attack = function() //Estado ATAQUE / ATTACK
+state_attack = function()
 {
-	//Debug de estado
-	state_debug = "attack";
-	
-	//Velocidade da animação
+    //Debug de estado
+    state_debug = "attack";
+    
+    //Velocidade da animação
     image_spd = image_speed / 3;
     
-	//Roda animação apenas uma vez
-    change_sprites_once(2);
+    //Roda a animação do golpe atual apenas uma vez
+    change_sprites_once(2 + combo_count); // 2 = primeiro ataque no array
     
-    // Pega o frame atual como inteiro
-    var _frame = floor(image_ind);
-    
-    // Cria a hitbox no frame ativo (ex: frame 2 da animação)
-    if (_frame == 3 && !create_hitbox) 
-	{
+    //Criação da hitbox no frame ativo
+    if (floor(image_ind) == 2 && !create_hitbox)
+    {
         instance_create_layer(x + 6 * dir, y - sprite_height, layer, obj_player_hitbox);
-        create_hitbox = true; // flag: "já foi criada"
+        create_hitbox = true;
     }
     
-    // Destrói a hitbox quando sair do frame ativo
-    if (_frame > 3 && create_hitbox) 
-	{
+    //Destroi a hitbox quando sair do frame ativo
+    if (floor(image_ind) > 3 && create_hitbox)
+    {
         instance_destroy(obj_player_hitbox);
         create_hitbox = false;
     }
     
-    // Animação terminou, volta pro estado certo
-    if (image_ind >= sprite_get_number(sprite) - 1) 
-	{
-        // Garante que a hitbox some se ainda existir
-        if (create_hitbox) 
-		{
-            instance_destroy(obj_player_hitbox);
-            create_hitbox = false;
+    //Animação terminou
+    if (image_ind >= sprite_get_number(sprite) - 1)
+    {
+        //Apertou o botão de novo durante a animação? Avança o combo
+        if (input_attack && combo_count < 2) // máximo 3 golpes (0, 1, 2)
+        {
+            combo_count++;
+            image_ind = 0; //Reinicia a animação pro próximo golpe
         }
-		
-        attack_done = true;
+        else
+        {
+            //Não apertou ou chegou no último golpe, finaliza o combo
+            combo_count = 0;
+            attack_done = true;
+        }
     }
     
-    if (attack_done) 
-	{
+    if (attack_done)
+    {
         attack_done = false;
-        state = player_state.IDLE; //Volta para o estado parado
+        state = player_state.IDLE;
     }
 }
 
@@ -464,7 +467,7 @@ state_hurt = function() //Estado MACHUCADO / HURT
     image_spd = image_speed / 6;
     
     //Altera para animação 1 vez para de machucado
-    change_sprites_once(4);
+    change_sprites_once(6);
     
     //Perde vida e joga para trás apenas UMA VEZ (quando não é invencivel ainda)
     if (!hurt_invencible)
@@ -510,7 +513,7 @@ state_parry = function() //Estado DEFESA / PARRY
     state_debug = "Parry";
     
     //Define a animação de parry
-    change_sprites_once(3);
+    change_sprites_once(5);
     
     //Fica parado
     velh = 0;
