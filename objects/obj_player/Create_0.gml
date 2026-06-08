@@ -330,7 +330,7 @@ state_idle = function() //Estado PARADO / IDLE
 	//Se apertar a tecla / botão de ataque vai para estado de ATTACK
 	if (input_attack) state = player_state.ATTACK;
 	
-	//Se ele sofrer dano, vai para o estado de HURT
+	//Se eu sofrer dano, vai para o estado de HURT
 	if (hurt) 
     {
         global.hitstop = true;
@@ -338,7 +338,7 @@ state_idle = function() //Estado PARADO / IDLE
     }
     
     //SE apertar o botão do parry, ele vai para PARRY
-    if (input_parry) state = player_state.PARRY;
+    if (input_parry && !hurt) state = player_state.PARRY;
 	
 	//Se perder todas vidas, vai para o estado de morte
 	if (life <= 0) state = player_state.DEATH;
@@ -371,7 +371,7 @@ state_run = function() //Estado MOVIMENTO / RUN
     }
     
     //SE apertar o botão do parry, ele vai para PARRY
-    if (input_parry) state = player_state.PARRY;
+    if (input_parry && !hurt) state = player_state.PARRY;
 	
 	//Se perder todas vidas, vai para o estado de morte
 	if (life <= 0) state = player_state.DEATH;
@@ -409,7 +409,7 @@ state_jump = function() //Estado PULANDO / JUMP
 	
 }
 
-state_attack = function()
+state_attack = function() //Estado ATAQUE / ATTACK
 {
     //Debug de estado
     state_debug = "attack";
@@ -463,7 +463,7 @@ state_hurt = function() //Estado MACHUCADO / HURT
     debug_state = "Hurt";
     
     //Velocidade da animação
-    image_spd = image_speed / 6;
+    image_spd = image_speed / 3;
     
     //Altera para animação 1 vez para de machucado
     change_sprites_once(6);
