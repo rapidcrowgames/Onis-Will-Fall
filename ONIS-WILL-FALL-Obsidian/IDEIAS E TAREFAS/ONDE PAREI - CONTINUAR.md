@@ -6,7 +6,7 @@
 - IDLE (feito) - RUN (feito) - JUMP (Subindo, e caindo) - (feito) - ATTACK  1 (feito), 2 (feito), 3 (feito) - DAMAGE (feito) - PARRY (feito) - DEATH - WALL JUMP - PENDURADO - FINALIZAÇÃO (pelo menos 1)
 
 - Fazer combo simples de 3 golpes estilo blasphemous. (feito) 
-- Melhorar o feeling dos golpes pois estão muito rápidos
+- Melhorar o feeling dos golpes pois estão muito rápidos - (feito)
 
 - Adicionar o estado de finalização.
 
