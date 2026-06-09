@@ -23,7 +23,7 @@ image_alpha);
 
 if (DEBUG_MODE)
 {
-	draw_text(x, y - sprite_height - 10, parede);	
+	draw_text(x, y - sprite_height - 10, life);	
 }
 
 #endregion

@@ -29,6 +29,7 @@ hurt = false; //Identifica se sofreu dano ou não
 create_hitbox	     = false; //Cria a hitbox
 combo_count          = 0;
 combo_buffered       = false; //Verifica se foi pressionado o botão novamente
+attack_timer         = 0.13; //Janela de timer para dar o próximo golpe
 double_parry         = false; //identifica se ambos atacaram no mesmo momento
 
 //Variáveis do estado HURT / machucado
@@ -424,15 +425,8 @@ state_attack = function() //Estado ATAQUE / ATTACK
     //Roda a animação do golpe atual apenas uma vez
     change_sprites_once(2 + combo_count); // 2 = primeiro ataque no array
     
-    // ── JANELA DE COMBO ──────────────────────────────────────────────
-    // Define a partir de qual frame o próximo golpe pode ser "engatado".
-    // Ajuste esse valor conforme o número de frames do seu sprite.
-    // Ex: se o sprite tem 6 frames, frame 4 já dá sensação de peso.
-    var _combo_window = 4; // frame mínimo para aceitar o próximo golpe
-    
     // Buffer: guarda o input de ataque pressionado DURANTE a animação
     if (input_attack) combo_buffered = true;
-    // ─────────────────────────────────────────────────────────────────
     
     //Criação da hitbox no frame ativo
     if (floor(image_ind) == 2 && !create_hitbox)
@@ -448,36 +442,35 @@ state_attack = function() //Estado ATAQUE / ATTACK
         create_hitbox = false;
     }
     
-    //Animação terminou
+    // ── ANIMAÇÃO TERMINOU ─────────────────────────────────────────────
     if (image_ind >= sprite_get_number(sprite) - 1)
-    { 
-        // SE tem buffer de input E ainda cabe mais um golpe no combo,
-        // encadeia o próximo — mas só agora que a animação fechou
+    {
+        // Congela no último frame enquanto o timer corre
+        image_spd = 0;
+        
+        // SE tem combo buffered E ainda cabe mais um golpe: encadeia
         if (combo_buffered && combo_count < 2) // máximo 3 golpes (0, 1, 2)
         {
-            image_ind = 0;       //Reinicia a animação pro próximo golpe
+            image_ind = 0;          //Reinicia a animação pro próximo golpe
+            image_spd = image_speed / 3.5; //Retoma a velocidade da animação
             combo_count++;
             combo_buffered = false; //Limpa o buffer
+            attack_timer = 0.13;     //Reseta o timer para o novo golpe
         }
         else
         {
-            // Sem buffer ou combo chegou no limite: encerra
-            combo_count = 0;
-            combo_buffered = false;
-            attack_done = true;
-        }
-    }
-    else
-    {
-        // ── ENCADEAMENTO ANTECIPADO (janela de combo) ─────────────────
-        // Se o jogador apertou ataque (buffered) E já passou o frame
-        // mínimo, encadeia o próximo golpe SEM esperar a animação acabar.
-        // Isso dá fluidez sem ser imediato demais.
-        if (combo_buffered && combo_count < 2 && floor(image_ind) >= _combo_window)
-        {
-            image_ind = 0;
-            combo_count++;
-            combo_buffered = false;
+            // ── SEM COMBO: decrementa o timer de recovery ─────────────
+            // Esse delay dá a sensação de peso no último golpe
+            attack_timer -= delta_time / 1000000;
+            
+            if (attack_timer <= 0)
+            {
+                //Timer zerou: encerra o estado de ataque
+                attack_timer = 0.13;  //Reseta o timer para o próximo uso
+                combo_count = 0;
+                combo_buffered = false;
+                attack_done = true;
+            }
         }
     }
     
@@ -515,8 +508,8 @@ state_hurt = function() //Estado MACHUCADO / HURT
         life--;
         
         //Joga o player para trás
-        if (dir == -1)  velh += 35; //Joga ele para direita
-        if (dir ==  1)  velh -= 35; //Joga ele para esquerda
+        if (dir == -1)  velh += 65; //Joga ele para direita
+        if (dir ==  1)  velh -= 65; //Joga ele para esquerda
         
         //Fica invencivel e opaco
         hurt_invencible = true;
@@ -571,7 +564,7 @@ state_parry = function() //Estado DEFESA / PARRY
         {
             
             //Cria a particula
-            particula = part_system_create(ps_parry);
+            if (parry) particula = part_system_create(ps_parry);
             part_system_position(particula, x + 20 * dir, y - sprite_height);
             
             //Foi criada a particula
