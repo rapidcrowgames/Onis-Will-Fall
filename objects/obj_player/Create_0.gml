@@ -28,6 +28,7 @@ hurt = false; //Identifica se sofreu dano ou não
 //Variáveis do estado de ATTACK
 create_hitbox	     = false; //Cria a hitbox
 combo_count          = 0;
+combo_buffered       = false; //Verifica se foi pressionado o botão novamente
 double_parry         = false; //identifica se ambos atacaram no mesmo momento
 
 //Variáveis do estado HURT / machucado
@@ -415,10 +416,23 @@ state_attack = function() //Estado ATAQUE / ATTACK
     state_debug = "attack";
     
     //Velocidade da animação
-    image_spd = image_speed / 3;
+    image_spd = image_speed / 3.5;
+    
+    //SE apertar o botão do parry, ele vai para PARRY
+    if (input_parry && !hurt) state = player_state.PARRY;
     
     //Roda a animação do golpe atual apenas uma vez
     change_sprites_once(2 + combo_count); // 2 = primeiro ataque no array
+    
+    // ── JANELA DE COMBO ──────────────────────────────────────────────
+    // Define a partir de qual frame o próximo golpe pode ser "engatado".
+    // Ajuste esse valor conforme o número de frames do seu sprite.
+    // Ex: se o sprite tem 6 frames, frame 4 já dá sensação de peso.
+    var _combo_window = 4; // frame mínimo para aceitar o próximo golpe
+    
+    // Buffer: guarda o input de ataque pressionado DURANTE a animação
+    if (input_attack) combo_buffered = true;
+    // ─────────────────────────────────────────────────────────────────
     
     //Criação da hitbox no frame ativo
     if (floor(image_ind) == 2 && !create_hitbox)
@@ -437,16 +451,33 @@ state_attack = function() //Estado ATAQUE / ATTACK
     //Animação terminou
     if (image_ind >= sprite_get_number(sprite) - 1)
     { 
-        combo_count = 0;
-        attack_done = true;
-    }
-    else {
-    	//SE a animação ainda não terminou e eu apertei o botão de ataque mais
-        //Uma vez, eu aumento o combo
-        if (input_attack && combo_count < 2) // máximo 3 golpes (0, 1, 2)
+        // SE tem buffer de input E ainda cabe mais um golpe no combo,
+        // encadeia o próximo — mas só agora que a animação fechou
+        if (combo_buffered && combo_count < 2) // máximo 3 golpes (0, 1, 2)
         {
-            image_ind = 0; //Reinicia a animação pro próximo golpe
+            image_ind = 0;       //Reinicia a animação pro próximo golpe
             combo_count++;
+            combo_buffered = false; //Limpa o buffer
+        }
+        else
+        {
+            // Sem buffer ou combo chegou no limite: encerra
+            combo_count = 0;
+            combo_buffered = false;
+            attack_done = true;
+        }
+    }
+    else
+    {
+        // ── ENCADEAMENTO ANTECIPADO (janela de combo) ─────────────────
+        // Se o jogador apertou ataque (buffered) E já passou o frame
+        // mínimo, encadeia o próximo golpe SEM esperar a animação acabar.
+        // Isso dá fluidez sem ser imediato demais.
+        if (combo_buffered && combo_count < 2 && floor(image_ind) >= _combo_window)
+        {
+            image_ind = 0;
+            combo_count++;
+            combo_buffered = false;
         }
     }
     
@@ -518,7 +549,7 @@ state_parry = function() //Estado DEFESA / PARRY
     velh = 0;
     
     //Define a velocidade da animação
-    image_spd = image_speed / 6;
+    image_spd = image_speed / 3;
     
     //Pega os frames da imagem
     var _frame = floor(image_ind);
@@ -550,8 +581,8 @@ state_parry = function() //Estado DEFESA / PARRY
             {
                 //treme a tela
                 tremor(8);
-                if (dir == -1) velh += 40;
-                if (dir ==  1) velh -= 40;
+                if (dir == -1) velh += 20;
+                if (dir ==  1) velh -= 20;
             }
             //Reseta o parry após executar
             hurt = false;
