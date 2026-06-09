@@ -26,7 +26,7 @@ repeat(abs(velh))
 	else
 	{
 		//Se ainda não colidi, então me movo 1 pixel por vez.
-		x += _velh;	
+		if (!global.hitstop) x += _velh;	
 	}
 }
 
@@ -48,7 +48,7 @@ repeat(abs(velv))
 	else
 	{
 		//Se ainda não colidi, então me movo um pixel por vez
-		y += _velv;
+		if (!global.hitstop) y += _velv;
 	}
 }
 

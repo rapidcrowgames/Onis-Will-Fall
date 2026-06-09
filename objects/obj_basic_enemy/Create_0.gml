@@ -561,14 +561,12 @@ state_hurt = function() // SOFRE O DANO
     debug_enemy_state = "hurt";
     
     //Cria a particula SE ainda não foi criada
-    if (!part_exists)
-    {
-        particula = part_system_create(ps_blood);
-        part_system_position(particula, x - 30 * dir, y - sprite_height);
-        
-        //Foi criada a particula
-        part_exists = true;
-    }
+    particula = part_system_create(ps_blood);
+    part_system_position(particula, x - 30 * dir, y - sprite_height);
+    
+    //Foi criada a particula
+    part_exists = true;
+    
     
     //Joga o inimigo para trás
     if (!global.hitstop)

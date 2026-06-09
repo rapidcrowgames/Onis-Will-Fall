@@ -500,20 +500,24 @@ state_hurt = function() //Estado MACHUCADO / HURT
             hurt = false;
             return;
         }
+        else {
+            
+            //treme a tela
+            tremor(15);
+            
+            //Perde vida SE não estão em parry duplo
+            life--;
+            
+            //Joga o player para trás
+            if (dir == -1)  velh += 25; //Joga ele para direita
+            if (dir ==  1)  velh -= 25; //Joga ele para esquerda
+            
+            //Fica invencivel e opaco
+            hurt_invencible = true;
+            image_alpha = 0.5;
+        }
         
-        //treme a tela
-        tremor(4);
         
-        //Perde vida SE não estão em parry duplo
-        life--;
-        
-        //Joga o player para trás
-        if (dir == -1)  velh += 65; //Joga ele para direita
-        if (dir ==  1)  velh -= 65; //Joga ele para esquerda
-        
-        //Fica invencivel e opaco
-        hurt_invencible = true;
-        image_alpha = 0.5;
     }
     
     //Se a vida chegar a 0 vai para o estado de DEATH
@@ -548,7 +552,7 @@ state_parry = function() //Estado DEFESA / PARRY
     var _frame = floor(image_ind);
     
     //A partir do frame 2 que abre a janela de parry
-    if (_frame >= 3 && !parry)
+    if (_frame >= 6 && !parry)
     {
         parry = true;
     }
@@ -564,7 +568,7 @@ state_parry = function() //Estado DEFESA / PARRY
         {
             
             //Cria a particula
-            if (parry) particula = part_system_create(ps_parry);
+            particula = part_system_create(ps_parry);
             part_system_position(particula, x + 20 * dir, y - sprite_height);
             
             //Foi criada a particula
@@ -582,6 +586,7 @@ state_parry = function() //Estado DEFESA / PARRY
             parry = false;
             parry_timer = 0.5;
         }
+
     }
     
     //SE o tempo esgotar sem parry, fecha a janela
