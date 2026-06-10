@@ -648,17 +648,61 @@ state_death = function() //Estado MORTE / DIE
     //Debuga o estado
     state_debug = "Death";
     
-    //Alterar para animação de morte apenas uma vez
+    //Muda para a sprite de morte
     change_sprites_once(9);
     
-    //Define a velocidade da sprite
-    image_spd = image_speed / 5;
+    //Define a velocidade da animação
+    image_spd = image_speed / 12;
     
-    //Avisa que o player está morto
-    player_dead = true;
+    // Só chama uma vez ao entrar no estado de morte
+    if (!player_dead)
+    {
+        player_dead = true;
+        room_goto(rm_death);
+        
+        //Atualizo minha posição
+        x = 256;
+        y = 180;
+        
+        //Desliga a gravidade
+        grav_atual = 0;
+        
+        //Atualizo a posição da minha câmera
+        if (instance_exists(obj_camera))
+        {
+            obj_camera.x = x;
+            obj_camera.y = y;
+        }
+    }
     
-    //Leva para a room de morte
-    room_goto(rm_death);
+    //Aplica zoom suave todo frame (precisa rodar fora do if para funcionar)
+    if (instance_exists(obj_camera))
+    {
+        var _cam = view_camera[0];
+        
+        //Tamanho alvo do zoom (menor = mais próximo)
+        var _target_w = 180;
+        var _target_h = 100;
+        
+        //Pega o tamanho atual da câmera
+        var _current_w = camera_get_view_width(_cam);
+        var _current_h = camera_get_view_height(_cam);
+        
+        //Lerp suaviza o zoom gradualmente
+        var _new_w = lerp(_current_w, _target_w, 0.05);
+        var _new_h = lerp(_current_h, _target_h, 0.05);
+        
+        //Aplica o novo tamanho da câmera
+        camera_set_view_size(_cam, _new_w, _new_h);
+        
+        //Centraliza a câmera no player suavemente
+        //Diminui o offset_y para subir a câmera, aumenta para descer
+        var _offset_y = 130; // <- ajusta esse valor até centralizar bem
+        
+        var _cam_x = lerp(camera_get_view_x(_cam), x - _new_w / 2, 0.1);
+        var _cam_y = lerp(camera_get_view_y(_cam), (y - _offset_y) - _new_h / 2, 0.1);
+        camera_set_view_pos(_cam, _cam_x, _cam_y);
+    }
 }
 
 state_cutscene = function() //Estado CENA / CUTSCENE

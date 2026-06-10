@@ -158,7 +158,7 @@ player_zone_vission = function()
     colission = collision_circle(x, y - sprite_height, radius, obj_player, false, true)
     
     //SE eu colidir, ele entra no estado de perseguir o player
-    if (colission)
+    if (colission && !obj_player.player_dead)
     {
         //Eu passo a perseguir o player SE já não estiver seguindo
         if (!in_chase) state_enemy = enemy_state.CHASE;
@@ -376,7 +376,7 @@ state_load_attack = function() // PRÉ ATAQUE
     if (timer_load_attack > 0) timer_load_attack -= delta_time / 1000000;
         
     //SE o timer chegar a 0, ele ataca na última posição que o player estava
-    if (timer_load_attack <= 0)
+    if (timer_load_attack <= 0 && !obj_player.player_dead)
     {
         //Faz ele ficar virado para o player
         dir = sign(target.x - x);
