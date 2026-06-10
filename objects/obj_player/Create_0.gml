@@ -40,9 +40,12 @@ attacker             = noone; //Variável que salva quem foi que me atacou
 //Variável do estado de CUTSCENE
 cutscene_action      = noone; //Define qual ação do SWITCH da cutscene
 
-//Variáveis do estado de parry
+//Variáveis do estado de PARRY
 parry_timer          = 0.5;
 parry                = false;
+
+//Variáveis do estado DEATH
+player_dead = false;
 
 //Variáveis de particulas
 particula            = noone; //Variável que cuida da criação especifica de uma particula
@@ -115,7 +118,8 @@ animations =
     
     //Novas animações [Pulo, queda, ataque 1 e 2, Parede]
     [spr_player_jump], //Animação de pulo (subida) - 7
-    [spr_player_fall] //Animação de pulo (queda) - 8
+    [spr_player_fall], //Animação de pulo (queda) - 8
+    [spr_player_death] //Animação de morte - 9
 ]
 
 #endregion
@@ -645,16 +649,16 @@ state_death = function() //Estado MORTE / DIE
     state_debug = "Death";
     
     //Alterar para animação de morte apenas uma vez
-    //Colocar aqui quando tiver
+    change_sprites_once(9);
     
     //Define a velocidade da sprite
     image_spd = image_speed / 5;
     
-    //Reseta o jogo
-    game_restart();
+    //Avisa que o player está morto
+    player_dead = true;
     
-    //Mas aqui fazer diferente a tela de morte, levando a uma room só para isso
-    //com uma animação especifica
+    //Leva para a room de morte
+    room_goto(rm_death);
 }
 
 state_cutscene = function() //Estado CENA / CUTSCENE

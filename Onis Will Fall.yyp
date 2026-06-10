@@ -62,6 +62,7 @@
     {"id":{"name":"ps_blood","path":"particles/ps_blood/ps_blood.yy",},},
     {"id":{"name":"ps_double_parry","path":"particles/ps_double_parry/ps_double_parry.yy",},},
     {"id":{"name":"ps_parry","path":"particles/ps_parry/ps_parry.yy",},},
+    {"id":{"name":"rm_death","path":"rooms/rm_death/rm_death.yy",},},
     {"id":{"name":"Room_testes","path":"rooms/Room_testes/Room_testes.yy",},},
     {"id":{"name":"scr_functions","path":"scripts/scr_functions/scr_functions.yy",},},
     {"id":{"name":"scr_globais","path":"scripts/scr_globais/scr_globais.yy",},},
@@ -82,6 +83,7 @@
     {"id":{"name":"spr_player_hitbox","path":"sprites/spr_player_hitbox/spr_player_hitbox.yy",},},
     {"id":{"name":"spr_player_hurt","path":"sprites/spr_player_hurt/spr_player_hurt.yy",},},
     {"id":{"name":"spr_player_idle","path":"sprites/spr_player_idle/spr_player_idle.yy",},},
+    {"id":{"name":"spr_player_jump_wall","path":"sprites/spr_player_jump_wall/spr_player_jump_wall.yy",},},
     {"id":{"name":"spr_player_jump","path":"sprites/spr_player_jump/spr_player_jump.yy",},},
     {"id":{"name":"spr_player_parry","path":"sprites/spr_player_parry/spr_player_parry.yy",},},
     {"id":{"name":"spr_player_run","path":"sprites/spr_player_run/spr_player_run.yy",},},
@@ -91,6 +93,7 @@
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
     {"roomId":{"name":"Room_testes","path":"rooms/Room_testes/Room_testes.yy",},},
+    {"roomId":{"name":"rm_death","path":"rooms/rm_death/rm_death.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[
