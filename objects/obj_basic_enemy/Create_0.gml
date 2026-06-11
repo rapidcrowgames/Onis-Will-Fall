@@ -372,6 +372,12 @@ state_load_attack = function() // PRÉ ATAQUE
     //Primeiro eu fico parado
     velh = 0;
     
+    if (!instance_exists(target))
+    {
+        state_enemy = enemy_state.IDLE;
+        return;
+    }
+        
     //Diminui o timer
     if (timer_load_attack > 0) timer_load_attack -= delta_time / 1000000;
         
@@ -571,8 +577,8 @@ state_hurt = function() // SOFRE O DANO
     //Joga o inimigo para trás
     if (!global.hitstop)
     {
-        if (dir ==  1) velh -= 40; velv -= 2;
-        if (dir == -1) velh += 40; velv += 2;
+        if (dir ==  1) { velh -= 40; velv -= 2; }
+        if (dir == -1) { velh += 40; velv += 2; }
             
         //Aplica o dano que o inimigo causa apenas 1 vez
         if (!damage_done)
@@ -591,14 +597,22 @@ state_hurt = function() // SOFRE O DANO
     if (damage_done)
     {
         damage_done = false;
-        state_enemy = enemy_state.CHASE;
-    }
-    
-    //SE a vida acabou, então ele vai para o estado de DIE / MORTE
-    if (life <= 0)
-    {
-        damage_done = false;
-        state_enemy = enemy_state.DIE;
+        
+        //SE a vida acabou, então ele vai para o estado de DIE / MORTE
+        if (life <= 0)
+        {
+            state_enemy = enemy_state.DIE;
+        }
+        
+        else if (instance_exists(obj_player) && !obj_player.player_dead)
+        {
+            state_enemy = enemy_state.CHASE; 
+        }
+        else
+        {
+            state_enemy = enemy_state.IDLE;
+        }
+           
     }
 }
 
@@ -609,7 +623,7 @@ state_die = function() // MORRE
     
     //Exibe uma vez a animação de morte
     change_sprites_once(4);
-    
+        
     //Faz ele ficar virado para o player
     dir = sign(target.x - x);
     
@@ -620,7 +634,7 @@ state_die = function() // MORRE
     velh = 0;
     
     //Deleta o inimigo após o fim da animação
-    if (image_ind > sprite_get_number(sprite) - 1)
+    if (image_ind >= sprite_get_number(sprite) - 1)
     {
         instance_destroy(id);
     }

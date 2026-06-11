@@ -25,7 +25,6 @@ dir			         = 1 // 1 - Direita / -1 Esquerda
 //Variáveis de estados
 hurt                 = false; //Identifica se sofreu dano ou não
 esquive_force        = 20; //Força da esquiva
-wall_jump_force      = 10; //Força do pulo da parede
 
 //Variáveis do estado de ATTACK
 create_hitbox	     = false; //Cria a hitbox
@@ -324,7 +323,6 @@ enum player_state
     PARRY, //Estado de parry / defesa
 	DEATH, //Esta de morte
 	ESQUIVE, //Esta de esquiva
-    WALL_JUMP, //Estado de pulo na parede
 	CUTSCENE //Estado de cena / cutscene
 }
 
@@ -460,8 +458,23 @@ state_attack = function() //Estado ATAQUE / ATTACK
     //Velocidade da animação
     image_spd = image_speed / 3.5;
     
+    //SE for atacado durante o meu ataque, ele garante que vai destruir a hitbox
+    if (hurt)
+    {
+        //Destrói a hitbox se ainda existir
+        if (create_hitbox)
+        {
+            instance_destroy(obj_player_hitbox);
+            create_hitbox = false;
+        }
+        
+        global.hitstop = true;
+        state = player_state.HURT;
+        return;
+    }
+    
     //SE apertar o botão do parry, ele vai para PARRY
-    if (input_parry && !hurt) state = player_state.PARRY;
+    if (input_parry) state = player_state.PARRY;
     
     //Roda a animação do golpe atual apenas uma vez
     change_sprites_once(2 + combo_count); // 2 = primeiro ataque no array
