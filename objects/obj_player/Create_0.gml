@@ -23,7 +23,9 @@ is_jumping           = false; //Verifica se estou pulando
 dir			         = 1 // 1 - Direita / -1 Esquerda
 
 //Variáveis de estados
-hurt = false; //Identifica se sofreu dano ou não
+hurt                 = false; //Identifica se sofreu dano ou não
+esquive_force        = 20; //Força da esquiva
+wall_jump_force      = 10; //Força do pulo da parede
 
 //Variáveis do estado de ATTACK
 create_hitbox	     = false; //Cria a hitbox
@@ -47,6 +49,10 @@ parry                = false;
 //Variáveis do estado DEATH
 player_dead          = false;
 restart_death        = false; //Variável que cuida do texto para dar restart game
+
+//Variáveis do estado de WALL / Wall jump
+wall_right           = false;
+wall_left            = false;
 
 //Variáveis de particulas
 particula            = noone; //Variável que cuida da criação especifica de uma particula
@@ -77,6 +83,7 @@ get_inputs = function()
 	input_jump			= keyboard_check(ord("W")) or keyboard_check(vk_space);
 	input_attack		= keyboard_check_pressed(ord("J")) or keyboard_check_pressed(ord("Z"));
     input_parry         = keyboard_check_pressed(ord("K")) or keyboard_check_pressed(ord("X"));
+    input_esquive       = keyboard_check_pressed(vk_shift);
 }
 
 #endregion
@@ -120,7 +127,9 @@ animations =
     //Novas animações [Pulo, queda, ataque 1 e 2, Parede]
     [spr_player_jump], //Animação de pulo (subida) - 7
     [spr_player_fall], //Animação de pulo (queda) - 8
-    [spr_player_death] //Animação de morte - 9
+    [spr_player_death], //Animação de morte - 9
+    [spr_player_esquive], //Animação de esquiva (para trás) - 10
+    [spr_player_jump_wall], //Animação de esquiva (para trás) - 11
 ]
 
 #endregion
@@ -190,6 +199,9 @@ change_sprites_once = function(_sprites_index = 0)
 move_player = function()
 {
     if (global.hitstop) return;
+    if (state == player_state.ESQUIVE) return;
+    if (state == player_state.HURT) return;
+    if (state == player_state.DEATH) return;
         
 	//Pega os inputs SE não estiver no hitstop
 	get_inputs();
@@ -204,14 +216,15 @@ move_player = function()
 	if (velh > 0) dir =  1;
 	if (velh < 0) dir = -1;
 	
-	//Aplica a direção
-	image_xscale = dir;
-	
 	//Identifica se está ou não no chão		   //Está no chão	 //Não está no chão
 	if (place_meeting(x, y + 1, obj_colisao))  {chao = true;} else {chao = false;}
 	
-    //Identifica se está ou não na parede            //Está na parede      //Não está na parede
+    //Identifica se está ou não na parede             //Está na parede      //Não está na parede
     if (place_meeting(x + sign(dir), y, obj_colisao))  {parede = true;} else {parede = false;}
+    
+    //Pega os lados da parede         //Está na direita ou Esquerda   //Não está na direita ou esquerda
+    if (place_meeting(x + 1, y, obj_colisao)) {wall_right = true} else {wall_right = false;}
+    if (place_meeting(x - 1, y, obj_colisao)) {wall_left = true} else {wall_left = false;}
 	
 	
 	/////////////////////////
@@ -270,11 +283,32 @@ move_player = function()
     if (parede && !chao)
     {
         is_jumping = false;
+        
+        //Vai para o estado wall jump
+        state = player_state.WALL_JUMP;
     }
     
     #endregion
-	
+    
+    
+    ////////////////////////////
+    //// LÓGICA DA ESQUIVA ////
+    //////////////////////////
+    #region Lógica da esquiva
+
+    if (chao && input_esquive)
+    {
+        velh = dir * esquive_force;
+        hurt_invencible = true;
+        state = player_state.ESQUIVE;
+    }
+    
+    #endregion
+    
+    //Aplica a direção
+	image_xscale = dir;
 }
+
 
 #endregion
 
@@ -293,6 +327,8 @@ enum player_state
 	ATTACK, //Estado de ataque
     PARRY, //Estado de parry / defesa
 	DEATH, //Esta de morte
+	ESQUIVE, //Esta de esquiva
+    WALL_JUMP, //Estado de pulo na parede
 	CUTSCENE //Estado de cena / cutscene
 }
 
@@ -305,14 +341,16 @@ update_state = function()
 {
 	switch(state) //Máquina de estados
 	{
-		case player_state.IDLE:       state_idle();       break; //estado parado	
-		case player_state.RUN:        state_run();        break; //estado correndo / se movendo
-		case player_state.JUMP:       state_jump();       break; //estado de pulo
-		case player_state.HURT:       state_hurt();       break; //estado sofrendo dano	
-		case player_state.ATTACK:     state_attack();     break; //estado atacando	
-		case player_state.PARRY:      state_parry();      break; //estado atacando	
-		case player_state.DEATH:      state_death();      break; //estado de morte
-		case player_state.CUTSCENE:   state_cutscene();   break; //estado de cutscene
+		case player_state.IDLE:                state_idle();        break; //estado parado	
+		case player_state.RUN:                 state_run();         break; //estado correndo / se movendo
+		case player_state.JUMP:                state_jump();        break; //estado de pulo
+		case player_state.HURT:                state_hurt();        break; //estado sofrendo dano	
+		case player_state.ATTACK:              state_attack();      break; //estado atacando	
+		case player_state.ESQUIVE:             state_esquive();     break; //estado esquiva
+		case player_state.PARRY:               state_parry();       break; //estado parry defesa	
+		case player_state.DEATH:               state_death();       break; //estado de morte
+		case player_state.WALL_JUMP:           state_wall();        break; //estado de pulo na parede
+		case player_state.CUTSCENE:            state_cutscene();    break; //estado de cutscene
 	}
 }
 
@@ -514,8 +552,8 @@ state_hurt = function() //Estado MACHUCADO / HURT
             life--;
             
             //Joga o player para trás
-            if (dir == -1)  velh += 25; //Joga ele para direita
-            if (dir ==  1)  velh -= 25; //Joga ele para esquerda
+            if (dir == -1)  velh += 5; //Joga ele para direita
+            if (dir ==  1)  velh -= 5; //Joga ele para esquerda
             
             //Fica invencivel e opaco
             hurt_invencible = true;
@@ -608,6 +646,66 @@ state_parry = function() //Estado DEFESA / PARRY
         parry_timer = 0.5;    // garante reset
         state = player_state.IDLE;
     }
+}
+
+state_esquive = function() //Estado ESQUIVA // ESQUIVE
+{
+    //Debuga o estado
+    state_debug = "Esquive front";
+    
+    //Muda para animação da esquiva de costas
+    change_sprites_once(10);
+    
+    //Define a velocidade da animação
+    image_spd = image_speed / 3;
+    
+    //Diminui a velocidade do player
+    velh = lerp(velh, 0, 0.1);
+    
+    //Fica invencivel
+    hurt_invencible = true;
+    
+    //No fim da animação ele sai do estado
+    if (image_ind >= sprite_get_number(sprite) - 1)
+    {
+        state = player_state.IDLE;
+    }
+}
+
+state_wall = function() //Estado de PULO NA PAREDE // WALL JUMP
+{
+    //Debuga o estado
+    state_debug = "Wall";
+    
+    // Animação de estar na parede
+    change_sprites(11);
+    
+    //Define a velocidade da animação
+    image_spd = image_speed / 4;
+    
+    //SE estiver na parede da direita
+    if (!chao && parede && wall_right)
+    {
+        //Ele fica virado para esquerda
+        dir = -1;
+        image_xscale = dir; // Aplica depois de corrigir
+    }
+    
+    //SE estiver na parede da esquerda
+    if (!chao && parede && wall_left)
+    {
+        //Ele fica virado para direita
+        dir = 1;
+        image_xscale = dir; // Aplica depois de corrigir
+    }
+    
+    
+    //SE cair no chão e não estiver na parede, ele volta para o estado IDLE
+    if (chao && !parede && !wall_right && !wall_left)
+    {
+        state = player_state.IDLE;
+    }
+ 
 }
 
 /////////// EXTRA - DESTRUIR PARTÍCULAS /////////
