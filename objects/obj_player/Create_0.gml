@@ -17,8 +17,8 @@ max_velh	         = 4;
 max_velv	         = 8;
 grav		         = 0.3;
 grav_atual	         = grav;
-chao		         = noone;
-parede               = noone;
+chao		         = false;
+parede               = false;
 is_jumping           = false; //Verifica se estou pulando
 dir			         = 1 // 1 - Direita / -1 Esquerda
 
@@ -128,8 +128,7 @@ animations =
     [spr_player_jump], //Animação de pulo (subida) - 7
     [spr_player_fall], //Animação de pulo (queda) - 8
     [spr_player_death], //Animação de morte - 9
-    [spr_player_esquive], //Animação de esquiva (para trás) - 10
-    [spr_player_jump_wall], //Animação de esquiva (para trás) - 11
+    [spr_player_esquive], //Animação de esquiva - 10
 ]
 
 #endregion
@@ -283,9 +282,6 @@ move_player = function()
     if (parede && !chao)
     {
         is_jumping = false;
-        
-        //Vai para o estado wall jump
-        state = player_state.WALL_JUMP;
     }
     
     #endregion
@@ -349,7 +345,6 @@ update_state = function()
 		case player_state.ESQUIVE:             state_esquive();     break; //estado esquiva
 		case player_state.PARRY:               state_parry();       break; //estado parry defesa	
 		case player_state.DEATH:               state_death();       break; //estado de morte
-		case player_state.WALL_JUMP:           state_wall();        break; //estado de pulo na parede
 		case player_state.CUTSCENE:            state_cutscene();    break; //estado de cutscene
 	}
 }
@@ -404,6 +399,9 @@ state_run = function() //Estado MOVIMENTO / RUN
 	//Se soltar as teclas ou analógico de movimento, volta
 	//para o estado parado
 	if (!input_right && !input_left) state = player_state.IDLE;
+    
+    //SE cair de uma plataforma enquanto corre, vai para o estado de jump (caindo)
+    if (!chao && !is_jumping) state = player_state.JUMP;
 	
 	//Se apertar a tecla / botão de ataque vai para estado de ATTACK
 	if (input_attack) state = player_state.ATTACK;
@@ -527,7 +525,7 @@ state_attack = function() //Estado ATAQUE / ATTACK
 state_hurt = function() //Estado MACHUCADO / HURT
 {
     //Debug do estado
-    debug_state = "Hurt";
+    state_debug = "Hurt";
     
     //Velocidade da animação
     image_spd = image_speed / 3;
@@ -668,44 +666,9 @@ state_esquive = function() //Estado ESQUIVA // ESQUIVE
     //No fim da animação ele sai do estado
     if (image_ind >= sprite_get_number(sprite) - 1)
     {
-        state = player_state.IDLE;
+        hurt_timer = 1; //Reseta o timer de dano
+        state = player_state.IDLE; //Volta para o estado parado
     }
-}
-
-state_wall = function() //Estado de PULO NA PAREDE // WALL JUMP
-{
-    //Debuga o estado
-    state_debug = "Wall";
-    
-    // Animação de estar na parede
-    change_sprites(11);
-    
-    //Define a velocidade da animação
-    image_spd = image_speed / 4;
-    
-    //SE estiver na parede da direita
-    if (!chao && parede && wall_right)
-    {
-        //Ele fica virado para esquerda
-        dir = -1;
-        image_xscale = dir; // Aplica depois de corrigir
-    }
-    
-    //SE estiver na parede da esquerda
-    if (!chao && parede && wall_left)
-    {
-        //Ele fica virado para direita
-        dir = 1;
-        image_xscale = dir; // Aplica depois de corrigir
-    }
-    
-    
-    //SE cair no chão e não estiver na parede, ele volta para o estado IDLE
-    if (chao && !parede && !wall_right && !wall_left)
-    {
-        state = player_state.IDLE;
-    }
- 
 }
 
 /////////// EXTRA - DESTRUIR PARTÍCULAS /////////
@@ -813,7 +776,7 @@ state_death = function() //Estado MORTE / DIE
 state_cutscene = function() //Estado CENA / CUTSCENE
 {
 	//Debug de estado
-	debug_state = "cutscene";
+	state_debug = "cutscene";
 	
 	//Velocidade da animação
 	image_spd = image_speed / 6;

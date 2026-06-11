@@ -571,8 +571,8 @@ state_hurt = function() // SOFRE O DANO
     //Joga o inimigo para trás
     if (!global.hitstop)
     {
-        if (dir ==  1) velh -= 40;
-        if (dir == -1) velh += 40;
+        if (dir ==  1) velh -= 40; velv -= 2;
+        if (dir == -1) velh += 40; velv += 2;
             
         //Aplica o dano que o inimigo causa apenas 1 vez
         if (!damage_done)
