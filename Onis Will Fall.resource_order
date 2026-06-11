@@ -50,6 +50,7 @@
     {"name":"spr_player_attack_2","order":7,"path":"sprites/spr_player_attack_2/spr_player_attack_2.yy",},
     {"name":"spr_player_attack_3","order":8,"path":"sprites/spr_player_attack_3/spr_player_attack_3.yy",},
     {"name":"spr_player_death","order":9,"path":"sprites/spr_player_death/spr_player_death.yy",},
+    {"name":"spr_player_esquive_back","order":11,"path":"sprites/spr_player_esquive_back/spr_player_esquive_back.yy",},
     {"name":"spr_player_fall","order":6,"path":"sprites/spr_player_fall/spr_player_fall.yy",},
     {"name":"spr_player_hurt","order":2,"path":"sprites/spr_player_hurt/spr_player_hurt.yy",},
     {"name":"spr_player_jump_wall","order":10,"path":"sprites/spr_player_jump_wall/spr_player_jump_wall.yy",},

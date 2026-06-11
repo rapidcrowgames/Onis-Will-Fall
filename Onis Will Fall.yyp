@@ -81,6 +81,7 @@
     {"id":{"name":"spr_player_attack_2","path":"sprites/spr_player_attack_2/spr_player_attack_2.yy",},},
     {"id":{"name":"spr_player_attack_3","path":"sprites/spr_player_attack_3/spr_player_attack_3.yy",},},
     {"id":{"name":"spr_player_death","path":"sprites/spr_player_death/spr_player_death.yy",},},
+    {"id":{"name":"spr_player_esquive_back","path":"sprites/spr_player_esquive_back/spr_player_esquive_back.yy",},},
     {"id":{"name":"spr_player_fall","path":"sprites/spr_player_fall/spr_player_fall.yy",},},
     {"id":{"name":"spr_player_hitbox","path":"sprites/spr_player_hitbox/spr_player_hitbox.yy",},},
     {"id":{"name":"spr_player_hurt","path":"sprites/spr_player_hurt/spr_player_hurt.yy",},},
