@@ -62,4 +62,24 @@ screenshake = function()
      
 }
 
+restart_death = function()
+{
+    //SE o player morreu e exibiu o texto, então
+    //posso apertar ENTER para dar restart
+    
+    //Verifica se o player existe
+    if (instance_exists(obj_player))
+    {
+        var _player = obj_player;
+        
+        if (_player.player_dead && _player.restart_death)
+        {
+            if (keyboard_check_pressed(vk_enter))
+            {
+                game_restart();
+            }
+        }
+    }
+}
+
 #endregion

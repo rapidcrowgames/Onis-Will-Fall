@@ -45,7 +45,8 @@ parry_timer          = 0.5;
 parry                = false;
 
 //Variáveis do estado DEATH
-player_dead = false;
+player_dead          = false;
+restart_death        = false; //Variável que cuida do texto para dar restart game
 
 //Variáveis de particulas
 particula            = noone; //Variável que cuida da criação especifica de uma particula
@@ -702,6 +703,12 @@ state_death = function() //Estado MORTE / DIE
         var _cam_x = lerp(camera_get_view_x(_cam), x - _new_w / 2, 0.1);
         var _cam_y = lerp(camera_get_view_y(_cam), (y - _offset_y) - _new_h / 2, 0.1);
         camera_set_view_pos(_cam, _cam_x, _cam_y);
+    }
+    
+    //Se chegar no fim da animação então ele exibe o texto de restart game
+    if (image_ind >= sprite_get_number(sprite) - 1)
+    {
+        restart_death = true;
     }
 }
 
