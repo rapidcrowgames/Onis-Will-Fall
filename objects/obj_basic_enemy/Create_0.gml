@@ -385,7 +385,7 @@ state_load_attack = function() // PRÉ ATAQUE
     if (timer_load_attack > 0) timer_load_attack -= delta_time / 1000000;
         
     //Quando chegar no 2 frame do inimigo ele mostra o brilho
-    if (timer_load_attack <= 0.30 && !outline_active)
+    if (timer_load_attack <= 0.60 && !outline_active)
     {
         start_outline([1, 0.9, 0.3], 0.9, 0.08); //amarelo suave
     }

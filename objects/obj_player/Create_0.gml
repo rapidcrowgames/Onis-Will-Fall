@@ -42,7 +42,7 @@ attacker             = noone; //Variável que salva quem foi que me atacou
 cutscene_action      = noone; //Define qual ação do SWITCH da cutscene
 
 //Variáveis do estado de PARRY
-parry_timer          = 2;
+parry_timer          = 0.6;
 p_timer              = parry_timer
 parry                = false;
 
@@ -606,22 +606,25 @@ state_parry = function() //Estado DEFESA / PARRY
     //Pega os frames da imagem
     var _frame = floor(image_ind);
     
-    //A partir do frame 2 que abre a janela de parry
+    //A partir do frame 6 que abre a janela de parry
     if (_frame >= 6 && !parry)
     {
         parry = true;
     }
     
-    //SE estou na janela de parry
+    //SE estou na janela de parry, conta o tempo dela
     if (parry)
     {
         if (p_timer > 0) p_timer -= delta_time / 1000000;
-            
-        //SE eu sofrer dano dentro deste tempo jogo quem me atacou para longe
-        var _hitbox = instance_place(x, y, obj_hitbox_enemy);
-        if (_hitbox != noone)
+    }
+    
+    //Checa SEMPRE (dentro ou fora da janela) se fui atingido pela hitbox do inimigo
+    var _hitbox = instance_place(x, y, obj_hitbox_enemy);
+    if (_hitbox != noone)
+    {
+        //SE estou dentro da janela de parry E ainda há tempo, é um PARRY VÁLIDO
+        if (parry && p_timer > 0)
         {
-            
             //Cria a particula
             particula = part_system_create(ps_parry);
             part_system_position(particula, x + 20 * dir, y - sprite_height);
@@ -641,7 +644,14 @@ state_parry = function() //Estado DEFESA / PARRY
             parry = false;
             p_timer = parry_timer;
         }
-
+        else
+        {
+            //ERREI O TIMING (ou janela já fechada) - corta a animação e vai para o dano IMEDIATAMENTE
+            parry = false;        // garante reset
+            p_timer = parry_timer;    // garante reset
+            state = player_state.HURT;
+            return; //sai do estado agora, não processa o resto do parry neste frame
+        }
     }
     
     //SE o tempo esgotar sem parry, fecha a janela
@@ -659,7 +669,6 @@ state_parry = function() //Estado DEFESA / PARRY
         state = player_state.IDLE;
     }
 }
-
 state_esquive = function() //Estado ESQUIVA // ESQUIVE
 {
     //Debuga o estado
