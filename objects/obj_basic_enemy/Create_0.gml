@@ -393,9 +393,12 @@ state_load_attack = function() // PRÉ ATAQUE
     //SE o timer chegar a 0, ele ataca na última posição que o player estava
     if (timer_load_attack <= 0 && !obj_player.player_dead)
     {
-        //Faz ele ficar virado para o player
-        dir = sign(target.x - x);
+         //Garante que tem o player como alvo
+        if (instance_exists(obj_player)) target = obj_player;
         
+        //Faz ele ficar virado para a direção do player
+        if (instance_exists(target)) dir = sign(target.x - x);
+            
         //Aumento um pouco a velocidade
         velh = (max_velh * 3 * sign(player_last_position - x));
         
@@ -432,8 +435,11 @@ state_attack = function() // ATACANDO
     //Fica parado
     velh = 0;
     
-    //Faz ele ficar virado para o player
-    dir = sign(target.x - x);
+     //Garante que tem o player como alvo
+    if (instance_exists(obj_player)) target = obj_player;
+    
+    //Faz ele ficar virado para a direção do player
+    if (instance_exists(target)) dir = sign(target.x - x);
     
     //Pega os frames da sprite e guarda em uma variável
     var _frame = floor(image_ind);
@@ -552,8 +558,11 @@ state_load_hurt = function() // SOFRE O ATAQUE DO INIMIGO
     //Fica parado
     velh = 0;
     
-    //Faz ele ficar virado para o player
-    dir = sign(target.x - x);
+    //Garante que tem o player como alvo
+    if (instance_exists(obj_player)) target = obj_player;
+    
+    //Faz ele ficar virado para a direção do player
+    if (instance_exists(target)) dir = sign(target.x - x);
     
     //Define a velocidade da animação
     image_spd = image_speed / 3;
@@ -589,7 +598,6 @@ state_hurt = function() // SOFRE O DANO
     
     //Foi criada a particula
     part_exists = true;
-    
     
     //Joga o inimigo para trás
     if (!global.hitstop)
@@ -641,8 +649,11 @@ state_die = function() // MORRE
     //Exibe uma vez a animação de morte
     change_sprites_once(4);
         
-    //Faz ele ficar virado para o player
-    dir = sign(target.x - x);
+     //Garante que tem o player como alvo
+    if (instance_exists(obj_player)) target = obj_player;
+    
+    //Faz ele ficar virado para a direção do player
+    if (instance_exists(target)) dir = sign(target.x - x);
     
     //Define a velocidade de animação
     image_spd = image_speed / 5
