@@ -42,7 +42,8 @@ attacker             = noone; //Variável que salva quem foi que me atacou
 cutscene_action      = noone; //Define qual ação do SWITCH da cutscene
 
 //Variáveis do estado de PARRY
-parry_timer          = 0.5;
+parry_timer          = 3.5;
+p_timer              = parry_timer
 parry                = false;
 
 //Variáveis do estado DEATH
@@ -638,7 +639,7 @@ state_parry = function() //Estado DEFESA / PARRY
             //Reseta o parry após executar
             hurt = false;
             parry = false;
-            parry_timer = 0.5;
+            parry_timer = p_timer;
         }
 
     }
@@ -646,7 +647,7 @@ state_parry = function() //Estado DEFESA / PARRY
     //SE o tempo esgotar sem parry, fecha a janela
     if (parry_timer <= 0)
     {
-        parry_timer = 0.5;
+        parry_timer = p_timer;
         parry = false;
     }
     
@@ -654,7 +655,7 @@ state_parry = function() //Estado DEFESA / PARRY
     if (image_ind >= sprite_get_number(sprite) - 1)
     {
         parry = false;        // garante reset
-        parry_timer = 0.5;    // garante reset
+        parry_timer = p_timer;    // garante reset
         state = player_state.IDLE;
     }
 }

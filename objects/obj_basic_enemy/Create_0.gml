@@ -34,6 +34,7 @@ destiny_x            = noone;
 attack_done          = false;
 create_hitbox        = false;
 double_parry         = false;
+atk_cooldown         = 0.5; //Já começa podendo atacar e só depois define o cooldown
 
 //Variáveis da detecção do player com a zona de colisão do
 //Inimigo
@@ -46,6 +47,7 @@ player_last_position = noone; //Pega a última posição do player
 
 //Variáveis do estado LOAD_ATTACK
 timer_load_attack    = 0.3; //0.3 segundos
+parry_window         = false;
 
 //Variáveis do estado HURT
 damage_done          = false; //Garante que sofreu o dano apenas uma vez
@@ -378,11 +380,18 @@ state_load_attack = function() // PRÉ ATAQUE
         return;
     }
         
-    //Diminui o timer
+    //Diminui o timer do load attack e do cooldown para o próximo ataque
     if (timer_load_attack > 0) timer_load_attack -= delta_time / 1000000;
+    if (atk_cooldown > 0) atk_cooldown -= delta_time / 1000000;
+        
+    //Quando chegar no 2 frame do inimigo ele mostra o brilho
+    if (atk_cooldown <= 0.30)
+    {
+        parry_window = true;
+    }
         
     //SE o timer chegar a 0, ele ataca na última posição que o player estava
-    if (timer_load_attack <= 0 && !obj_player.player_dead)
+    if (timer_load_attack <= 0 && !obj_player.player_dead && atk_cooldown <= 0)
     {
         //Faz ele ficar virado para o player
         dir = sign(target.x - x);
@@ -392,6 +401,10 @@ state_load_attack = function() // PRÉ ATAQUE
         
         //Reseto o timer
         timer_load_attack = 0.3;
+        atk_cooldown = 1;
+        
+        //Sai da janela de parry e tira o sublinhado do inimigo
+        parry_window = false;
         
         //Vou para estado do ataque
         state_enemy = enemy_state.ATTACK;
@@ -400,7 +413,7 @@ state_load_attack = function() // PRÉ ATAQUE
     //SE entrar em contato com a hitbox do player, entra no estado de dano
     if (place_meeting(x, y, obj_player_hitbox))
     {
-       state_enemy = enemy_state.LOAD_HURT;
+       state_enemy = enemy_state.LOAD_HURT; 
     }
 }
 
@@ -531,6 +544,9 @@ state_load_hurt = function() // SOFRE O ATAQUE DO INIMIGO
     
     //Muda a sprite para dano
     change_sprites_once(3); 
+    
+    //Tira o outline
+    parry_window = false;
     
     //Fica parado
     velh = 0;
