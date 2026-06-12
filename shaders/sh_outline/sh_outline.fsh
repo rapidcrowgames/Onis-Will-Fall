@@ -1,28 +1,34 @@
-//fragment shader
 varying vec2 v_vTexcoord;
-varying vec4 v_vColour;
 
-uniform vec2 texel_size;
-uniform vec4 outline_color;
-uniform float outline_width;
+uniform vec2 u_texel;      // 1/largura, 1/altura da textura
+uniform vec4 u_color;      // cor do outline (rgb)
+uniform float u_alpha;     // intensidade do outline (0 a 1)
 
-void main() {
+void main()
+{
     vec4 base = texture2D(gm_BaseTexture, v_vTexcoord);
     
-    float glow = 0.0;
-    float samples = 0.0;
-    
-    for (float r = 1.0; r <= 3.0; r += 1.0) {
-        for (float angle = 0.0; angle < 6.28318; angle += 0.39269) {
-            vec2 offset = vec2(cos(angle), sin(angle)) * texel_size * outline_width * r;
-            glow += texture2D(gm_BaseTexture, v_vTexcoord + offset).a / r;
-            samples += 1.0 / r;
-        }
+    // Se o pixel já é visível, desenha normal
+    if (base.a > 0.5)
+    {
+        gl_FragColor = base;
+        return;
     }
     
-    glow /= samples;
-    glow = pow(glow, 0.6);
+    // Checa os 4 vizinhos (cima, baixo, esquerda, direita)
+    float a = 0.0;
+    a += texture2D(gm_BaseTexture, v_vTexcoord + vec2( u_texel.x, 0.0)).a;
+    a += texture2D(gm_BaseTexture, v_vTexcoord + vec2(-u_texel.x, 0.0)).a;
+    a += texture2D(gm_BaseTexture, v_vTexcoord + vec2(0.0,  u_texel.y)).a;
+    a += texture2D(gm_BaseTexture, v_vTexcoord + vec2(0.0, -u_texel.y)).a;
     
-    vec4 glowColor = outline_color * glow;
-    gl_FragColor = mix(glowColor, base, base.a);
+    // Se algum vizinho tem alpha, esse pixel é borda
+    if (a > 0.0)
+    {
+        gl_FragColor = vec4(u_color.rgb, u_alpha);
+    }
+    else
+    {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+    }
 }

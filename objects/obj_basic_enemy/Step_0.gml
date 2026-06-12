@@ -18,5 +18,8 @@ destroy_particles();
 //Aplica a gravidade
 gravity_real_time();
 
+//Atualiza o fade do outline
+update_outline();
+
 
 #endregion

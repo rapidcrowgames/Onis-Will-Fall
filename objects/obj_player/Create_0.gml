@@ -42,7 +42,7 @@ attacker             = noone; //Variável que salva quem foi que me atacou
 cutscene_action      = noone; //Define qual ação do SWITCH da cutscene
 
 //Variáveis do estado de PARRY
-parry_timer          = 3.5;
+parry_timer          = 2;
 p_timer              = parry_timer
 parry                = false;
 
@@ -601,7 +601,7 @@ state_parry = function() //Estado DEFESA / PARRY
     velh = 0;
     
     //Define a velocidade da animação
-    image_spd = image_speed / 3;
+    image_spd = image_speed / 4;
     
     //Pega os frames da imagem
     var _frame = floor(image_ind);
@@ -615,7 +615,7 @@ state_parry = function() //Estado DEFESA / PARRY
     //SE estou na janela de parry
     if (parry)
     {
-        if (parry_timer > 0) parry_timer -= delta_time / 1000000;
+        if (p_timer > 0) p_timer -= delta_time / 1000000;
             
         //SE eu sofrer dano dentro deste tempo jogo quem me atacou para longe
         var _hitbox = instance_place(x, y, obj_hitbox_enemy);
@@ -639,15 +639,15 @@ state_parry = function() //Estado DEFESA / PARRY
             //Reseta o parry após executar
             hurt = false;
             parry = false;
-            parry_timer = p_timer;
+            p_timer = parry_timer;
         }
 
     }
     
     //SE o tempo esgotar sem parry, fecha a janela
-    if (parry_timer <= 0)
+    if (p_timer <= 0)
     {
-        parry_timer = p_timer;
+        p_timer = parry_timer;
         parry = false;
     }
     
@@ -655,7 +655,7 @@ state_parry = function() //Estado DEFESA / PARRY
     if (image_ind >= sprite_get_number(sprite) - 1)
     {
         parry = false;        // garante reset
-        parry_timer = p_timer;    // garante reset
+        p_timer = parry_timer;    // garante reset
         state = player_state.IDLE;
     }
 }

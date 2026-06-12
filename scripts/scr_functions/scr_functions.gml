@@ -16,28 +16,45 @@ function tremor(_forca = 1)
 	}
 }
 
-//borda colorida no inimigo
-function outline_set(_color, _width) {
-    shader_set(sh_outline);
+
+//Efeito de outline
+function init_shader_outline() //Inicia no create as variáveis
+{
+    //Pega os uniforms do shader uma única vez
+    u_outline_texel = shader_get_uniform(sh_outline, "u_texel");
+    u_outline_color = shader_get_uniform(sh_outline, "u_color");
+    u_outline_alpha = shader_get_uniform(sh_outline, "u_alpha");
     
-    var tex = sprite_get_texture(sprite_index, image_index);
-    shader_set_uniform_f(shader_get_uniform(sh_outline, "texel_size"), 
-        texture_get_texel_width(tex), texture_get_texel_height(tex));
+    //Variáveis de controle do outline
+    outline_active   = false;
+    outline_color    = [1, 1, 1]; // RGB de 0 a 1 (branco padrão)
+    outline_alpha    = 0;
+    outline_fade_spd = 0.05; //Velocidade que o alpha cai por frame
+}
     
-    var _r = color_get_red(_color) / 255;
-    var _g = color_get_green(_color) / 255;
-    var _b = color_get_blue(_color) / 255;
-    
-    shader_set_uniform_f(shader_get_uniform(sh_outline, "outline_color"), _r, _g, _b, 1);
-    shader_set_uniform_f(shader_get_uniform(sh_outline, "outline_width"), _width);
+
+/// USA O OUTLINE ///
+/// _color = array [r,g,b] de 0 a 1
+/// _alpha = intensidade inicial (sugestão: 0.6 a 0.8 pra ficar suave)
+/// _fade_spd = velocidade do fade out (sugestão: 0.02 a 0.08)
+function start_outline(_color, _alpha = 0.7, _fade_spd = 0.05)
+{
+    outline_color    = _color;
+    outline_alpha    = _alpha;
+    outline_fade_spd = _fade_spd;
+    outline_active   = true;
 }
 
-function outline_reset() {
-    shader_reset();
-}
-
-function draw_sprite_outline(_sprite, _image_ind, _x, _y, _xscale, _yscale, _angle, _blend, _alpha, _outline_color, _outline_width) {
-    outline_set(_outline_color, _outline_width);
-    draw_sprite_ext(_sprite, _image_ind, _x, _y, _xscale, _yscale, _angle, _blend, _alpha);
-    outline_reset();
+/// ATUALIZA O FADE DO OUTLINE (chamar no STEP) ///
+function update_outline()
+{
+    if (!outline_active) return;
+    
+    outline_alpha -= outline_fade_spd;
+    
+    if (outline_alpha <= 0)
+    {
+        outline_alpha  = 0;
+        outline_active = false;
+    }
 }
