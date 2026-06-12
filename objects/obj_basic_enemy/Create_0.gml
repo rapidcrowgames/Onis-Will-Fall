@@ -31,10 +31,9 @@ run_timer_change     = 10; //10 segundos
 destiny_x            = noone;
 
 //Variáveis do estado de ATTACK
-attack_done          = false;
-create_hitbox        = false;
-double_parry         = false;
-atk_cooldown         = 0.5; //Já começa podendo atacar e só depois define o cooldown
+attack_done            = false;
+create_hitbox          = false;
+double_parry           = false;
 
 //Variáveis da detecção do player com a zona de colisão do
 //Inimigo
@@ -46,8 +45,7 @@ target               = noone; //O alvo que está perseguindo
 player_last_position = noone; //Pega a última posição do player
 
 //Variáveis do estado LOAD_ATTACK
-timer_load_attack    = 0.3; //0.3 segundos
-parry_window         = false;
+timer_load_attack    = 0.5; //0.5 segundos
 
 //Variáveis do estado HURT
 damage_done          = false; //Garante que sofreu o dano apenas uma vez
@@ -382,16 +380,15 @@ state_load_attack = function() // PRÉ ATAQUE
         
     //Diminui o timer do load attack e do cooldown para o próximo ataque
     if (timer_load_attack > 0) timer_load_attack -= delta_time / 1000000;
-    if (atk_cooldown > 0) atk_cooldown -= delta_time / 1000000;
         
     //Quando chegar no 2 frame do inimigo ele mostra o brilho
-    if (atk_cooldown <= 0.30)
+    if (timer_load_attack <= 0.30)
     {
-        parry_window = true;
+        //Exibe o outline amarelo
     }
         
     //SE o timer chegar a 0, ele ataca na última posição que o player estava
-    if (timer_load_attack <= 0 && !obj_player.player_dead && atk_cooldown <= 0)
+    if (timer_load_attack <= 0 && !obj_player.player_dead)
     {
         //Faz ele ficar virado para o player
         dir = sign(target.x - x);
@@ -400,8 +397,7 @@ state_load_attack = function() // PRÉ ATAQUE
         velh = (max_velh * 3 * sign(player_last_position - x));
         
         //Reseto o timer
-        timer_load_attack = 0.3;
-        atk_cooldown = 1;
+        timer_load_attack = 1;
         
         //Sai da janela de parry e tira o sublinhado do inimigo
         parry_window = false;

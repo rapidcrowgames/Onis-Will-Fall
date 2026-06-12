@@ -16,6 +16,7 @@ function tremor(_forca = 1)
 	}
 }
 
+//borda colorida no inimigo
 function outline_set(_color, _width) {
     shader_set(sh_outline);
     
