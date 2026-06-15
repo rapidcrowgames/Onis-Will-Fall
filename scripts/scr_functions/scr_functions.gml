@@ -1,6 +1,7 @@
 
 ///////////////// TODAS FUNÇÕES / FUNCTIONS DO JOGO ////////////////////////////
 
+#region //Screenshake
 //Screenshake
 function tremor(_forca = 1)
 {
@@ -16,6 +17,9 @@ function tremor(_forca = 1)
 	}
 }
 
+#endregion
+
+#region //Efeito de outline com cor
 
 //Efeito de outline
 function init_shader_outline() //Inicia no create as variáveis
@@ -58,3 +62,30 @@ function update_outline()
         outline_active = false;
     }
 }
+
+#endregion
+
+#region //Procura o controle conectado em alguma porta
+
+/// @description Procura por um gamepad conectado e atualiza as globais
+function gamepad_find_controller()
+{
+    // Assume inicialmente que NÃO há controle conectado
+    global.gamepad = false;
+    global.gamepad_id = -1;
+    
+    var _qtd = gamepad_get_device_count();
+    
+    for (var i = 0; i < _qtd; i++)
+    {
+        if (gamepad_is_connected(i))
+        {
+            global.gamepad = true;
+            global.gamepad_id = i;
+            break;
+        }
+    }
+}
+
+#endregion
+

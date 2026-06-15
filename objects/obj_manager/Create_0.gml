@@ -9,6 +9,9 @@ hitstop_timer       = 0.05; //0.1 segundos
 //Variáveis para screenshake
 treme = 0;
 
+//Chama a verificação de controle
+gamepad_find_controller();
+
 #endregion
 
 

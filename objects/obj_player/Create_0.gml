@@ -73,17 +73,90 @@ attack_done			 = false;
 /////////////////////////////
 // VARIÁVEIS DE INPUTS ///
 ////////////////////////////
-#region	Variáveis de Inputs
+#region	Variáveis de Inputs TECLADO e CONTROLES
 
 get_inputs = function()
-{	
-	//Pega as teclas
-	input_right			= keyboard_check(ord("D")) or keyboard_check(vk_right);
-	input_left			= keyboard_check(ord("A")) or keyboard_check(vk_left);
-	input_jump			= keyboard_check(ord("W")) or keyboard_check(vk_space);
-	input_attack		= keyboard_check_pressed(ord("J")) or keyboard_check_pressed(ord("Z"));
-    input_parry         = keyboard_check_pressed(ord("K")) or keyboard_check_pressed(ord("X"));
-    input_esquive       = keyboard_check_pressed(vk_shift);
+{
+    /// ---------- TECLADO ----------
+    var _kb_right    = keyboard_check(ord("D")) or keyboard_check(vk_right);
+    var _kb_left     = keyboard_check(ord("A")) or keyboard_check(vk_left);
+    var _kb_jump     = keyboard_check(ord("W")) or keyboard_check(vk_space);
+    var _kb_attack   = keyboard_check_pressed(ord("J")) or keyboard_check_pressed(ord("Z"));
+    var _kb_parry    = keyboard_check_pressed(ord("K")) or keyboard_check_pressed(ord("X"));
+    var _kb_esquive  = keyboard_check_pressed(vk_shift);
+    
+    /// ---------- GAMEPAD ----------
+    var _gp_right = false, _gp_left = false, _gp_jump = false;
+    var _gp_attack = false, _gp_parry = false, _gp_esquive = false;
+    
+    if (global.gamepad && global.gamepad_id != -1)
+    {
+        // ============================
+        // DEADZONE DO ANALÓGICO
+        // ============================
+        // Valor entre 0 e 1. 0.2 é um padrão seguro (analógicos
+        // raramente ficam 100% travados no centro).
+        var _deadzone = 0.2;
+        
+        // Eixo horizontal do analógico esquerdo
+        var _axis_h = gamepad_axis_value(global.gamepad_id, gp_axislh);
+        if (abs(_axis_h) < _deadzone) _axis_h = 0;
+        
+        // Movimento -> somente analógico esquerdo, como pedido
+        _gp_right = (_axis_h > 0);
+        _gp_left  = (_axis_h < 0);
+        
+        // Pulo -> X (PS4/PS5) / A (Xbox)
+        _gp_jump = gamepad_button_check(global.gamepad_id, gp_face1);
+        
+        // Ataque -> Quadrado (PS4/PS5) / X (Xbox)
+        _gp_attack = gamepad_button_check_pressed(global.gamepad_id, gp_face3);
+        
+        // Parry -> L1 (PS4/PS5) / LB (Xbox)
+        _gp_parry = gamepad_button_check_pressed(global.gamepad_id, gp_shoulderl);
+        
+        // Esquiva -> R2 (PS4/PS5) / RT (Xbox)
+        _gp_esquive = gamepad_button_check_pressed(global.gamepad_id, gp_shoulderrb);
+        
+        #region //Dica para como adicionar mais botões no futuro.
+        // ====================================================================
+        // COMO ADICIONAR NOVOS BOTÕES NO FUTURO (cura, ataque à distância, etc)
+        // ====================================================================
+        //
+        // Passo 1: lá em cima, junto com as outras "var _gp_...",
+        // declare a nova variável. Exemplo para um botão de CURA:
+        //
+        //     var _gp_heal = false;
+        //
+        // Passo 2: aqui dentro do "if (global.gamepad...)", adicione a
+        // leitura do botão do controle. Exemplo usando o Triângulo (PS) / Y (Xbox):
+        //
+        //     // Cura -> Triângulo (PS4/PS5) / Y (Xbox)
+        //     _gp_heal = gamepad_button_check_pressed(global.gamepad_id, gp_face4);
+        //
+        // Passo 3: lá embaixo, na seção "TECLADO", crie a tecla equivalente:
+        //
+        //     var _kb_heal = keyboard_check_pressed(ord("Q"));
+        //
+        // Passo 4: na seção "COMBINA OS DOIS" (no final desta function),
+        // junte os dois:
+        //
+        //     input_heal = _kb_heal or _gp_heal;
+        //
+        // Pronto! Repita esse mesmo padrão para o ataque à distância,
+        // por exemplo usando R1/RB (gp_shoulderr) ou Círculo/B (gp_face2),
+        // dependendo do que ainda estiver "livre" no seu mapeamento.
+        // ====================================================================
+        #endregion
+    }
+    
+    /// ---------- COMBINA OS DOIS ----------
+    input_right   = _kb_right   or _gp_right;
+    input_left    = _kb_left    or _gp_left;
+    input_jump    = _kb_jump    or _gp_jump;
+    input_attack  = _kb_attack  or _gp_attack;
+    input_parry   = _kb_parry   or _gp_parry;
+    input_esquive = _kb_esquive or _gp_esquive;
 }
 
 #endregion
