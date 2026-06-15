@@ -54,6 +54,9 @@ restart_death        = false; //Variável que cuida do texto para dar restart ga
 wall_right           = false;
 wall_left            = false;
 
+//Variáveis de pulo
+jump_extra           = 1; //Tem sempre 1 pulo extra
+
 //Variáveis de particulas
 particula            = noone; //Variável que cuida da criação especifica de uma particula
 part_exists          = false; //Identifica se já foi criada a particula
@@ -84,10 +87,12 @@ get_inputs = function()
     var _kb_attack   = keyboard_check_pressed(ord("J")) or keyboard_check_pressed(ord("Z"));
     var _kb_parry    = keyboard_check_pressed(ord("K")) or keyboard_check_pressed(ord("X"));
     var _kb_esquive  = keyboard_check_pressed(vk_shift);
+    var _kb_shot     = keyboard_check_pressed(ord("L")) or keyboard_check_pressed(ord("C"));
     
     /// ---------- GAMEPAD ----------
     var _gp_right = false, _gp_left = false, _gp_jump = false;
     var _gp_attack = false, _gp_parry = false, _gp_esquive = false;
+    var _gp_shot = false;
     
     if (global.gamepad && global.gamepad_id != -1)
     {
@@ -114,6 +119,9 @@ get_inputs = function()
         
         // Parry -> L1 (PS4/PS5) / LB (Xbox)
         _gp_parry = gamepad_button_check_pressed(global.gamepad_id, gp_shoulderl);
+        
+        // Shot / arremesável -> Bola (PS4/PS5) / B (Xbox)
+        _gp_shot = gamepad_button_check_pressed(global.gamepad_id, gp_face2);
         
         // Esquiva -> R2 (PS4/PS5) / RT (Xbox)
         _gp_esquive = gamepad_button_check_pressed(global.gamepad_id, gp_shoulderrb);
@@ -157,6 +165,7 @@ get_inputs = function()
     input_attack  = _kb_attack  or _gp_attack;
     input_parry   = _kb_parry   or _gp_parry;
     input_esquive = _kb_esquive or _gp_esquive;
+    input_shot    = _kb_shot    or _gp_shot;
 }
 
 #endregion
@@ -395,8 +404,9 @@ enum player_state
 	HURT, //Estado sofrendo dano
 	ATTACK, //Estado de ataque
     PARRY, //Estado de parry / defesa
-	DEATH, //Esta de morte
-	ESQUIVE, //Esta de esquiva
+	DEATH, //Estado de morte
+	ESQUIVE, //Estado de esquiva
+    SHOT,   //Estado de atirar arremesável 
 	CUTSCENE //Estado de cena / cutscene
 }
 
@@ -417,6 +427,7 @@ update_state = function()
 		case player_state.ESQUIVE:             state_esquive();     break; //estado esquiva
 		case player_state.PARRY:               state_parry();       break; //estado parry defesa	
 		case player_state.DEATH:               state_death();       break; //estado de morte
+		case player_state.SHOT:                state_shot();        break; //estado de atirar arremesável
 		case player_state.CUTSCENE:            state_cutscene();    break; //estado de cutscene
 	}
 }
@@ -674,7 +685,7 @@ state_parry = function() //Estado DEFESA / PARRY
     velh = 0;
     
     //Define a velocidade da animação
-    image_spd = image_speed / 4;
+    image_spd = image_speed / 3;
     
     //Pega os frames da imagem
     var _frame = floor(image_ind);
@@ -742,6 +753,7 @@ state_parry = function() //Estado DEFESA / PARRY
         state = player_state.IDLE;
     }
 }
+
 state_esquive = function() //Estado ESQUIVA // ESQUIVE
 {
     //Debuga o estado
@@ -765,6 +777,17 @@ state_esquive = function() //Estado ESQUIVA // ESQUIVE
         hurt_timer = 1; //Reseta o timer de dano
         state = player_state.IDLE; //Volta para o estado parado
     }
+}
+
+state_shot = function() //Estado de ARREMESÁVEL // SHOT
+{
+    //Debuga o estado
+    state_debug = "Shot";
+    
+    //Escolhe a animação (Quando tiver)
+    
+    //Define a velocidade da animação
+    image_spd = image_speed / 4;
 }
 
 /////////// EXTRA - DESTRUIR PARTÍCULAS /////////
