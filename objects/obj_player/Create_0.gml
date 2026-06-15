@@ -715,41 +715,71 @@ state_parry = function() //Estado DEFESA / PARRY
         if (p_timer > 0) p_timer -= delta_time / 1000000;
     }
     
+    
+    //////////////////////////////////////////////////////
+    // CHECA ATAQUE INIMIGO NA DIREÇÃO QUE ESTOU OLHANDO //
+    //////////////////////////////////////////////////////
+    
     //Checa SEMPRE (dentro ou fora da janela) se fui atingido pela hitbox do inimigo
     var _hitbox = instance_place(x, y, obj_hitbox_enemy);
+    
+    
     if (_hitbox != noone)
     {
-        //SE estou dentro da janela de parry E ainda há tempo, é um PARRY VÁLIDO
-        if (parry && p_timer > 0)
+        //Pega a direção de onde o ataque veio
+        //Se o inimigo está na direita retorna 1
+        //Se está na esquerda retorna -1
+        var _attack_dir = sign(_hitbox.x - x);
+        
+        
+        //Só continua se o ataque veio da direção que estou olhando
+        if (_attack_dir == dir)
         {
-            //Cria a particula
-            particula = part_system_create(ps_parry);
-            part_system_position(particula, x + 20 * dir, y - sprite_height);
             
-            //Foi criada a particula
-            part_exists = true;
-            
-            with (_hitbox.owner)
+            //SE estou dentro da janela de parry E ainda há tempo, é um PARRY VÁLIDO
+            if (parry && p_timer > 0)
             {
-                //treme a tela
-                tremor(8);
-                if (dir == -1) velh += 20;
-                if (dir ==  1) velh -= 20;
+                //Cria a particula
+                particula = part_system_create(ps_parry);
+                part_system_position(particula, x + 20 * dir, y - sprite_height);
+                
+                //Foi criada a particula
+                part_exists = true;
+                
+                with (_hitbox.owner)
+                {
+                    //treme a tela
+                    tremor(8);
+                    
+                    //Empurra o inimigo para longe
+                    if (dir == -1) velh += 20;
+                    if (dir ==  1) velh -= 20;
+                }
+                
+                
+                //Reseta o parry após executar
+                hurt = false;
+                parry = false;
+                p_timer = parry_timer;
             }
-            //Reseta o parry após executar
-            hurt = false;
-            parry = false;
-            p_timer = parry_timer;
-        }
-        else
-        {
-            //ERREI O TIMING (ou janela já fechada) - corta a animação e vai para o dano IMEDIATAMENTE
-            parry = false;        // garante reset
-            p_timer = parry_timer;    // garante reset
-            state = player_state.HURT;
-            return; //sai do estado agora, não processa o resto do parry neste frame
+            else
+            {
+                //ERREI O TIMING (ou janela já fechada)
+                //Corta a animação e vai para o dano IMEDIATAMENTE
+                
+                parry = false;             
+                p_timer = parry_timer;     
+                
+                state = player_state.HURT;
+                return; 
+            }
         }
     }
+    
+    
+    ////////////////////////////////
+    // FECHA A JANELA DO PARRY //////
+    ////////////////////////////////
     
     //SE o tempo esgotar sem parry, fecha a janela
     if (p_timer <= 0)
@@ -758,11 +788,16 @@ state_parry = function() //Estado DEFESA / PARRY
         parry = false;
     }
     
+    
+    ////////////////////////////////
+    // FIM DA ANIMAÇÃO DO PARRY /////
+    ////////////////////////////////
+    
     //No fim da animação volta para IDLE
-    if (image_ind >= sprite_get_number(sprite) - 1)
+    if (image_ind >= sprite_get_number(sprite) - 1 or hurt)
     {
-        parry = false;        // garante reset
-        p_timer = parry_timer;    // garante reset
+        parry = false;        
+        p_timer = parry_timer;    
         state = player_state.IDLE;
     }
 }
