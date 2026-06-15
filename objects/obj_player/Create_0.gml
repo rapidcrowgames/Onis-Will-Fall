@@ -54,8 +54,9 @@ restart_death        = false; //Variável que cuida do texto para dar restart ga
 wall_right           = false;
 wall_left            = false;
 
-//Variáveis de pulo
-jump_extra           = 1; //Tem sempre 1 pulo extra
+//Variáveis do estado SHOT / Arremessáveis
+shot_item            = 5; //Qtd de arremessáveis
+shot_created         = false;
 
 //Variáveis de particulas
 particula            = noone; //Variável que cuida da criação especifica de uma particula
@@ -465,6 +466,9 @@ state_idle = function() //Estado PARADO / IDLE
 	
 	//Se perder todas vidas, vai para o estado de morte
 	if (life <= 0) state = player_state.DEATH;
+        
+    //Se apertar o botão do shot e tiver itens para arremessar, ele vai para o SHOT
+    if (input_shot && shot_item > 0) state = player_state.SHOT;
 	
 }
 
@@ -501,6 +505,9 @@ state_run = function() //Estado MOVIMENTO / RUN
 	
 	//Se perder todas vidas, vai para o estado de morte
 	if (life <= 0) state = player_state.DEATH;
+        
+    //Se apertar o botão do shot e tiver itens para arremessar, ele vai para o SHOT
+    if (input_shot && shot_item > 0) state = player_state.SHOT;
 	
 }
 
@@ -532,6 +539,9 @@ state_jump = function() //Estado PULANDO / JUMP
 	
 	//Se estiver no chão volta para o estado de parado
 	if (chao) state = player_state.IDLE;
+        
+    //Se apertar o botão do shot e tiver itens para arremessar, ele vai para o SHOT
+    if (input_shot && shot_item > 0) state = player_state.SHOT;
 	
 }
 
@@ -542,6 +552,9 @@ state_attack = function() //Estado ATAQUE / ATTACK
     
     //Velocidade da animação
     image_spd = image_speed / 3.5;
+    
+    //Se apertar o botão do shot e tiver itens para arremessar, ele vai para o SHOT
+    if (input_shot && shot_item > 0) state = player_state.SHOT;
     
     //SE for atacado durante o meu ataque, ele garante que vai destruir a hitbox
     if (hurt)
@@ -788,6 +801,29 @@ state_shot = function() //Estado de ARREMESÁVEL // SHOT
     
     //Define a velocidade da animação
     image_spd = image_speed / 4;
+    
+    //Cria a hitbox no player de acordo com a direção dele SE ela ainda não existe
+    if (!instance_exists(obj_player_hitbox_shot))
+    {
+        var _shot = instance_create_layer(x + 2 * dir, y - sprite_height + 10, layer, obj_player_hitbox_shot);
+        _shot.direction = point_direction(0,0,dir,0);
+        _shot.speed = 20;
+    }
+    else {
+    	
+        //Gasto um tiro
+        if (shot_item > 0) shot_item--;
+        shot_created = true;
+    }
+    
+    //SE já criou o tiro
+    if (shot_created)
+    {
+        shot_created = false;
+        //Após criar o arremessável, eu saio do estado
+        state = player_state.IDLE;
+    }
+    
 }
 
 /////////// EXTRA - DESTRUIR PARTÍCULAS /////////

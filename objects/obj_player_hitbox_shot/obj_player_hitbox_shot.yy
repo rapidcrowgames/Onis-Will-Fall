@@ -1,7 +1,9 @@
 {
   "$GMObject":"",
   "%Name":"obj_player_hitbox_shot",
-  "eventList":[],
+  "eventList":[
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+  ],
   "managed":true,
   "name":"obj_player_hitbox_shot",
   "overriddenProperties":[],
@@ -9,7 +11,10 @@
     "name":"player",
     "path":"folders/Objects/player.yy",
   },
-  "parentObjectId":null,
+  "parentObjectId":{
+    "name":"obj_player_hitbox",
+    "path":"objects/obj_player_hitbox/obj_player_hitbox.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
@@ -32,5 +37,5 @@
     "path":"sprites/spr_hitbox_shot/spr_hitbox_shot.yy",
   },
   "spriteMaskId":null,
-  "visible":false,
+  "visible":true,
 }
