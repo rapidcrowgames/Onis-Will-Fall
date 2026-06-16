@@ -307,6 +307,14 @@ move_player = function()
     //Pega os lados da parede         //Está na direita ou Esquerda   //Não está na direita ou esquerda
     if (place_meeting(x + 1, y, obj_colisao)) {wall_right = true} else {wall_right = false;}
     if (place_meeting(x - 1, y, obj_colisao)) {wall_left = true} else {wall_left = false;}
+    
+    //Verifica se está na parede e se tem espaço acima livre para subir na beirada.
+    var _cima_direita  = place_meeting(x + 1, y - sprite_height - 1, obj_colisao);
+    var _cima_esquerda = place_meeting(x - 1, y - sprite_height - 1, obj_colisao);
+    
+    if (wall_right && !_cima_direita) {state = player_state.WALL_GRAB};
+    if (wall_right && !_cima_esquerda) {state = player_state.WALL_GRAB};
+    
 	
 	
 	/////////////////////////
@@ -408,6 +416,7 @@ enum player_state
 	DEATH, //Estado de morte
 	ESQUIVE, //Estado de esquiva
     SHOT,   //Estado de atirar arremesável 
+    WALL_GRAB, //Estado de ficar pendurado na beirada
 	CUTSCENE //Estado de cena / cutscene
 }
 
@@ -429,6 +438,7 @@ update_state = function()
 		case player_state.PARRY:               state_parry();       break; //estado parry defesa	
 		case player_state.DEATH:               state_death();       break; //estado de morte
 		case player_state.SHOT:                state_shot();        break; //estado de atirar arremesável
+		case player_state.WALL_GRAB:           state_wall_grab();   break; //estado de ficar pendurado na parede
 		case player_state.CUTSCENE:            state_cutscene();    break; //estado de cutscene
 	}
 }
@@ -802,7 +812,7 @@ state_parry = function() //Estado DEFESA / PARRY
     }
 }
 
-state_esquive = function() //Estado ESQUIVA // ESQUIVE
+state_esquive = function() //Estado ESQUIVA / ESQUIVE
 {
     //Debuga o estado
     state_debug = "Esquive front";
@@ -827,7 +837,7 @@ state_esquive = function() //Estado ESQUIVA // ESQUIVE
     }
 }
 
-state_shot = function() //Estado de ARREMESÁVEL // SHOT
+state_shot = function() //Estado de ARREMESÁVEL / SHOT
 {
     //Debuga o estado
     state_debug = "Shot";
@@ -858,6 +868,11 @@ state_shot = function() //Estado de ARREMESÁVEL // SHOT
         //Após criar o arremessável, eu saio do estado
         state = player_state.IDLE;
     }
+    
+}
+
+state_wall_grab = function //Estado de ficar pendurado / Wall grab
+{
     
 }
 
