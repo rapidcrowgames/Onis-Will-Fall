@@ -195,6 +195,42 @@ gravity_real_time = function()
 #endregion
 
 
+//////////////////////////////////////
+/// GARANTE QUE NÃO ENTRE NO CHÃO ///
+//////////////////////////////////////
+#region Garante que o inimigo volte para cima ao entrar no chão
+
+ground_collide_correction = function()
+{
+    // Se não está dentro do chão, não precisa corrigir
+    if (!place_meeting(x, y, obj_colisao))
+    {
+        return;
+    }
+    
+    // Procura uma posição livre até 100 pixels acima
+    for (var i = 0; i < 100; i++)
+    {
+        // Move fisicamente 1 pixel para cima
+        y -= 1;
+        
+        // Verifica se saiu completamente da colisão
+        if (!place_meeting(x, y, obj_colisao))
+        {
+            // Só cancela a velocidade se estiver caindo
+            if (velv > 0)
+            {
+                velv = 0;
+            }
+            
+            break;
+        }
+    }
+}
+
+#endregion
+
+
 /////////////////////////////////
 /// ENUM E ESTADOS DO INIMIGO //
 ///////////////////////////////

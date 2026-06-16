@@ -1035,7 +1035,7 @@ state_shot = function() //Estado de ARREMESÁVEL / SHOT
     
 }
 
-state_wall_grab = function()
+state_wall_grab = function() //Estado de se pendurar na parede / WALL GRAB
 {
     //Debuga o estado
     state_debug = "Wall grab";
@@ -1092,7 +1092,7 @@ state_wall_grab = function()
     }
 }
 
-state_wall_up = function()
+state_wall_up = function() //Estado de subir na beirada da parede // WALL_UP
 {
     //Debuga o estado
     state_debug = "Wall up";

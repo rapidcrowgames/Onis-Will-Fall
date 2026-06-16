@@ -21,5 +21,8 @@ gravity_real_time();
 //Atualiza o fade do outline
 update_outline();
 
+//Garante que o inimigo não entre no chão
+ground_collide_correction();
+
 
 #endregion
