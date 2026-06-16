@@ -58,6 +58,9 @@ wall_left            = false;
 shot_item            = 5; //Qtd de arremessáveis
 shot_created         = false;
 
+//Variáveis do estado Wall grab / Ficar na parede pendurado
+is_grab              = false;
+
 //Variáveis de particulas
 particula            = noone; //Variável que cuida da criação especifica de uma particula
 part_exists          = false; //Identifica se já foi criada a particula
@@ -82,35 +85,44 @@ attack_done			 = false;
 get_inputs = function()
 {
     /// ---------- TECLADO ----------
-    var _kb_right    = keyboard_check(ord("D")) or keyboard_check(vk_right);
-    var _kb_left     = keyboard_check(ord("A")) or keyboard_check(vk_left);
-    var _kb_jump     = keyboard_check(ord("W")) or keyboard_check(vk_space);
+    var _kb_right    = keyboard_check(ord("D"))         or keyboard_check(vk_right);
+    var _kb_left     = keyboard_check(ord("A"))         or keyboard_check(vk_left);
+    var _kb_jump     = keyboard_check(ord("W"))         or keyboard_check(vk_space);
     var _kb_attack   = keyboard_check_pressed(ord("J")) or keyboard_check_pressed(ord("Z"));
     var _kb_parry    = keyboard_check_pressed(ord("K")) or keyboard_check_pressed(ord("X"));
     var _kb_esquive  = keyboard_check_pressed(vk_shift);
     var _kb_shot     = keyboard_check_pressed(ord("L")) or keyboard_check_pressed(ord("C"));
+    var _kb_up       = keyboard_check(ord("W"))         or keyboard_check(vk_up);
+    var _kb_down     = keyboard_check(ord("S"))         or keyboard_check(vk_down);
     
     /// ---------- GAMEPAD ----------
     var _gp_right = false, _gp_left = false, _gp_jump = false;
     var _gp_attack = false, _gp_parry = false, _gp_esquive = false;
-    var _gp_shot = false;
+    var _gp_shot = false, _gp_up = false, _gp_down = false;
     
     if (global.gamepad && global.gamepad_id != -1)
     {
         // ============================
-        // DEADZONE DO ANALÓGICO
+        // DEADZONE DOS ANALÓGICOS
         // ============================
-        // Valor entre 0 e 1. 0.2 é um padrão seguro (analógicos
-        // raramente ficam 100% travados no centro).
         var _deadzone = 0.2;
         
         // Eixo horizontal do analógico esquerdo
         var _axis_h = gamepad_axis_value(global.gamepad_id, gp_axislh);
         if (abs(_axis_h) < _deadzone) _axis_h = 0;
         
-        // Movimento -> somente analógico esquerdo, como pedido
+        // Eixo vertical do analógico esquerdo
+        // (valores: negativo = cima / positivo = baixo — igual ao eixo Y do GameMaker)
+        var _axis_v = gamepad_axis_value(global.gamepad_id, gp_axislv);
+        if (abs(_axis_v) < _deadzone) _axis_v = 0;
+        
+        // Movimento horizontal -> analógico esquerdo
         _gp_right = (_axis_h > 0);
         _gp_left  = (_axis_h < 0);
+        
+        // Movimento vertical -> analógico esquerdo
+        _gp_up   = (_axis_v < 0); // negativo = cima
+        _gp_down = (_axis_v > 0); // positivo = baixo
         
         // Pulo -> X (PS4/PS5) / A (Xbox)
         _gp_jump = gamepad_button_check(global.gamepad_id, gp_face1);
@@ -121,7 +133,7 @@ get_inputs = function()
         // Parry -> L1 (PS4/PS5) / LB (Xbox)
         _gp_parry = gamepad_button_check_pressed(global.gamepad_id, gp_shoulderl);
         
-        // Shot / arremesável -> Bola (PS4/PS5) / B (Xbox)
+        // Shot -> Bola/Círculo (PS4/PS5) / B (Xbox)
         _gp_shot = gamepad_button_check_pressed(global.gamepad_id, gp_face2);
         
         // Esquiva -> R2 (PS4/PS5) / RT (Xbox)
@@ -152,9 +164,7 @@ get_inputs = function()
         //
         //     input_heal = _kb_heal or _gp_heal;
         //
-        // Pronto! Repita esse mesmo padrão para o ataque à distância,
-        // por exemplo usando R1/RB (gp_shoulderr) ou Círculo/B (gp_face2),
-        // dependendo do que ainda estiver "livre" no seu mapeamento.
+        // Pronto! Repita esse mesmo padrão para qualquer novo input.
         // ====================================================================
         #endregion
     }
@@ -162,6 +172,8 @@ get_inputs = function()
     /// ---------- COMBINA OS DOIS ----------
     input_right   = _kb_right   or _gp_right;
     input_left    = _kb_left    or _gp_left;
+    input_up      = _kb_up      or _gp_up;
+    input_down    = _kb_down    or _gp_down;
     input_jump    = _kb_jump    or _gp_jump;
     input_attack  = _kb_attack  or _gp_attack;
     input_parry   = _kb_parry   or _gp_parry;
@@ -302,7 +314,7 @@ move_player = function()
 	velh = (input_right - input_left) * max_velh;
 	
 	//Aplica a gravidade
-	velv += grav_atual;
+	if (!is_grab) {velv += grav_atual};
 	
 	//Calcula a direção
 	if (velh > 0) dir =  1;
@@ -328,8 +340,8 @@ move_player = function()
     var _cima_direita  = place_meeting(x + 1, y - sprite_height - 1, obj_colisao);
     var _cima_esquerda = place_meeting(x - 1, y - sprite_height - 1, obj_colisao);
     
-    if (wall_right && !_cima_direita && velv > 0)   {state = player_state.WALL_GRAB};
-    if (wall_left  && !_cima_esquerda && velv > 0) {state = player_state.WALL_GRAB};
+    if (wall_right && !_cima_direita && velv < 0)  {state = player_state.WALL_GRAB};
+    if (wall_left  && !_cima_esquerda && velv < 0) {state = player_state.WALL_GRAB};
     
     #endregion
     
@@ -434,6 +446,7 @@ enum player_state
 	ESQUIVE, //Estado de esquiva
     SHOT,   //Estado de atirar arremesável 
     WALL_GRAB, //Estado de ficar pendurado na beirada
+    WALL_UP, //Estado de subir na parede
 	CUTSCENE //Estado de cena / cutscene
 }
 
@@ -456,6 +469,7 @@ update_state = function()
 		case player_state.DEATH:               state_death();       break; //estado de morte
 		case player_state.SHOT:                state_shot();        break; //estado de atirar arremesável
 		case player_state.WALL_GRAB:           state_wall_grab();   break; //estado de ficar pendurado na parede
+		case player_state.WALL_UP:             state_wall_up();     break; //estado de subir na parede
 		case player_state.CUTSCENE:            state_cutscene();    break; //estado de cutscene
 	}
 }
@@ -888,7 +902,7 @@ state_shot = function() //Estado de ARREMESÁVEL / SHOT
     
 }
 
-state_wall_grab = function //Estado de ficar pendurado / Wall grab
+state_wall_grab = function() //Estado de ficar pendurado / Wall grab
 {
     //Debuga o estado
     state_debug = "Wall grab";
@@ -899,6 +913,23 @@ state_wall_grab = function //Estado de ficar pendurado / Wall grab
     //Define a velocidade da animação
     image_spd = image_speed / 6;
     
+    //Estou pendurado
+    is_grab = true;
+    velh = 0;
+    velv = 0;
+    
+    //SE pressionar para cima, ele sobe.
+    if (input_up)
+    {
+        is_grab = false;
+    }
+    
+    //SE pressionar para cima, ele sobe.
+    if (input_down)
+    {
+        is_grab = false;
+        state = player_state.JUMP;
+    }
     
 }
 
