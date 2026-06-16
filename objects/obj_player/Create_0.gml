@@ -212,6 +212,7 @@ animations =
     [spr_player_fall], //Animação de pulo (queda) - 8
     [spr_player_death], //Animação de morte - 9
     [spr_player_esquive], //Animação de esquiva - 10
+    [spr_player_wall_grab] //Animação de segurar na parede - 11
 ]
 
 #endregion
@@ -280,11 +281,20 @@ change_sprites_once = function(_sprites_index = 0)
 
 move_player = function()
 {
+    /////////////////////////////
+    /// TRAVAS DO MOVIMENTO ////
+    ///////////////////////////
+    
     if (global.hitstop) return;
     if (state == player_state.ESQUIVE) return;
     if (state == player_state.HURT) return;
     if (state == player_state.DEATH) return;
-        
+    
+    ////////////////////////////////////////////
+    //// PEGA INPUTS - GRAVIDADE - DIREÇÃO ////
+    //////////////////////////////////////////
+    #region Pega inputs - gravidade - direção - colisões
+    
 	//Pega os inputs SE não estiver no hitstop
 	get_inputs();
 	
@@ -308,14 +318,21 @@ move_player = function()
     if (place_meeting(x + 1, y, obj_colisao)) {wall_right = true} else {wall_right = false;}
     if (place_meeting(x - 1, y, obj_colisao)) {wall_left = true} else {wall_left = false;}
     
-    //Verifica se está na parede e se tem espaço acima livre para subir na beirada.
+    #endregion
+    
+    //////////////////////////////////////////
+    //// LÓGICA DE SE PENDURAR NA PAREDE ////
+    ////////////////////////////////////////
+    #region Lógica de WALL GRAB (se pendurar na parede)
+    
     var _cima_direita  = place_meeting(x + 1, y - sprite_height - 1, obj_colisao);
     var _cima_esquerda = place_meeting(x - 1, y - sprite_height - 1, obj_colisao);
     
-    if (wall_right && !_cima_direita) {state = player_state.WALL_GRAB};
-    if (wall_right && !_cima_esquerda) {state = player_state.WALL_GRAB};
+    if (wall_right && !_cima_direita && velv > 0)   {state = player_state.WALL_GRAB};
+    if (wall_left  && !_cima_esquerda && velv > 0) {state = player_state.WALL_GRAB};
     
-	
+    #endregion
+    
 	
 	/////////////////////////
 	// LÓGICA DO PULO //////
@@ -873,6 +890,15 @@ state_shot = function() //Estado de ARREMESÁVEL / SHOT
 
 state_wall_grab = function //Estado de ficar pendurado / Wall grab
 {
+    //Debuga o estado
+    state_debug = "Wall grab";
+    
+    //Muda para animação de pendurado (Quando tiver)
+    change_sprites(11);
+    
+    //Define a velocidade da animação
+    image_spd = image_speed / 6;
+    
     
 }
 
