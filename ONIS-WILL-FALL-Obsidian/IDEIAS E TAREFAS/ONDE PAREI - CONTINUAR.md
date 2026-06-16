@@ -10,4 +10,6 @@
 
 - Melhorada a lógica da hitbox do arremessável (feito)
 
+- Os inimigos não entram mais um com outro (feito)
+
 - Melhorar cenário para o protótipo

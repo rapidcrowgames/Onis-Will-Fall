@@ -195,12 +195,12 @@ gravity_real_time = function()
 #endregion
 
 
-//////////////////////////////////////
-/// GARANTE QUE NÃO ENTRE NO CHÃO ///
+////////////////////////////////////////
+/// VERIFICA AS COLISÕES DO INIMIGO ///
 //////////////////////////////////////
 #region Garante que o inimigo volte para cima ao entrar no chão
 
-ground_collide_correction = function()
+ground_collide_correction = function() //Colisão com o chão
 {
     // Se não está dentro do chão, não precisa corrigir
     if (!place_meeting(x, y, obj_colisao))
@@ -224,6 +224,89 @@ ground_collide_correction = function()
             }
             
             break;
+        }
+    }
+}
+
+enemy_collide_correction = function() //Colisão com outro inimigo
+{
+    // Pega o inimigo que está colidindo comigo
+    var _other_enemy = instance_place(
+        x,
+        y,
+        obj_enemy_entity
+    );
+
+    // Não encontrou outro inimigo
+    if (_other_enemy == noone)
+    {
+        return;
+    }
+
+    ////////////////////////////////////////
+    // ESCOLHE O LADO PARA SE AFASTAR
+    ////////////////////////////////////////
+
+    // Se estou à direita dele, vou para a direita.
+    // Se estou à esquerda dele, vou para a esquerda.
+    var _push_dir = sign(x - _other_enemy.x);
+
+    // Caso os dois estejam exatamente na mesma posição,
+    // usa o ID para cada um escolher um lado diferente.
+    if (_push_dir == 0)
+    {
+        if (id > _other_enemy.id)
+        {
+            _push_dir = 1;
+        }
+        else
+        {
+            _push_dir = -1;
+        }
+    }
+
+    ////////////////////////////////////////
+    // PROCURA UMA POSIÇÃO LIVRE
+    ////////////////////////////////////////
+
+    for (var i = 0; i < 100; i++)
+    {
+        // Já não está mais colidindo
+        if (!place_meeting(x, y, obj_enemy_entity))
+        {
+            break;
+        }
+
+        // Verifica se pode andar para o lado escolhido
+        // sem entrar na parede
+        if (!place_meeting(
+            x + _push_dir,
+            y,
+            obj_colisao
+        ))
+        {
+            x += _push_dir;
+        }
+        else
+        {
+            // O lado escolhido está bloqueado pela parede.
+            // Tenta o lado contrário.
+            _push_dir *= -1;
+
+            if (!place_meeting(
+                x + _push_dir,
+                y,
+                obj_colisao
+            ))
+            {
+                x += _push_dir;
+            }
+            else
+            {
+                // Os dois lados estão bloqueados.
+                // Interrompe para não criar loop inútil.
+                break;
+            }
         }
     }
 }
@@ -580,7 +663,7 @@ destroy_particles = function()
     }
 }
 
-state_load_hurt = function() // SOFRE O ATAQUE DO INIMIGO
+state_load_hurt = function() // SOFRE O ATAQUE DO PLAYER
 {
     //Debuga o estado
     debug_enemy_state = "Load hurt";

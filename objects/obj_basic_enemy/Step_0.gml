@@ -24,5 +24,8 @@ update_outline();
 //Garante que o inimigo não entre no chão
 ground_collide_correction();
 
+//Garante que um inimigo não entre um dentro do outro
+enemy_collide_correction();
+
 
 #endregion
