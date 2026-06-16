@@ -59,7 +59,17 @@ shot_item            = 5; //Qtd de arremessáveis
 shot_created         = false;
 
 //Variáveis do estado Wall grab / Ficar na parede pendurado
-is_grab              = false;
+is_grab = false; // Indica que o personagem está pendurado
+grab_cooldown = 0; // Impede que o personagem solte e agarre novamente a mesma beirada no frame seguinte
+ledge_dir = 0; // Direção da parede agarrada
+
+ledge_target_x = x; // Posição final onde o personagem ficará depois de subir na plataforma
+ledge_target_y = y;
+
+wall_up_phase = 0; // Controla as etapas da subida : 0 = subindo verticalmente : 1 = entrando horizontalmente na plataforma
+
+wall_up_timer = 0; // Timer de segurança para evitar travamentos
+wall_up_timeout = 1.2; // Tempo máximo permitido para concluir a subida
 
 //Variáveis de particulas
 particula            = noone; //Variável que cuida da criação especifica de uma particula
@@ -301,6 +311,16 @@ move_player = function()
     if (state == player_state.ESQUIVE) return;
     if (state == player_state.HURT) return;
     if (state == player_state.DEATH) return;
+        
+    // Trava movimento horizontal no grab
+    if (is_grab)
+    {
+        velh = 0;
+        // Impede que input horizontal vire o player
+        // (o dir já foi travado na detecção)
+        image_xscale = dir;
+        return; // Sai do move_player, nada mais roda
+    }
     
     ////////////////////////////////////////////
     //// PEGA INPUTS - GRAVIDADE - DIREÇÃO ////
@@ -309,6 +329,21 @@ move_player = function()
     
 	//Pega os inputs SE não estiver no hitstop
 	get_inputs();
+    
+    //Atualiza o cooldown da beirada
+    
+    // Precisa ficar antes de todos os returns.
+    // Caso contrário, o cooldown pode ficar congelado.
+    if (grab_cooldown > 0)
+    {
+        grab_cooldown -= delta_time / 1000000;
+
+        // Impede que fique negativo
+        if (grab_cooldown < 0)
+        {
+            grab_cooldown = 0;
+        }
+    }
 	
 	//Movimento horizontal
 	velh = (input_right - input_left) * max_velh;
@@ -332,19 +367,129 @@ move_player = function()
     
     #endregion
     
-    //////////////////////////////////////////
-    //// LÓGICA DE SE PENDURAR NA PAREDE ////
-    ////////////////////////////////////////
-    #region Lógica de WALL GRAB (se pendurar na parede)
-    
-    var _cima_direita  = place_meeting(x + 1, y - sprite_height - 1, obj_colisao);
-    var _cima_esquerda = place_meeting(x - 1, y - sprite_height - 1, obj_colisao);
-    
-    if (wall_right && !_cima_direita && velv < 0)  {state = player_state.WALL_GRAB};
-    if (wall_left  && !_cima_esquerda && velv < 0) {state = player_state.WALL_GRAB};
+    //////////////////////////////////
+    //// DETECÇÃO DA BEIRADA ////////
+    ////////////////////////////////
+    #region Lógica da beira da parede
+   
+   // Somente pode agarrar enquanto estiver caindo.
+   // No GameMaker, velocidade vertical positiva significa descendo.
+   if (!chao
+   && velv >= 0
+   && grab_cooldown <= 0
+   && state != player_state.WALL_GRAB
+   && state != player_state.WALL_UP)
+   {
+       var _grab_dir = dir;
+   
+       // Posição imediatamente ao lado da máscara do jogador
+       var _side_x;
+   
+       if (_grab_dir == 1)
+       {
+           _side_x = bbox_right + 1;
+       }
+       else
+       {
+           _side_x = bbox_left - 1;
+       }
+   
+       var _ledge_found = false;
+       var _surface_y   = 0;
+   
+       // Procura a transição entre espaço vazio e parede
+       for (var _yy = bbox_top; _yy <= bbox_bottom - 4; _yy += 1)
+       {
+           var _solid_here =
+               collision_point(
+                   _side_x,
+                   _yy,
+                   obj_colisao,
+                   true,
+                   true
+               ) != noone;
+   
+           var _solid_below =
+               collision_point(
+                   _side_x,
+                   _yy + 2,
+                   obj_colisao,
+                   true,
+                   true
+               ) != noone;
+   
+           var _free_above =
+               collision_point(
+                   _side_x,
+                   _yy - 2,
+                   obj_colisao,
+                   true,
+                   true
+               ) == noone;
+   
+           // Encontrou o topo de uma parede
+           if (_solid_here && _solid_below && _free_above)
+           {
+               _ledge_found = true;
+               _surface_y   = _yy;
+               break;
+           }
+       }
+   
+       if (_ledge_found)
+       {
+           var _player_width  = bbox_right - bbox_left + 1;
+           var _bottom_offset = bbox_bottom - y;
+   
+           // Posição final em cima da plataforma
+           var _target_x =
+               x + _grab_dir * (_player_width + 2);
+   
+           var _target_y =
+               _surface_y - _bottom_offset - 1;
+   
+          if (!place_meeting(
+                _target_x,
+                _target_y,
+                obj_colisao
+            ))
+            {
+                // Salva permanentemente o lado da beirada
+                ledge_dir = _grab_dir;
+            
+                // Personagem olha para a parede
+                dir = ledge_dir;
+            
+                // Salva a posição final da subida
+                ledge_target_x = _target_x;
+                ledge_target_y = _target_y;
+            
+                // Reseta os controles da subida
+                wall_up_phase = 0;
+                wall_up_timer = 0;
+            
+                // Para completamente o personagem
+                velh = 0;
+                velv = 0;
+            
+                grav_atual = grav;
+                is_jumping = false;
+            
+                is_grab = true;
+                state = player_state.WALL_GRAB;
+            
+                image_xscale = dir;
+            
+                // Muito importante:
+                // não permite que o restante do move_player
+                // altere o estado neste mesmo frame.
+                return;
+            }
+       }
+   }
     
     #endregion
-    
+      
 	
 	/////////////////////////
 	// LÓGICA DO PULO //////
@@ -393,19 +538,6 @@ move_player = function()
 	
 	#endregion
     
-    /////////////////////////////////
-    ////// LÓGICA DA PAREDE ////////
-    ///////////////////////////////
-    #region Lógica da parede
-    
-    //SE estou na parede, a gravidade me puxa para baixo
-    if (parede && !chao)
-    {
-        is_jumping = false;
-    }
-    
-    #endregion
-    
     
     ////////////////////////////
     //// LÓGICA DA ESQUIVA ////
@@ -420,6 +552,7 @@ move_player = function()
     }
     
     #endregion
+
     
     //Aplica a direção
 	image_xscale = dir;
@@ -902,35 +1035,157 @@ state_shot = function() //Estado de ARREMESÁVEL / SHOT
     
 }
 
-state_wall_grab = function() //Estado de ficar pendurado / Wall grab
+state_wall_grab = function()
 {
     //Debuga o estado
     state_debug = "Wall grab";
-    
-    //Muda para animação de pendurado (Quando tiver)
+
+    //Muda a animação para pendurado
     change_sprites(11);
     
     //Define a velocidade da animação
     image_spd = image_speed / 6;
+
+    // move_player retorna antes de pegar os inputs
+    // durante o Wall Grab.
+    get_inputs();
     
-    //Estou pendurado
+    //Mantém o personagem pendurado
     is_grab = true;
     velh = 0;
     velv = 0;
     
-    //SE pressionar para cima, ele sobe.
-    if (input_up)
-    {
-        is_grab = false;
-    }
+    // Usa o lado salvo na detecção
+    dir = ledge_dir;
+    image_xscale = dir;
     
-    //SE pressionar para cima, ele sobe.
+    //Descer da beirada
     if (input_down)
     {
         is_grab = false;
+        is_jumping = false;
+        
+        // Tempo curto para não agarrar novamente
+        // a mesma beirada imediatamente.
+        grab_cooldown = 0.18;
+        
+        // Afasta da parede
+        velh = -ledge_dir * 1.5;
+        velv = 1.5; // Começa a cair
+        grav_atual = grav;
         state = player_state.JUMP;
+        return;
+    }
+
+    //Subiur na plataforma
+    if (input_up || input_jump)
+    {
+        is_grab = false;
+        is_jumping = false;
+        velh = 0;
+        velv = 0;
+        
+        wall_up_phase = 0;
+        wall_up_timer = 0;
+        state = player_state.WALL_UP;
+        return;
+    }
+}
+
+state_wall_up = function()
+{
+    //Debuga o estado
+    state_debug = "Wall up";
+    
+    //Altera para animação subindo na beirada
+    change_sprites(11);
+    
+    //Define a velocidade da animação
+    image_spd = image_speed / 4;
+    
+    //Desliga a física normal
+    is_grab = false;
+    is_jumping = false;
+    
+    velh = 0;
+    velv = 0;
+    
+    grav_atual = grav;
+    dir = ledge_dir;
+    image_xscale = dir;
+
+
+    //////////////////////////////////////////
+    // TIMER DE SEGURANÇA
+    //////////////////////////////////////////
+
+    wall_up_timer += delta_time / 1000000;
+    
+    //Sobe na plataforma
+    if (wall_up_phase == 0)
+    {
+        y = lerp(y, ledge_target_y, 0.30);
+        
+        if (abs(y - ledge_target_y) <= 0.5)
+        {
+            y = ledge_target_y;
+            wall_up_phase = 1;
+        }
     }
     
+    //Entra na plataforma
+    else if (wall_up_phase == 1)
+    {
+        x = lerp(x, ledge_target_x, 0.30);
+
+        if (abs(x - ledge_target_x) <= 0.5)
+        {
+            x = ledge_target_x;
+            y = ledge_target_y;
+            
+            wall_up_phase = 0;
+            wall_up_timer = 0;
+            
+            velh = 0;
+            velv = 0;
+            
+            // Atualiza o chão diretamente
+            chao = place_meeting(x, y + 1, obj_colisao);
+            
+            if (chao)
+            {
+                // Subida concluída corretamente
+                grab_cooldown = 0;
+                state = player_state.IDLE;
+            }
+            else
+            {
+                // Não encontrou chão na posição final
+                grab_cooldown = 0.18;
+                velv = 1;
+                state = player_state.JUMP;
+            }
+            
+            return;
+        }
+    }
+    
+    //Segurnaça contra o travamento na parede
+    if (wall_up_timer >= wall_up_timeout)
+    {
+        wall_up_phase = 0;
+        wall_up_timer = 0;
+        
+        // Bloqueia temporariamente, mas agora
+        // o move_player reduzirá esse valor.
+        grab_cooldown = 0.18;
+        
+        velh = -ledge_dir;
+        velv = 1;
+        
+        state = player_state.JUMP;
+        return;
+    }
 }
 
 /////////// EXTRA - DESTRUIR PARTÍCULAS /////////
