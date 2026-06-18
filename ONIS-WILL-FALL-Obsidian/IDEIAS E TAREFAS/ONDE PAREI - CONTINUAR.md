@@ -7,6 +7,9 @@
 
 
 - coyote jump (feito)
-- jump buffer / Ainda pular quando quicar no chão caso tenha apertado o botão de pulo se ainda estiver no ar
+- jump buffer / Ainda pular quando quicar no chão caso tenha apertado o botão de pulo se ainda estiver no ar (feito)
+- hitstop no parry e parry duplo (feito)
+- efeito de esticar (efeito)
+- dash no ar (feito)
 
 - Melhorar cenário para o protótipo
