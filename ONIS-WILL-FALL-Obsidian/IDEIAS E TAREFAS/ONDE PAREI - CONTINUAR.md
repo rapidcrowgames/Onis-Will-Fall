@@ -3,13 +3,6 @@
 - Fazer SPRITE - PENDURADO (feito) - FINALIZAÇÃO (pelo menos 1) - E ATIRANDO ARREMESSÁVEL - SUBINDO NA BEIRADA) ---> FAZER SÓ DEPOIS SE O PROTÓTIPO FOR CONCRETIZADO E FUNCIONAL
 
 - Adicionar o estado de finalização. (só depois de ter um protótipo consolidado)
-
-- Adicionar os controles. (feito)
-
-- Adicionado estados e lógica de subir na beirada de paredes (feito)
-
-- Melhorada a lógica da hitbox do arremessável (feito)
-
-- Os inimigos não entram mais um com outro (feito)
+- Adicionar o estado de desnorteado / estado pré-finalização onde o inimigo vai ficar desnorteado para depois finalizar ele. (só depois de ter um protótipo consolidado)
 
 - Melhorar cenário para o protótipo

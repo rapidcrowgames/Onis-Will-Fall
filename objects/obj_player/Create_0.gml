@@ -76,6 +76,10 @@ particula            = noone; //Variável que cuida da criação especifica de u
 part_exists          = false; //Identifica se já foi criada a particula
 part_timer           = 1.2; //Tempo para deletar a particula após ser criada
 
+//Variáveis do QoL (Qualidade de vida - Coyote jump)
+coyote_timer         = 0;
+coyote_frames        = 10; 
+
 //Variáveis de animação
 sprite				 = sprite_index;
 image_numb			 = image_number;
@@ -367,6 +371,7 @@ move_player = function()
     
     #endregion
     
+    
     //////////////////////////////////
     //// DETECÇÃO DA BEIRADA ////////
     ////////////////////////////////
@@ -496,18 +501,26 @@ move_player = function()
 	///////////////////////
 	#region Lógica do pulo
     	
-	//SE estou no chão e aperto ou seguro o botão / tecla de pular
-	if (chao)
-	{
-		if (input_jump)
-		{
-			//Executa o pulo com valor máximo de max_velv
-			velv -= max_velv;
-            //Estou pulando
-            is_jumping = true;
-		}
-		
-	}
+    
+    //SE estou no chão, reseto o coyote jump
+    if (chao)
+    {
+        coyote_timer = coyote_frames;
+    }
+    else {
+    	//SE não estou no chão, começa a diminuir o timer
+        if (coyote_timer > 0) coyote_timer--; //Diminui em frames
+    }
+    
+    //Pulo permitido enquanto o timer não zerar
+    var _can_jump = (coyote_timer > 0);
+    
+    if (_can_jump && input_jump)
+    {
+        velv = -max_velv;
+        is_jumping  = true;
+        coyote_timer = 0; // Consome o timer pra não pular duas vezes
+    }
 	
 	//Se não estou mais no chão
 	if (velv < 0 && is_jumping)
@@ -712,7 +725,7 @@ state_jump = function() //Estado PULANDO / JUMP
 	if (life <= 0) state = player_state.DEATH;
 	
 	//Se estiver no chão volta para o estado de parado
-	if (chao) state = player_state.IDLE;
+	if (chao && !is_jumping) state = player_state.IDLE;
         
     //Se apertar o botão do shot e tiver itens para arremessar, ele vai para o SHOT
     if (input_shot && shot_item > 0) state = player_state.SHOT;
