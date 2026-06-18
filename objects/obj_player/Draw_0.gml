@@ -23,7 +23,7 @@ image_alpha);
 
 if (DEBUG_MODE)
 {
-	draw_text(x, y - sprite_height - 10, life);	
+	draw_text(x, y - sprite_height - 10, p_timer);	
 }
 
 #endregion

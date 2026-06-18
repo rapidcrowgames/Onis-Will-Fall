@@ -42,7 +42,7 @@ attacker             = noone; //Variável que salva quem foi que me atacou
 cutscene_action      = noone; //Define qual ação do SWITCH da cutscene
 
 //Variáveis do estado de PARRY
-parry_timer          = 0.6;
+parry_timer          = 0.8;
 p_timer              = parry_timer
 parry                = false;
 parry_processed      = false; // Garante que o parry só processa uma vez
@@ -915,7 +915,7 @@ state_parry = function() //Estado DEFESA / PARRY
     velh = 0;
     
     //Define a velocidade da animação
-    image_spd = image_speed / 3;
+    image_spd = image_speed / 4;
     
     //Pega os frames da imagem
     var _frame = floor(image_ind);
