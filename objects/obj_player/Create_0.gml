@@ -45,6 +45,7 @@ cutscene_action      = noone; //Define qual ação do SWITCH da cutscene
 parry_timer          = 0.6;
 p_timer              = parry_timer
 parry                = false;
+parry_processed      = false; // Garante que o parry só processa uma vez
 
 //Variáveis do estado DEATH
 player_dead          = false;
@@ -962,10 +963,20 @@ state_parry = function() //Estado DEFESA / PARRY
                 //Foi criada a particula
                 part_exists = true;
                 
+                //O parry foi processado
+                parry_processed = true;
+                
                 with (_hitbox.owner)
                 {
                     //treme a tela
                     tremor(8);
+                    
+                    //Aplica o hitstop
+                    global.hitstop_timer = 0.6;
+                    global.hitstop = true;
+                    
+                    //destroi a hitbox do inimigo
+                    instance_destroy(_hitbox);
                       
                     //Empurra o inimigo para longe
                     if (dir == -1) velh += 20;
@@ -976,6 +987,7 @@ state_parry = function() //Estado DEFESA / PARRY
                 //Reseta o parry após executar
                 hurt = false;
                 parry = false;
+                parry_processed = false;
                 p_timer = parry_timer;
             }
             else
@@ -983,7 +995,8 @@ state_parry = function() //Estado DEFESA / PARRY
                 //ERREI O TIMING (ou janela já fechada)
                 //Corta a animação e vai para o dano IMEDIATAMENTE
                 
-                parry = false;             
+                parry = false;      
+                parry_processed = false;       
                 p_timer = parry_timer;     
                 
                 state = player_state.HURT;
