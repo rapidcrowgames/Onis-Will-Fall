@@ -89,3 +89,24 @@ function gamepad_find_controller()
 
 #endregion
 
+#region //Squash & Stretch (efeito de esticar)
+
+function init_squash_stretch() //Inicia as variáveis no create
+{
+    stretch_x = 1;
+    stretch_y = 1;
+}
+
+function use_squash_stretch(_x = 1, _y = 1) //Use a quantidade que quer esticar
+{
+    stretch_x = lerp(stretch_x, _x, 0.2);
+    stretch_y = lerp(stretch_y, _y, 0.2);
+}
+
+function return_squash_stretch(_retorna = 0.1)
+{
+    stretch_x = lerp(stretch_x, 1, _retorna);
+    stretch_y = lerp(stretch_y, 1, _retorna);
+}
+
+#endregion

@@ -27,5 +27,8 @@ ground_collide_correction();
 //Garante que um inimigo não entre um dentro do outro
 enemy_collide_correction();
 
+//Retorna do efeito de esticar
+return_squash_stretch(0.7);
+
 
 #endregion

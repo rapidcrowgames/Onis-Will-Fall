@@ -15,6 +15,9 @@ update_state();
 //Controla o tempo de invencibilidade após sofrer um dano
 step_damage();
 
+//Retorna do efeito de esticar
+return_squash_stretch(0.08);
+
 #endregion
 
 

@@ -76,9 +76,12 @@ particula            = noone; //Variável que cuida da criação especifica de u
 part_exists          = false; //Identifica se já foi criada a particula
 part_timer           = 1.2; //Tempo para deletar a particula após ser criada
 
-//Variáveis do QoL (Qualidade de vida - Coyote jump)
+//Variáveis do QoL (Qualidade de vida - Coyote jump e Jump buffer)
 coyote_timer         = 0;
 coyote_frames        = 10; 
+
+jump_buffer          = 0;
+jump_buffer_frames   = 12;
 
 //Variáveis de animação
 sprite				 = sprite_index;
@@ -87,6 +90,9 @@ image_ind			 = image_index;
 image_spd			 = image_speed / 3;
 current_animation	 = noone;
 attack_done			 = false;
+
+//Inicia variáveis de funções
+init_squash_stretch(); //Efeito de esticar
 
 #endregion
 
@@ -502,7 +508,7 @@ move_player = function()
 	#region Lógica do pulo
     	
     
-    //SE estou no chão, reseto o coyote jump
+    //SE estou no chão, reseto o coyote jump (Coyote jump)
     if (chao)
     {
         coyote_timer = coyote_frames;
@@ -512,16 +518,32 @@ move_player = function()
         if (coyote_timer > 0) coyote_timer--; //Diminui em frames
     }
     
-    //Pulo permitido enquanto o timer não zerar
-    var _can_jump = (coyote_timer > 0);
-    
-    if (_can_jump && input_jump)
+    //Pulo permitido enquanto o timer não zerar (Jump buffer)
+    if (input_jump)
     {
-        velv = -max_velv;
-        is_jumping  = true;
-        coyote_timer = 0; // Consome o timer pra não pular duas vezes
+        jump_buffer = jump_buffer_frames;
     }
-	
+    else
+    {
+        if (jump_buffer > 0) jump_buffer--; //Diminui em frames
+    }
+    
+    // Pulo dispara se AMBOS estiverem ativos
+    var can_jump = (coyote_timer > 0);
+    var wants_jump = (jump_buffer > 0);
+    
+    if (can_jump && wants_jump)
+    {
+        
+        //AO pular estica o player
+        use_squash_stretch(0.8, 1.5);
+        
+        velv        = -max_velv;
+        is_jumping  = true;
+        coyote_timer = 0; // Consome os dois
+        jump_buffer  = 0;
+    }
+    	
 	//Se não estou mais no chão
 	if (velv < 0 && is_jumping)
 	{
@@ -557,7 +579,7 @@ move_player = function()
     //////////////////////////
     #region Lógica da esquiva
 
-    if (chao && input_esquive)
+    if (input_esquive)
     {
         velh = dir * esquive_force;
         hurt_invencible = true;
@@ -725,7 +747,12 @@ state_jump = function() //Estado PULANDO / JUMP
 	if (life <= 0) state = player_state.DEATH;
 	
 	//Se estiver no chão volta para o estado de parado
-	if (chao && !is_jumping) state = player_state.IDLE;
+	if (chao && !is_jumping) 
+    {
+        //Estica o player
+        use_squash_stretch(1.5, 1.2);
+        state = player_state.IDLE;
+    }
         
     //Se apertar o botão do shot e tiver itens para arremessar, ele vai para o SHOT
     if (input_shot && shot_item > 0) state = player_state.SHOT;
@@ -806,6 +833,7 @@ state_attack = function() //Estado ATAQUE / ATTACK
             {
                 //Timer zerou: encerra o estado de ataque
                 attack_timer = 0.13;  //Reseta o timer para o próximo uso
+                image_ind = 0; 
                 combo_count = 0;
                 combo_buffered = false;
                 attack_done = true;
@@ -815,6 +843,7 @@ state_attack = function() //Estado ATAQUE / ATTACK
     
     if (attack_done)
     {
+        image_ind = 0; 
         attack_done = false;
         state = player_state.IDLE;
     }
@@ -937,7 +966,7 @@ state_parry = function() //Estado DEFESA / PARRY
                 {
                     //treme a tela
                     tremor(8);
-                    
+                      
                     //Empurra o inimigo para longe
                     if (dir == -1) velh += 20;
                     if (dir ==  1) velh -= 20;

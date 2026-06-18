@@ -6,8 +6,8 @@ draw_sprite_ext(sprite,
 image_ind, 
 x, 
 y, 
-image_xscale, 
-image_yscale, 
+stretch_x * dir, 
+stretch_y, 
 image_angle, 
 image_blend, 
 image_alpha);
@@ -23,7 +23,7 @@ image_alpha);
 
 if (DEBUG_MODE)
 {
-	draw_text(x, y - sprite_height - 10, coyote_timer);	
+	draw_text(x, y - sprite_height - 10, life);	
 }
 
 #endregion

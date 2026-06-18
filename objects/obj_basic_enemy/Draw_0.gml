@@ -8,16 +8,19 @@ if (outline_active)
     shader_set_uniform_f(u_outline_alpha, outline_alpha);
     
     draw_sprite_ext(sprite, image_ind, x, y, 
-    image_xscale, image_yscale, 
-    image_angle, c_white, 1);
+    stretch_x * dir, 
+    stretch_y, 
+    image_angle, 
+    c_white, 
+    1);
     
     shader_reset();
 }
 
 //se desenhando (sprite normal)
 draw_sprite_ext(sprite, image_ind, x, y, 
-image_xscale, 
-image_yscale, 
+stretch_x * dir, 
+stretch_y, 
 image_angle, 
 image_blend, 
 image_alpha);

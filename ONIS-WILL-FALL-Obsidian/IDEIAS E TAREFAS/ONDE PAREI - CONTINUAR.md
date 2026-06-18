@@ -5,4 +5,8 @@
 - Adicionar o estado de finalização. (só depois de ter um protótipo consolidado)
 - Adicionar o estado de desnorteado / estado pré-finalização onde o inimigo vai ficar desnorteado para depois finalizar ele. (só depois de ter um protótipo consolidado)
 
+
+- coyote jump (feito)
+- jump buffer / Ainda pular quando quicar no chão caso tenha apertado o botão de pulo se ainda estiver no ar
+
 - Melhorar cenário para o protótipo

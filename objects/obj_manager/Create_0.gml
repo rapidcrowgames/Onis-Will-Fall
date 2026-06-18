@@ -4,7 +4,7 @@
 #region Variáveis de controle
 
 //Variáveis do hitstop
-hitstop_timer       = 0.05; //0.1 segundos
+global.hitstop_timer       = 0.05; //Segundos
 
 //Variáveis para screenshake
 treme = 0;
@@ -23,16 +23,16 @@ gamepad_find_controller();
 hitstop = function() //Método de HITSTOP dos danos
 {
     //SE a global histop for TRUE
-    //o jogo pausa por 0.3 segundos
+    //o jogo pausa por 0.05 segundos
     if (global.hitstop)
     {
         //Diminui o timer
-        if (hitstop_timer > 0) hitstop_timer -= delta_time / 1000000;
+        if (global.hitstop_timer > 0) global.hitstop_timer -= delta_time / 1000000;
             
         //SE o timer chegar a 0, então o hitstop para
-        if (hitstop_timer <= 0) 
+        if (global.hitstop_timer <= 0) 
         { 
-            hitstop_timer = 0.05;
+            global.hitstop_timer = 0.05;
             global.hitstop = false;
         }
     }

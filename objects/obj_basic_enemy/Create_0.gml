@@ -58,6 +58,7 @@ part_timer           = 1.2; //Tempo para deletar a particula após ser criada
 
 //Inicia shaders
 init_shader_outline(); //Efeito de Outline
+init_squash_stretch(); //Efeito de esticar
 
 
 
@@ -604,6 +605,14 @@ state_attack = function() // ATACANDO
             
         } 
     }
+    
+    //SE deu parry duplo e estou no 2 frame de animação, eu dou o HITSTOP
+    var _player_frame = obj_player.image_ind >= 2;
+    if (_frame == 3 && double_parry && _player_frame)
+    {
+        global.hitstop_timer = 0.5;
+        global.hitstop = true;
+    }
         
     //SE criei a hitbox, eu destruo ela no 3 frame da animação
     if (_frame == 3 && create_hitbox)
@@ -692,6 +701,9 @@ state_load_hurt = function() // SOFRE O ATAQUE DO PLAYER
     //Se estiver no primeiro frame ele da o HITSTOP
     if (_frame == 1)
     {
+        //Estica o inimigo
+        use_squash_stretch(1, 1.6);
+        
         //Causa o HITSTOP
         global.hitstop = true
         
