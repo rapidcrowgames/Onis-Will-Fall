@@ -24,7 +24,6 @@ dir			         = 1 // 1 - Direita / -1 Esquerda
 
 //Variáveis de estados
 hurt                 = false; //Identifica se sofreu dano ou não
-esquive_force        = 20; //Força da esquiva
 
 //Variáveis do estado de ATTACK
 create_hitbox	     = false; //Cria a hitbox
@@ -42,7 +41,7 @@ attacker             = noone; //Variável que salva quem foi que me atacou
 cutscene_action      = noone; //Define qual ação do SWITCH da cutscene
 
 //Variáveis do estado de PARRY
-parry_timer          = 0.8;
+parry_timer          = 1;
 p_timer              = parry_timer
 parry                = false;
 parry_processed      = false; // Garante que o parry só processa uma vez
@@ -59,16 +58,18 @@ wall_left            = false;
 shot_item            = 5; //Qtd de arremessáveis
 shot_created         = false;
 
+//Variáveis do estado ESQUIVE
+esquive_air          = 1; //Tem 1 esquiva no ar
+esquive_air_qtd      = esquive_air; //Quantidade de esquivas no Ar.
+esquive_force        = 20; //Força da esquiva
+
 //Variáveis do estado Wall grab / Ficar na parede pendurado
 is_grab = false; // Indica que o personagem está pendurado
 grab_cooldown = 0; // Impede que o personagem solte e agarre novamente a mesma beirada no frame seguinte
 ledge_dir = 0; // Direção da parede agarrada
-
 ledge_target_x = x; // Posição final onde o personagem ficará depois de subir na plataforma
 ledge_target_y = y;
-
 wall_up_phase = 0; // Controla as etapas da subida : 0 = subindo verticalmente : 1 = entrando horizontalmente na plataforma
-
 wall_up_timer = 0; // Timer de segurança para evitar travamentos
 wall_up_timeout = 1.2; // Tempo máximo permitido para concluir a subida
 
@@ -322,7 +323,8 @@ move_player = function()
     if (state == player_state.ESQUIVE) return;
     if (state == player_state.HURT) return;
     if (state == player_state.DEATH) return;
-        
+    if (state == player_state.ESQUIVE) return;
+    
     // Trava movimento horizontal no grab
     if (is_grab)
     {
@@ -578,12 +580,23 @@ move_player = function()
     ////////////////////////////
     //// LÓGICA DA ESQUIVA ////
     //////////////////////////
-    #region Lógica da esquiva
+   #region Lógica da esquiva
 
-    if (input_esquive)
+    if (input_esquive && chao)
     {
         velh = dir * esquive_force;
+        velv = 0;
         hurt_invencible = true;
+        state = player_state.ESQUIVE;
+    }
+    
+    //SE não estou no chão e quero usar a esquiva, eu preciso ter a esquiva no ar
+    if (input_esquive && !chao && esquive_air_qtd > 0)
+    {
+        velh = dir * esquive_force;
+        velv = 0;
+        hurt_invencible = true;
+        esquive_air_qtd--;
         state = player_state.ESQUIVE;
     }
     
@@ -752,6 +765,10 @@ state_jump = function() //Estado PULANDO / JUMP
     {
         //Estica o player
         use_squash_stretch(1.5, 1.2);
+        
+        //Retorna a quantidade de dash
+        esquive_air_qtd = esquive_air;
+        
         state = player_state.IDLE;
     }
         
@@ -769,7 +786,16 @@ state_attack = function() //Estado ATAQUE / ATTACK
     image_spd = image_speed / 3.5;
     
     //Se apertar o botão do shot e tiver itens para arremessar, ele vai para o SHOT
-    if (input_shot && shot_item > 0) state = player_state.SHOT;
+    if (input_shot && shot_item > 0) 
+    {
+        state = player_state.SHOT;
+        
+        //SE a hitbox já foi criada eu destruo no momento do tiro
+        if (create_hitbox)
+        {
+            instance_destroy(obj_player_hitbox);
+        }
+    }
     
     //SE for atacado durante o meu ataque, ele garante que vai destruir a hitbox
     if (hurt)
@@ -1034,7 +1060,7 @@ state_parry = function() //Estado DEFESA / PARRY
 state_esquive = function() //Estado ESQUIVA / ESQUIVE
 {
     //Debuga o estado
-    state_debug = "Esquive front";
+    state_debug = "Esquive";
     
     //Muda para animação da esquiva de costas
     change_sprites_once(10);

@@ -12,4 +12,6 @@
 - efeito de esticar (efeito)
 - dash no ar (feito)
 
-- Melhorar cenário para o protótipo
+- Melhorar cenário para o protótipo (feito)
+
+- Arrumar o dash no ar que o personagem ta voando e soltando diversos dashes no AR (feito)

@@ -24,7 +24,9 @@
     {"name":"hitbox","order":2,"path":"folders/Sprites/player/hitbox.yy",},
     {"name":"player_animations","order":1,"path":"folders/Sprites/player/player_animations.yy",},
     {"name":"sprites_temporarias","order":1,"path":"folders/Sprites/sprites_temporarias.yy",},
+    {"name":"tiles","order":4,"path":"folders/Sprites/tiles.yy",},
     {"name":"Tile Sets","order":2,"path":"folders/Tile Sets.yy",},
+    {"name":"tileset_prototype","order":1,"path":"folders/Tile Sets/tileset_prototype.yy",},
     {"name":"Timelines","order":8,"path":"folders/Timelines.yy",},
   ],
   "ResourceOrderSettings":[

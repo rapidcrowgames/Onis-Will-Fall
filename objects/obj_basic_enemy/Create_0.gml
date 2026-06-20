@@ -24,7 +24,7 @@ current_animation	 = noone;
 attack_done			 = false;
 
 //Variáveis do estado IDLE
-idle_timer_change    = 1; //2 Segundos
+idle_timer_change    = 1; //Segundos
 
 //Variáveis do estado RUN
 run_timer_change     = 10; //10 segundos
@@ -45,7 +45,7 @@ target               = noone; //O alvo que está perseguindo
 player_last_position = noone; //Pega a última posição do player
 
 //Variáveis do estado LOAD_ATTACK
-timer_load_attack    = 0.5; //0.5 segundos
+timer_load_attack    = 0.7; //Segundos
 
 //Variáveis do estado HURT
 damage_done          = false; //Garante que sofreu o dano apenas uma vez
@@ -505,7 +505,7 @@ state_load_attack = function() // PRÉ ATAQUE
     if (timer_load_attack > 0) timer_load_attack -= delta_time / 1000000;
         
     //Quando chegar no 2 frame do inimigo ele mostra o brilho
-    if (timer_load_attack <= 0.60 && !outline_active)
+    if (timer_load_attack <= 0.50 && !outline_active)
     {
         start_outline([1, 0.9, 0.3], 0.9, 0.08); //amarelo suave
     }
@@ -522,8 +522,8 @@ state_load_attack = function() // PRÉ ATAQUE
         //Aumento um pouco a velocidade
         velh = (max_velh * 3 * sign(player_last_position - x));
         
-        //Reseto o timer
-        timer_load_attack = 1;
+        //Reseto o timer de forma aleatória
+        timer_load_attack = choose(0.7, 1);
         
         //Sai da janela de parry e tira o sublinhado do inimigo
         parry_window = false;
@@ -536,7 +536,7 @@ state_load_attack = function() // PRÉ ATAQUE
     if (place_meeting(x, y, obj_player_hitbox))
     {
        //Reseto o timer
-       timer_load_attack = 1; 
+       timer_load_attack = choose(0.7, 1); 
        state_enemy = enemy_state.LOAD_HURT; 
     }
 }
