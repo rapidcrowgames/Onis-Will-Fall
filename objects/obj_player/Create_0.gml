@@ -785,6 +785,9 @@ state_attack = function() //Estado ATAQUE / ATTACK
     //Velocidade da animação
     image_spd = image_speed / 3.5;
     
+    //Variável que deixa aleatória o efeito de som da espada
+    var _pitch_var = irandom_range(0.9, 1.8);
+    
     //Se apertar o botão do shot e tiver itens para arremessar, ele vai para o SHOT
     if (input_shot && shot_item > 0) 
     {
@@ -831,6 +834,9 @@ state_attack = function() //Estado ATAQUE / ATTACK
     //Destroi a hitbox quando sair do frame ativo
     if (floor(image_ind) > 3 && create_hitbox)
     {
+        //Reproduz som
+        audio_play_sound(sfx_sword, 1, false, global.sfx, 0, _pitch_var);
+        
         instance_destroy(obj_player_hitbox);
         create_hitbox = false;
     }
@@ -844,6 +850,9 @@ state_attack = function() //Estado ATAQUE / ATTACK
         // SE tem combo buffered E ainda cabe mais um golpe: encadeia
         if (combo_buffered && combo_count < 2) // máximo 3 golpes (0, 1, 2)
         {
+            //Reproduz som
+            audio_play_sound(sfx_sword, 1, false, global.sfx, 0, _pitch_var);
+            
             image_ind = 0;          //Reinicia a animação pro próximo golpe
             image_spd = image_speed / 3.5; //Retoma a velocidade da animação
             combo_count++;
@@ -866,6 +875,13 @@ state_attack = function() //Estado ATAQUE / ATTACK
                 attack_done = true;
             }
         }
+    }
+    
+    //SE estiver no último ataque do combo, ele emite o som do gemido
+    if (combo_count == 2)
+    {
+        //Reproduz som
+        audio_play_sound(sfx_player_voice, 2, false, global.sfx, 0, _pitch_var)
     }
     
     if (attack_done)
@@ -941,7 +957,7 @@ state_parry = function() //Estado DEFESA / PARRY
     velh = 0;
     
     //Define a velocidade da animação
-    image_spd = image_speed / 4;
+    image_spd = image_speed / 3;
     
     //Pega os frames da imagem
     var _frame = floor(image_ind);
