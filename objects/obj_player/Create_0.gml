@@ -995,7 +995,7 @@ state_parry = function() //Estado DEFESA / PARRY
                 with (_hitbox.owner)
                 {
                     //treme a tela
-                    tremor(8);
+                    tremor(35);
                     
                     //Aplica o hitstop
                     global.hitstop_timer = 0.6;

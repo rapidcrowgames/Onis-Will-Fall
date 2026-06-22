@@ -583,7 +583,7 @@ state_attack = function() // ATACANDO
             double_parry = true;
             
             //treme a tela
-            tremor(8);
+            tremor(50);
             
             //Cria a particula
             particula = part_system_create(ps_double_parry);
