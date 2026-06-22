@@ -56,6 +56,10 @@ particula            = noone; //Variável que cuida da criação especifica de u
 part_exists          = false; //Identifica se já foi criada a particula
 part_timer           = 1.2; //Tempo para deletar a particula após ser criada
 
+
+//Variáveis de som
+attack_sound         = false;
+
 //Inicia shaders
 init_shader_outline(); //Efeito de Outline
 init_squash_stretch(); //Efeito de esticar
@@ -571,6 +575,13 @@ state_attack = function() // ATACANDO
         var _hitbox = instance_create_layer(x + 6 * dir, y - sprite_height, layer, obj_hitbox_enemy);
         _hitbox.owner = id; //Eu (inimigo) sou o criador dessa hitbox
         
+        //Reproduz o som do ataque
+        if (!attack_sound)
+        {
+            audio_play_sound(sfx_sword, 1, false, global.sfx, 0, 1.7);
+            attack_sound = true;
+        }
+        
         create_hitbox = true; //Criei ela
     }
     
@@ -654,6 +665,7 @@ state_attack = function() // ATACANDO
     //SE o ataque já terminou, eu volto para o estado de parado
     if (attack_done)
     {
+        attack_sound = false;
         in_chase = false;
         attack_done = false; //reset
         state_enemy = enemy_state.IDLE;

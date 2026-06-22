@@ -15,3 +15,14 @@
 - Melhorar cenário para o protótipo (feito)
 
 - Arrumar o dash no ar que o personagem ta voando e soltando diversos dashes no AR (feito)
+
+- som dos golpes e dano do player e inimigo (feito)
+- som de parry e dash (feito)
+- som dos passos (em breve)
+- som do arremessavel (feito)
+
+
+- Adicionar uma música de fundo
+- Fazer os levels
+- Fazer o fim
+- Fazer o tutorial

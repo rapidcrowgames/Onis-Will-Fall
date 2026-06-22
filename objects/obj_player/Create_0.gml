@@ -80,6 +80,9 @@ part_timer           = 1.2; //Tempo para deletar a particula após ser criada
 
 //Variáveis de Áudio
 attack_sound_played = false;
+dash_sound          = false;
+shot_sound          = false;
+hurt_sound          = false;
 
 //Variáveis do QoL (Qualidade de vida - Coyote jump e Jump buffer)
 coyote_timer         = 0;
@@ -926,6 +929,16 @@ state_hurt = function() //Estado MACHUCADO / HURT
     //Altera para animação 1 vez para de machucado
     change_sprites_once(6);
     
+    //Reproduz o som de dano
+    if (!hurt_sound)
+    {
+        var _sfx   = choose(sfx_player_damage_1, sfx_player_damage_2);
+        var _pitch = irandom_range(1, 1.7);
+        audio_play_sound(_sfx, 1, false, global.sfx, 0, _pitch);
+        
+        hurt_sound = true;
+    }
+    
     //Perde vida e joga para trás apenas UMA VEZ (quando não é invencivel ainda)
     if (!hurt_invencible)
     {
@@ -957,12 +970,14 @@ state_hurt = function() //Estado MACHUCADO / HURT
     //Se a vida chegar a 0 vai para o estado de DEATH
     if (life <= 0)
     {
+        hurt_sound = false;
         state = player_state.DEATH;
     }
     
     //No fim da animação, volta para o estado parado
     if (image_ind >= sprite_get_number(sprite) - 1)
     {
+        hurt_sound = false;
         hurt = false; //Não estou mais machucado
         state = player_state.IDLE;
     }
@@ -1116,6 +1131,15 @@ state_esquive = function() //Estado ESQUIVA / ESQUIVE
     //Diminui a velocidade do player
     velh = lerp(velh, 0, 0.1);
     
+    //Reproduz o som do dash, SE ainda não foi reproduzido
+    if (!dash_sound)
+    {
+        //Reproduz o som
+        audio_play_sound(sfx_dash, 2, false, global.sfx, 0, 1); 
+        
+        dash_sound = true;
+    }
+    
     //Fica invencivel
     hurt_invencible = true;
     
@@ -1123,6 +1147,7 @@ state_esquive = function() //Estado ESQUIVA / ESQUIVE
     if (image_ind >= sprite_get_number(sprite) - 1)
     {
         hurt_timer = 1; //Reseta o timer de dano
+        dash_sound = false;
         state = player_state.IDLE; //Volta para o estado parado
     }
 }
@@ -1136,6 +1161,14 @@ state_shot = function() //Estado de ARREMESÁVEL / SHOT
     
     //Define a velocidade da animação
     image_spd = image_speed / 4;
+    
+    //Reproduz o som do arremessável
+    if (!shot_sound)
+    {
+        audio_play_sound(sfx_shot, 2, false, global.sfx, 0, 1);
+        
+        shot_sound = true;
+    }
     
     //Cria a hitbox no player de acordo com a direção dele SE ela ainda não existe
     if (!instance_exists(obj_player_hitbox_shot))
@@ -1155,6 +1188,7 @@ state_shot = function() //Estado de ARREMESÁVEL / SHOT
     if (shot_created)
     {
         shot_created = false;
+        shot_sound = false;
         //Após criar o arremessável, eu saio do estado
         state = player_state.IDLE;
     }

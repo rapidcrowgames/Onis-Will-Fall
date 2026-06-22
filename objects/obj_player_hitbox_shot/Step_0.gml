@@ -14,6 +14,11 @@ if (x < camera_get_view_x(view_camera[0]) - 100 ||
 //SE eu colidir com a parede eu me destruo
 if (place_meeting(x, y, obj_colisao))
 {
+    var _pitch = irandom_range(1, 2);
+    
+    //Reproduz o som de batida na parede (podendo ser alterado depois)
+    audio_play_sound(sfx_hit_damage_doll_punch, 3, false, global.sfx, 0, _pitch);
+    
     instance_destroy();
 }
 
