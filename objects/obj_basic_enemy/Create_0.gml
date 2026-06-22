@@ -585,6 +585,9 @@ state_attack = function() // ATACANDO
             //treme a tela
             tremor(50);
             
+            //Reproduz o som de puxar a espada
+            audio_play_sound(sfx_parry, 1, false, global.sfx, 0, 1);
+            
             //Cria a particula
             particula = part_system_create(ps_double_parry);
             part_system_position(particula, x + 6 * dir, y - sprite_height);
@@ -714,6 +717,12 @@ state_load_hurt = function() // SOFRE O ATAQUE DO PLAYER
     //No fim da animação, ele vai para o estado HURT
     if (image_ind >= sprite_get_number(sprite) - 1)
     {
+        var _pitch = irandom_range(1, 2);
+        var _sfx   = choose(sfx_hit_1, sfx_hit_2, sfx_hit_3);
+        
+        //Reproduz o som de puxar a espada
+        audio_play_sound(_sfx, 1, false, global.sfx * 1.2, 0, _pitch);
+        
         state_enemy = enemy_state.HURT;
     }
 }
@@ -757,6 +766,10 @@ state_hurt = function() // SOFRE O DANO
         //SE a vida acabou, então ele vai para o estado de DIE / MORTE
         if (life <= 0)
         {
+            var _pitch = irandom_range(1, 1.8);
+            
+            //Reproduz o som da morte com a espada
+            audio_play_sound(sfx_sword_kill, 1, false, global.sfx, 0, _pitch);
             state_enemy = enemy_state.DIE;
         }
         

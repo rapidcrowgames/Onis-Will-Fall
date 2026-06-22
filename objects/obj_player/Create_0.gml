@@ -78,6 +78,9 @@ particula            = noone; //Variável que cuida da criação especifica de u
 part_exists          = false; //Identifica se já foi criada a particula
 part_timer           = 1.2; //Tempo para deletar a particula após ser criada
 
+//Variáveis de Áudio
+attack_sound_played = false;
+
 //Variáveis do QoL (Qualidade de vida - Coyote jump e Jump buffer)
 coyote_timer         = 0;
 coyote_frames        = 10; 
@@ -785,9 +788,6 @@ state_attack = function() //Estado ATAQUE / ATTACK
     //Velocidade da animação
     image_spd = image_speed / 3.5;
     
-    //Variável que deixa aleatória o efeito de som da espada
-    var _pitch_var = irandom_range(0.9, 1.8);
-    
     //Se apertar o botão do shot e tiver itens para arremessar, ele vai para o SHOT
     if (input_shot && shot_item > 0) 
     {
@@ -821,8 +821,40 @@ state_attack = function() //Estado ATAQUE / ATTACK
     //Roda a animação do golpe atual apenas uma vez
     change_sprites_once(2 + combo_count); // 2 = primeiro ataque no array
     
+    
+    // ── SOM DO ATAQUE ─────────────────────────────────────────────
+    // Toca o som quando a espada entra no frame ativo
+    if (floor(image_ind) == 2 && !attack_sound_played)
+    {
+        //Variável que deixa aleatória o efeito de som da espada
+        var _pitch_var = irandom_range(1, 1.7);
+        
+        //Som da espada em todos os ataques
+        audio_play_sound(sfx_sword, 1, false, global.sfx, 0, _pitch_var);
+        
+        //Som de voz apenas no terceiro golpe do combo
+        if (combo_count == 2)
+        {
+            var _sound = irandom_range(0, 1);
+            
+            //As vezes sai o som, e as vezes não
+            audio_play_sound(sfx_player_voice, 1, false, global.sfx, 0, _sound);
+        }
+        
+        attack_sound_played = true;
+    }
+    
+    //Reseta a permissão do som quando sair do frame do golpe
+    if (floor(image_ind) != 2)
+    {
+        attack_sound_played = false;
+    }
+    // ── FIM DO SOM DO ATAQUE ───────────────────────────────────────
+    
+    
     // Buffer: guarda o input de ataque pressionado DURANTE a animação
     if (input_attack) combo_buffered = true;
+    
     
     //Criação da hitbox no frame ativo
     if (floor(image_ind) == 2 && !create_hitbox)
@@ -831,15 +863,14 @@ state_attack = function() //Estado ATAQUE / ATTACK
         create_hitbox = true;
     }
     
+    
     //Destroi a hitbox quando sair do frame ativo
     if (floor(image_ind) > 3 && create_hitbox)
     {
-        //Reproduz som
-        audio_play_sound(sfx_sword, 1, false, global.sfx, 0, _pitch_var);
-        
         instance_destroy(obj_player_hitbox);
         create_hitbox = false;
     }
+    
     
     // ── ANIMAÇÃO TERMINOU ─────────────────────────────────────────────
     if (image_ind >= sprite_get_number(sprite) - 1)
@@ -847,12 +878,10 @@ state_attack = function() //Estado ATAQUE / ATTACK
         // Congela no último frame enquanto o timer corre
         image_spd = 0;
         
+        
         // SE tem combo buffered E ainda cabe mais um golpe: encadeia
         if (combo_buffered && combo_count < 2) // máximo 3 golpes (0, 1, 2)
         {
-            //Reproduz som
-            audio_play_sound(sfx_sword, 1, false, global.sfx, 0, _pitch_var);
-            
             image_ind = 0;          //Reinicia a animação pro próximo golpe
             image_spd = image_speed / 3.5; //Retoma a velocidade da animação
             combo_count++;
@@ -877,12 +906,6 @@ state_attack = function() //Estado ATAQUE / ATTACK
         }
     }
     
-    //SE estiver no último ataque do combo, ele emite o som do gemido
-    if (combo_count == 2)
-    {
-        //Reproduz som
-        audio_play_sound(sfx_player_voice, 2, false, global.sfx, 0, _pitch_var)
-    }
     
     if (attack_done)
     {
@@ -965,6 +988,9 @@ state_parry = function() //Estado DEFESA / PARRY
     //A partir do frame 6 que abre a janela de parry
     if (_frame >= 6 && !parry)
     {
+        //Reproduz o som de puxar a espada
+        audio_play_sound(sfx_sword, 1, false, global.sfx, 0, 1);
+        
         parry = true;
     }
     
@@ -998,6 +1024,9 @@ state_parry = function() //Estado DEFESA / PARRY
             //SE estou dentro da janela de parry E ainda há tempo, é um PARRY VÁLIDO
             if (parry && p_timer > 0)
             {
+                //Reproduz o som de puxar a espada
+                audio_play_sound(sfx_parry, 1, false, global.sfx, 0, 1);
+                
                 //Cria a particula
                 particula = part_system_create(ps_parry);
                 part_system_position(particula, x + 20 * dir, y - sprite_height);
