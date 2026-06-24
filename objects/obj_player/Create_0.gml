@@ -1486,8 +1486,13 @@ state_cutscene = function() //Estado CENA / CUTSCENE
 	//{
 		//with (obj_player)
 		//{
+            //Define qual a animação dele na cutscene
 			//cutscene_action = "idle";
+            
+            //Coloca o player no estado
 			//state = player_state.CUTSCENE;
+            
+            //Ativa a global da cutscene
 			//global.cutscene = true;
 		//}
 	//}
