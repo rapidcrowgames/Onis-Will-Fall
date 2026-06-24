@@ -1,94 +1,120 @@
-// ======================================
-// Controle geral de música do jogo
-// ======================================
-#region Variáveis de controle
+// ============================================================
+//  OBJ_SOUND_CONTROLLER — Create Event
+//  Controlador central de áudio do jogo.
+//  Gerencia volume global (SFX e Música) e transições com fade.
+// ============================================================
 
-// Música atual tocando
-music_current = noone;
+// --- Configurações de Fade ---
+fade_duration   = 60;   // Duração do fade em frames (60 = 1 segundo a 60fps)
+fade_timer      = 0;    // Timer interno do fade
+fade_in_speed   = 0;    // Calculado automaticamente
+fade_out_speed  = 0;    // Calculado automaticamente
 
-// Volume interno da música
-// usado para o fade
-music_volume = 0;
+// --- Estado interno das músicas ---
+music_current   = -1;   // Asset de música tocando agora
+music_next      = -1;   // Próxima música a tocar (durante troca)
+music_instance  = -1;   // Instance do audio_play_sound da música atual
 
-// Velocidade do fade
-fade_speed = 0.02;
+// --- Volumes internos (espelho das globais, para detectar mudança) ---
+_last_sfx       = global.sfx;
+_last_snd       = global.snd;
 
-// Música que vai entrar depois do fade
-music_next = noone;
+// --- Estado do fade ---
+// "idle"     → nenhum fade acontecendo
+// "fade_out" → diminuindo volume da música atual antes de trocar
+// "fade_in"  → aumentando volume da nova música
+_fade_state = "idle";
 
-#endregion
+// ============================================================
+//  FUNÇÕES DO CONTROLADOR
+//  Todas as funções abaixo são methods desse objeto.
+//  Use-as externamente via: obj_sound_controller.play_music(snd_boss)
+// ============================================================
 
 
-#region Métodos e funções
-
-// ======================================
-// FUNÇÃO PARA TOCAR MÚSICA
-// ======================================
-function play_music(_music)
-{
-    // Se já está tocando essa música
-    // não faz nada
-    if (music_current == _music)
-    {
-        return;
+// ------------------------------------------------------------
+//  play_music(novo_asset)
+//  Inicia uma nova música com fade in/out automático.
+//  Se já houver uma música tocando, faz fade out dela primeiro.
+//
+//  Exemplo de uso:
+//    obj_sound_controller.play_music(snd_boss_1);
+//    obj_sound_controller.play_music(snd_overworld);
+// ------------------------------------------------------------
+play_music = function(_new_music) {
+    // Se for a mesma música já tocando, ignora
+    if (_new_music == music_current && audio_is_playing(music_instance)) {
+        exit;
     }
     
-    // Guarda a próxima música
-    music_next = _music;
+    music_next = _new_music;
     
-    // Se existe uma música tocando
-    if (music_current != noone)
-    {
-        // começa fade out
-        fade_out = true;
-    }
-    
-    else
-    {
-        // se não existe música
-        // já inicia direto
-        start_new_music();
-    }
-    
-}
-
-// ======================================
-// COMEÇA UMA NOVA MÚSICA
-// ======================================
-function start_new_music()
-{
-    music_current = music_next;
-    
-    audio_play_sound(
-        music_current,
-        10,
-        true
-    );
-    
-    // começa silenciosa
-    music_volume = 0;
-    
-    audio_sound_gain
-    (
-        music_current,
-        0,
-        0
-    );
-    
-    fade_in = true;
-    
-}
-
-// ======================================
-// PARAR MÚSICA
-// ======================================
-function stop_music()
-{
-    if (music_current != noone)
-    {
-        fade_out = true;
-        music_next = noone;
+    if (music_current != -1 && audio_is_playing(music_instance)) {
+        // Já tem música tocando → faz fade out primeiro, depois fade in da nova
+        _fade_state  = "fade_out";
+        fade_timer   = 0;
+        fade_out_speed = global.snd / fade_duration; // quanto diminuir por frame
+    } else {
+        // Nenhuma música tocando → começa direto com fade in
+        _start_fade_in();
     }
 }
 
-#endregion
+
+// ------------------------------------------------------------
+//  stop_music()
+//  Para a música atual com fade out suave.
+//
+//  Exemplo de uso:
+//    obj_sound_controller.stop_music();
+// ------------------------------------------------------------
+stop_music = function() {
+    if (music_current != noone && audio_is_playing(music_instance)) 
+    {
+        music_next   = -1; // Sem próxima música (só para)
+        _fade_state  = "fade_out";
+        fade_timer   = 0;
+        fade_out_speed = global.snd / fade_duration;
+    }
+}
+
+
+// ------------------------------------------------------------
+//  play_sfx(asset)
+//  Toca um efeito sonoro respeitando o volume global de SFX.
+//  Use sempre que for tocar um som de efeito (pulo, tiro, etc.)
+//
+//  Exemplo de uso:
+//    obj_sound_controller.play_sfx(snd_jump);
+//    obj_sound_controller.play_sfx(snd_hit);
+// ------------------------------------------------------------
+play_sfx = function(_sfx_asset) {
+    var _inst = audio_play_sound(_sfx_asset, 10, false);
+    audio_sound_gain(_inst, global.sfx, 0);
+    return _inst; // Retorna a instância caso queira manipular depois
+}
+
+
+// ------------------------------------------------------------
+//  _start_fade_in()   ← Função interna (prefixo _ = privada)
+//  Inicia a reprodução da próxima música com fade in.
+//  NÃO chame essa função diretamente de fora do objeto.
+// ------------------------------------------------------------
+_start_fade_in = function() {
+    music_current    = music_next;
+    music_next       = -1;
+    
+    if (music_current == -1) {
+        // Se não tem próxima música, só limpa o estado
+        _fade_state = "idle";
+        exit;
+    }
+    
+    // Toca a nova música com volume 0 (vai aumentar no fade in)
+    music_instance = audio_play_sound(music_current, 5, true); // loop = true
+    audio_sound_gain(music_instance, 0, 0); // começa mudo
+    
+    _fade_state    = "fade_in";
+    fade_timer     = 0;
+    fade_in_speed  = global.snd / fade_duration; // quanto aumentar por frame
+}

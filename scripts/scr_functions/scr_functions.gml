@@ -110,3 +110,4 @@ function return_squash_stretch(_retorna = 0.1)
 }
 
 #endregion
+

@@ -21,8 +21,13 @@
 - som dos passos (em breve)
 - som do arremessavel (feito)
 
-
-- Adicionar uma música de fundo
+- Após terminar o protótipo voltar o valor da globla.snd para 1
+- Adicionar uma música de fundo (feito)
 - Fazer os levels
 - Fazer o fim
 - Fazer o tutorial
+
+
+- Fazer escadas e a lógica para o player subir nas escadas (escadas de cenário mesmo, na horizontal e não vertical) 
+- Fazer trigger de tele transporte
+- Fazer one way plataform 
