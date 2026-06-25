@@ -55,8 +55,9 @@ wall_right           = false;
 wall_left            = false;
 
 //Variáveis do estado SHOT / Arremessáveis
-shot_item            = 5; //Qtd de arremessáveis
+shot_item            = 10; //Qtd de arremessáveis
 shot_created         = false;
+shot_timer           = 0; //Tempo para o próximo disparo (tempo padrão 0.3)
 
 //Variáveis do estado ESQUIVE
 esquive_air          = 1; //Tem 1 esquiva no ar
@@ -509,6 +510,25 @@ move_player = function()
    }
     
     #endregion
+    
+    
+    ////////////////////////////////////
+    /// LÓGICA DO ONE WAY PLATAFORM ///
+    //////////////////////////////////
+    #region Lógica de quando estou em uma one way plataform
+    
+    //SE a colisão está ativada
+    if (global.one_way_collision)
+    {
+        //SE eu precionar para baixo  + espaço
+        if (input_jump && input_down)
+        {
+            //Eu desligo a colisão
+            global.one_way_collision = false;
+        }
+    }
+    
+    #endregion
       
 	
 	/////////////////////////
@@ -528,7 +548,7 @@ move_player = function()
     }
     
     //Pulo permitido enquanto o timer não zerar (Jump buffer)
-    if (input_jump)
+    if (input_jump && !input_down)
     {
         jump_buffer = jump_buffer_frames;
     }
@@ -606,6 +626,20 @@ move_player = function()
         state = player_state.ESQUIVE;
     }
     
+    #endregion
+    
+    
+    ////////////////////////////////////
+    /// LÓGICA DE RECARREGAR O TIRO ///
+    //////////////////////////////////
+    #region Lógica de recarregar os tiros e arremessáveis
+    
+    //Diminui o timer
+    if (shot_timer > 0) shot_timer -= delta_time / 1000000;
+        
+    //Se o tiro foi criado e o timer zerado, eu recarrego o timer
+    if (shot_timer <= 0 && shot_created) shot_timer = 0.3;
+
     #endregion
 
     
@@ -744,17 +778,19 @@ state_jump = function() //Estado PULANDO / JUMP
 {
 	//Debug de estado
 	state_debug = "jump";
-	
+    
 	//Muda para a sprite de pulo (quando tiver)
 	if (is_jumping)
     {
         change_sprites_once(7)
+        global.one_way_collision = false;
     }
     
     //Quando já estiver mais alto e em queda, muda para sprite de queda
     if (!is_jumping)
     {
         change_sprites(8);
+        global.one_way_collision = true;
     }
     
     //define a velocidade das animações
@@ -1168,37 +1204,41 @@ state_shot = function() //Estado de ARREMESÁVEL / SHOT
     //Define a velocidade da animação
     image_spd = image_speed / 4;
     
-    //Reproduz o som do arremessável
-    if (!shot_sound)
+    //SE o tiro ainda não foi criado, eu crio ele
+    if (!shot_created && shot_timer <= 0)
     {
-        audio_play_sound(sfx_shot, 2, false, global.sfx, 0, 1);
-        
-        shot_sound = true;
-    }
-    
-    //Cria a hitbox no player de acordo com a direção dele SE ela ainda não existe
-    if (!instance_exists(obj_player_hitbox_shot))
-    {
+        //Cria a hitbox no player de acordo com a direção dele
         var _shot = instance_create_layer(x + 2 * dir, y - sprite_height + 10, layer, obj_player_hitbox_shot);
         _shot.direction = point_direction(0,0,dir,0);
         _shot.speed = 20;
-    }
-    else {
-    	
+        
         //Gasto um tiro
         if (shot_item > 0) shot_item--;
+        
+        //Reproduz o som do arremessável
+        if (!shot_sound)
+        {
+            audio_play_sound(sfx_shot, 2, false, global.sfx, 0, 1);
+            
+            shot_sound = true;
+        }
+        
+        // Marca que o tiro foi criado logo após instanciar,
+        // garantindo que não crie um segundo tiro no próximo frame
         shot_created = true;
     }
-    
-    //SE já criou o tiro
-    if (shot_created)
+    else
     {
+        // Tiro já foi criado — limpa as flags e sai do estado
+        // (não importa se o tiro ainda existe ou já foi destruído)
         shot_created = false;
-        shot_sound = false;
+        shot_sound   = false;
+        
         //Após criar o arremessável, eu saio do estado
         state = player_state.IDLE;
     }
     
+    //A lógica do timer do (shot_timer) está no move player
 }
 
 state_wall_grab = function() //Estado de se pendurar na parede / WALL GRAB

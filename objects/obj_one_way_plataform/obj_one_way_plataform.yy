@@ -1,7 +1,11 @@
 {
   "$GMObject":"",
   "%Name":"obj_one_way_plataform",
-  "eventList":[],
+  "eventList":[
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+  ],
   "managed":true,
   "name":"obj_one_way_plataform",
   "overriddenProperties":[],
@@ -9,7 +13,10 @@
     "name":"plataformas",
     "path":"folders/Objects/itens_e_plataformas/plataformas.yy",
   },
-  "parentObjectId":null,
+  "parentObjectId":{
+    "name":"obj_colisao",
+    "path":"objects/obj_colisao/obj_colisao.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,

@@ -30,4 +30,4 @@
 
 - Fazer escadas e a lógica para o player subir nas escadas (escadas de cenário mesmo, na horizontal e não vertical) - (feito)
 - Fazer trigger de tele transporte (feito)
-- Fazer one way plataform 
+- Fazer one way plataform (feito)

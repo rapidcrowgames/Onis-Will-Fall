@@ -45,5 +45,5 @@
     "path":"sprites/spr_trigger_tp/spr_trigger_tp.yy",
   },
   "spriteMaskId":null,
-  "visible":true,
+  "visible":false,
 }

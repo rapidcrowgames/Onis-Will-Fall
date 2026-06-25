@@ -70,6 +70,7 @@
     {"name":"spr_basic_enemie_hurt","order":5,"path":"sprites/spr_basic_enemie_hurt/spr_basic_enemie_hurt.yy",},
     {"name":"spr_basic_enemie_run","order":1,"path":"sprites/spr_basic_enemie_run/spr_basic_enemie_run.yy",},
     {"name":"spr_colisao_death_rm","order":3,"path":"sprites/spr_colisao_death_rm/spr_colisao_death_rm.yy",},
+    {"name":"spr_degraus","order":10,"path":"sprites/spr_degraus/spr_degraus.yy",},
     {"name":"spr_fundo","order":2,"path":"sprites/spr_fundo/spr_fundo.yy",},
     {"name":"spr_hitbox_shot","order":1,"path":"sprites/spr_hitbox_shot/spr_hitbox_shot.yy",},
     {"name":"spr_one_way_no_collision","order":9,"path":"sprites/spr_one_way_no_collision/spr_one_way_no_collision.yy",},

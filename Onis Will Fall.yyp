@@ -107,6 +107,7 @@
     {"id":{"name":"spr_basic_enemie_run","path":"sprites/spr_basic_enemie_run/spr_basic_enemie_run.yy",},},
     {"id":{"name":"spr_colisao_death_rm","path":"sprites/spr_colisao_death_rm/spr_colisao_death_rm.yy",},},
     {"id":{"name":"spr_colisao","path":"sprites/spr_colisao/spr_colisao.yy",},},
+    {"id":{"name":"spr_degraus","path":"sprites/spr_degraus/spr_degraus.yy",},},
     {"id":{"name":"spr_fundo","path":"sprites/spr_fundo/spr_fundo.yy",},},
     {"id":{"name":"spr_hitbox_enemy","path":"sprites/spr_hitbox_enemy/spr_hitbox_enemy.yy",},},
     {"id":{"name":"spr_hitbox_shot","path":"sprites/spr_hitbox_shot/spr_hitbox_shot.yy",},},

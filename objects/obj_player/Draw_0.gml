@@ -23,7 +23,7 @@ image_alpha);
 
 if (DEBUG_MODE)
 {
-	draw_text(x, y - sprite_height - 10, esquive_air_qtd);	
+	draw_text(x, y - sprite_height - 10, shot_timer);	
 }
 
 #endregion
