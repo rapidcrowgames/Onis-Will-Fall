@@ -315,6 +315,23 @@ change_sprites_once = function(_sprites_index = 0)
 #endregion
 
 
+/////////////////////////////
+/// DETECÇÕES DE MORTE /////
+///////////////////////////
+#region Detecta a morte do player se sair do cenário ou etc
+
+player_death_detection = function()
+{
+    //SE o player sair da room por baixo, ele morre
+    if (y > room_height + 20 or y < -40)
+    {
+        life = 0;
+    }
+}
+
+#endregion
+
+
 ////////////////////////////
 // VARIÁVEIS DE MOVIMENTO //
 ///////////////////////////
@@ -517,14 +534,17 @@ move_player = function()
     //////////////////////////////////
     #region Lógica de quando estou em uma one way plataform
     
-    //SE a colisão está ativada
-    if (global.one_way_collision)
+    //SE a colisão está ativada SE existe a plataforma no mapa
+    if (instance_exists(obj_one_way_plataform))
     {
-        //SE eu precionar para baixo  + espaço
-        if (input_jump && input_down)
+        if (global.one_way_collision)
         {
-            //Eu desligo a colisão
-            global.one_way_collision = false;
+            //SE eu precionar para baixo  + espaço
+            if (input_jump && input_down)
+            {
+                //Eu desligo a colisão
+                global.one_way_collision = false;
+            }
         }
     }
     

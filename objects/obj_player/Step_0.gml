@@ -18,6 +18,9 @@ step_damage();
 //Retorna do efeito de esticar
 return_squash_stretch(0.08);
 
+//Detecta as mortes do player caso saia da room ou coisa do tipo
+player_death_detection();
+
 #endregion
 
 
