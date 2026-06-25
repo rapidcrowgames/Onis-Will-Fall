@@ -1,3 +1,7 @@
+Esse código já esta pronto e ele basicamente já verifica a colisão pixel perfect e para subir rampas como se fossem escadas, já pronto e funcionando, só arrumar o nome dos objetos de colisão.
+
+OBS: Esse código é para jogos plataforma
+```gml
 //Colisão horizontal
 var _velh = sign(velh);
 repeat(abs(velh))
@@ -77,3 +81,4 @@ else if (chao && velv >= 0) // Só age se estava no chão E não está pulando
     
     // Se não achou rampa nos 4 pixels, é queda normal — deixa a gravidade agir
 }
+```

@@ -14,6 +14,7 @@
     {"name":"inst_4825C398","path":"rooms/Room_test01/Room_test01.yy",},
     {"name":"inst_503B19E2","path":"rooms/Room_test01/Room_test01.yy",},
     {"name":"inst_5BD9A7E0","path":"rooms/Room_test01/Room_test01.yy",},
+    {"name":"inst_46B2E179","path":"rooms/Room_test01/Room_test01.yy",},
   ],
   "isDnd":false,
   "layers":[
@@ -34,6 +35,7 @@
             {"$GMOverriddenProperty":"v1","%Name":"","name":"","objectId":{"name":"obj_trigger_tp","path":"objects/obj_trigger_tp/obj_trigger_tp.yy",},"propertyId":{"name":"fase","path":"objects/obj_trigger_tp/obj_trigger_tp.yy",},"resource":{"name":"Room_test02","path":"rooms/Room_test02/Room_test02.yy",},"resourceType":"GMOverriddenProperty","resourceVersion":"2.0","value":"Room_test02",},
             {"$GMOverriddenProperty":"v1","%Name":"","name":"","objectId":{"name":"obj_trigger_tp","path":"objects/obj_trigger_tp/obj_trigger_tp.yy",},"propertyId":{"name":"stop_song","path":"objects/obj_trigger_tp/obj_trigger_tp.yy",},"resourceType":"GMOverriddenProperty","resourceVersion":"2.0","value":"False",},
           ],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":1389.0,"y":448.0,},
+        {"$GMRInstance":"v4","%Name":"inst_46B2E179","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_46B2E179","objectId":{"name":"obj_colisao","path":"objects/obj_colisao/obj_colisao.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":32.96172,"scaleX":2.984375,"scaleY":0.484375,"x":535.7213,"y":672.549,},
       ],"layers":[],"name":"Instances","properties":[],"resourceType":"GMRInstanceLayer","resourceVersion":"2.0","userdefinedDepth":false,"visible":true,},
     {"$GMRTileLayer":"","%Name":"tl_ground","depth":200,"effectEnabled":true,"effectType":null,"gridX":32,"gridY":32,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"layers":[],"name":"tl_ground","properties":[],"resourceType":"GMRTileLayer","resourceVersion":"2.0","tiles":{"SerialiseHeight":24,"SerialiseWidth":43,"TileCompressedData":[
           -387,-2147483648,-20,0,-6,-2147483648,-266,0,9,22,44,45,46,47,43,44,45,46,-34,0,9,36,38,37,38,37,38,

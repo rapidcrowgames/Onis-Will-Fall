@@ -11,13 +11,32 @@
             "id": "54bed4b739ed7e59",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "CÓDIGOS/CÓDIGO DE ATAQUE.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "Nova aba"
+              "title": "CÓDIGO DE ATAQUE"
+            }
+          },
+          {
+            "id": "d826b0994da3d78a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "IDEIAS E TAREFAS/ONDE PAREI - CONTINUAR.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "ONDE PAREI - CONTINUAR"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -179,10 +198,12 @@
       "bases:Criar nova base": false
     }
   },
-  "active": "54bed4b739ed7e59",
+  "active": "d826b0994da3d78a",
   "lastOpenFiles": [
-    "CÓDIGOS/FAZER CUTSCENE.md",
+    "CÓDIGOS/CÓDIGO DE COLISÃO E ESCADAS.md",
+    "CÓDIGOS/CÓDIGO DE ATAQUE.md",
     "IDEIAS E TAREFAS/ONDE PAREI - CONTINUAR.md",
+    "CÓDIGOS/FAZER CUTSCENE.md",
     "CÓDIGOS/COMO USAR A TROCA DE MUSICA.md",
     "IDEIAS E TAREFAS/IDEIAS.md",
     "SITES E RECURSOS/SITE PARA RESOLUÇÃO.md",
@@ -190,7 +211,6 @@
     "LÓGICAS DE GAMEPLAY/ESTADOS E LÓGICA PLAYER.canvas",
     "LÓGICAS DE GAMEPLAY/LÓGICA DOS INIMIGOS.canvas",
     "LÓGICAS DE GAMEPLAY",
-    "CÓDIGOS/CÓDIGO DE ATAQUE.md",
     "SITES E RECURSOS",
     "CÓDIGOS",
     "IDEIAS E TAREFAS",

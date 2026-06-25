@@ -794,6 +794,8 @@ state_attack = function() //Estado ATAQUE / ATTACK
     //Se apertar o botão do shot e tiver itens para arremessar, ele vai para o SHOT
     if (input_shot && shot_item > 0) 
     {
+        combo_buffered = false;
+        combo_count = 0;
         state = player_state.SHOT;
         
         //SE a hitbox já foi criada eu destruo no momento do tiro
@@ -813,6 +815,8 @@ state_attack = function() //Estado ATAQUE / ATTACK
             create_hitbox = false;
         }
         
+        combo_buffered = false;
+        combo_count = 0;
         global.hitstop = true;
         state = player_state.HURT;
         return;
@@ -913,6 +917,8 @@ state_attack = function() //Estado ATAQUE / ATTACK
     if (attack_done)
     {
         image_ind = 0; 
+        combo_buffered = false;
+        combo_count = 0;
         attack_done = false;
         state = player_state.IDLE;
     }
