@@ -79,6 +79,11 @@ particula            = noone; //Variável que cuida da criação especifica de u
 part_exists          = false; //Identifica se já foi criada a particula
 part_timer           = 1.2; //Tempo para deletar a particula após ser criada
 
+//Variáveis da one way plataform
+is_fall_timer        = 0.4; //Timer para fazer a colisão voltar caso o player desça da plataforma
+f_timer              = is_fall_timer;
+is_fall              = false; //Identifica se ele já está caindo da plataforma
+
 //Variáveis de Áudio
 attack_sound_played = false;
 dash_sound          = false;
@@ -540,12 +545,33 @@ move_player = function()
         if (global.one_way_collision)
         {
             //SE eu precionar para baixo  + espaço
-            if (input_jump && input_down)
+            if (input_jump && input_down && f_timer > 0 && !is_fall)
             {
                 //Eu desligo a colisão
                 global.one_way_collision = false;
+                
+                is_fall = true;
             }
         }
+        
+        //SE estou caindo diminui o timer
+        if (is_fall && f_timer > 0) f_timer -= delta_time / 1000000;
+            
+        //SE o timer zerou, eu trago a colisão da plataforma de volta
+        if (f_timer <= 0)
+        {
+            global.one_way_collision = true;
+            is_fall = false;
+            f_timer = is_fall_timer; //reseto o timer
+        }
+    }
+    
+    
+    //SE eu ficar preso dentro da plataforma, ela me joga para
+    //cima, de uma forma suave
+    if (place_meeting(x, y, obj_one_way_plataform))
+    {
+        y = lerp(y, - 2, 0.02);
     }
     
     #endregion
@@ -1459,11 +1485,18 @@ state_death = function() //Estado MORTE / DIE
     //Define a velocidade da animação
     image_spd = image_speed / 12;
     
+    //Paro meu movimento
+    velh = 0;
+    velv = 0;
+    
     // Só chama uma vez ao entrar no estado de morte
     if (!player_dead)
     {
         player_dead = true;
         room_goto(rm_death);
+        
+        velh = 0;
+        velv = 0;
         
         //Atualizo minha posição
         x = 256;
