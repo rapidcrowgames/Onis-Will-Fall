@@ -62,7 +62,7 @@ follow_player = function()
 		if (target == _player && follow)
 		{
 			x = lerp(x, _player.x, 0.08);
-			y = lerp(y, _player.y, 0.08);
+			y = lerp(y, _player.y - 40, 0.08);
 		}
 	}
 }

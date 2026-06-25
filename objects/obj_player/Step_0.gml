@@ -32,6 +32,9 @@ player_death_detection();
 
 if (DEBUG_MODE)
 {
+    //Verifica os FPS
+    show_debug_overlay(true);
+    
     //Reseta a room
     if (keyboard_check_pressed(ord("R")))
     {

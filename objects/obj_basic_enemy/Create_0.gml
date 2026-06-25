@@ -316,6 +316,35 @@ enemy_collide_correction = function() //Colisão com outro inimigo
     }
 }
 
+enemy_change_direction = function() //Faz o inimigo mudar de direção ao colidir com bloco azul
+{
+    //SE ele colidir com o bloco azul, 1 pixel na lateral dele
+    if (place_meeting(x + sign(dir), y, obj_enemy_collision))
+    {
+        dir *= -1; //Ele muda minha direção
+        
+        exit;
+    }
+    
+    // Recuperação: se entrou no bloco por algum motivo
+    // Descobre qual lado está livre e empurra para lá
+    if (place_meeting(x, y, obj_enemy_collision))
+    {
+        // Testa lado esquerdo
+        if (!place_meeting(x - 1, y, obj_enemy_collision))
+        {
+            dir = -1;
+            x -= 4;
+        }
+        // Testa lado direito
+        else if (!place_meeting(x + 1, y, obj_enemy_collision))
+        {
+            dir = 1;
+            x += 4;
+        }
+    }
+}
+
 #endregion
 
 
@@ -372,6 +401,9 @@ state_idle = function() // PARADO
     //Fica parado
     velh = 0;
     
+    //SE eu bater no bloco de colisão eu mudo de direção
+    enemy_change_direction();
+    
     //Diminui o timer para trocar de estado
     if (idle_timer_change > 0) idle_timer_change -= delta_time / 1000000;
     
@@ -403,6 +435,9 @@ state_run = function() // CORRENDO
     
     //Define a velocidade da animação
     image_spd = image_speed / 5;
+    
+    //SE eu bater no bloco de colisão eu mudo de direção
+    enemy_change_direction();
     
     //Diminui o tempo do timer para ele voltar a ficar parado
     if (run_timer_change > 0) run_timer_change -= delta_time / 1000000;
@@ -445,6 +480,9 @@ state_chase = function() //PERSEGUIÇÃO
     
     //define a velocidade da animação
     image_spd = image_speed / 5;
+    
+    //SE eu bater no bloco de colisão eu mudo de direção
+    enemy_change_direction();
     
     //Eu defino o player como ALVO se ele EXISTIR
     if (instance_exists(obj_player)) target = obj_player;
@@ -668,7 +706,7 @@ state_attack = function() // ATACANDO
         attack_sound = false;
         in_chase = false;
         attack_done = false; //reset
-        state_enemy = enemy_state.IDLE;
+        state_enemy = enemy_state.CHASE;
     }
 }
 

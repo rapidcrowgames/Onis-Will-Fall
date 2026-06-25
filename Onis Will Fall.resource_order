@@ -38,6 +38,7 @@
   "ResourceOrderSettings":[
     {"name":"obj_basic_enemy","order":1,"path":"objects/obj_basic_enemy/obj_basic_enemy.yy",},
     {"name":"obj_death_ground_rm","order":2,"path":"objects/obj_death_ground_rm/obj_death_ground_rm.yy",},
+    {"name":"obj_enemy_collision","order":3,"path":"objects/obj_enemy_collision/obj_enemy_collision.yy",},
     {"name":"obj_hitbox_enemy","order":2,"path":"objects/obj_hitbox_enemy/obj_hitbox_enemy.yy",},
     {"name":"obj_player_entity","order":2,"path":"objects/obj_player_entity/obj_player_entity.yy",},
     {"name":"obj_player_hitbox_shot","order":4,"path":"objects/obj_player_hitbox_shot/obj_player_hitbox_shot.yy",},
@@ -51,6 +52,7 @@
     {"name":"rm_death","order":1,"path":"rooms/rm_death/rm_death.yy",},
     {"name":"Room_test01","order":2,"path":"rooms/Room_test01/Room_test01.yy",},
     {"name":"Room_test02","order":3,"path":"rooms/Room_test02/Room_test02.yy",},
+    {"name":"Room_test03","order":4,"path":"rooms/Room_test03/Room_test03.yy",},
     {"name":"scr_functions","order":2,"path":"scripts/scr_functions/scr_functions.yy",},
     {"name":"scr_macros","order":1,"path":"scripts/scr_macros/scr_macros.yy",},
     {"name":"sfx_dash","order":8,"path":"sounds/sfx_dash/sfx_dash.yy",},
@@ -71,6 +73,7 @@
     {"name":"spr_basic_enemie_run","order":1,"path":"sprites/spr_basic_enemie_run/spr_basic_enemie_run.yy",},
     {"name":"spr_colisao_death_rm","order":3,"path":"sprites/spr_colisao_death_rm/spr_colisao_death_rm.yy",},
     {"name":"spr_degraus","order":10,"path":"sprites/spr_degraus/spr_degraus.yy",},
+    {"name":"spr_enemy_collision","order":11,"path":"sprites/spr_enemy_collision/spr_enemy_collision.yy",},
     {"name":"spr_fundo","order":2,"path":"sprites/spr_fundo/spr_fundo.yy",},
     {"name":"spr_hitbox_shot","order":1,"path":"sprites/spr_hitbox_shot/spr_hitbox_shot.yy",},
     {"name":"spr_one_way_no_collision","order":9,"path":"sprites/spr_one_way_no_collision/spr_one_way_no_collision.yy",},
