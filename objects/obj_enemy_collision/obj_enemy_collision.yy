@@ -1,13 +1,13 @@
 {
   "$GMObject":"",
-  "%Name":"obj_player_hitbox",
+  "%Name":"obj_enemy_collision",
   "eventList":[],
   "managed":true,
-  "name":"obj_player_hitbox",
+  "name":"obj_enemy_collision",
   "overriddenProperties":[],
   "parent":{
-    "name":"player",
-    "path":"folders/Objects/player.yy",
+    "name":"controls_enemies",
+    "path":"folders/Objects/enemies/controls_enemies.yy",
   },
   "parentObjectId":null,
   "persistent":false,
@@ -28,9 +28,9 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_player_hitbox",
-    "path":"sprites/spr_player_hitbox/spr_player_hitbox.yy",
+    "name":"spr_enemy_collision",
+    "path":"sprites/spr_enemy_collision/spr_enemy_collision.yy",
   },
   "spriteMaskId":null,
-  "visible":true,
+  "visible":false,
 }

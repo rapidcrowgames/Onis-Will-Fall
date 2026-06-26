@@ -23,7 +23,7 @@ image_alpha);
 
 if (DEBUG_MODE)
 {
-	draw_text(x, y - sprite_height - 10, f_timer);	
+	draw_text(x, y - sprite_height - 10, is_fall);	
 }
 
 #endregion

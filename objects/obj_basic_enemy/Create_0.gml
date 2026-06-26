@@ -44,10 +44,6 @@ in_chase             = false; //Avisa se está ou não em CHASE com o player
 target               = noone; //O alvo que está perseguindo
 player_last_position = noone; //Pega a última posição do player
 
-//Variáveis de patrulha
-patrol_left          = x - p_left;
-patrol_right         = x + p_left;
-
 //Variáveis do estado LOAD_ATTACK
 timer_load_attack    = 0.7; //Segundos
 
@@ -320,8 +316,8 @@ enemy_collide_correction = function() //Colisão com outro inimigo
 
 enemy_change_direction = function() //Faz o inimigo mudar de direção ao colidir com bloco azul
 {
-    //SE ele chegar no limite da patrulha, ele muda de direção
-    if (x < patrol_left or x > patrol_right)
+    //Se o inimigo colidir com o BLOCO AZUL ele volta
+    if (place_meeting(x + sign(dir), y, obj_enemy_collision))
     {
         dir *= -1;
     }

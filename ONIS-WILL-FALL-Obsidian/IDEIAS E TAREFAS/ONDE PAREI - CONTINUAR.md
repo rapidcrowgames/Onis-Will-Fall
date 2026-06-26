@@ -28,6 +28,8 @@
 - Fazer os levels (feito)
 - Fazer o fim (feito)
 - Fazer o tutorial
+- Testar com os controles 
+- Fazer um formulário
 
 
 - Fazer escadas e a lógica para o player subir nas escadas (escadas de cenário mesmo, na horizontal e não vertical) - (feito)

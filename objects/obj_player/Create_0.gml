@@ -643,6 +643,9 @@ move_player = function()
     //SE estou pulando, vou para o estado de pulo
     if (is_jumping)
     {
+        //SE a hitbox foi criada, eu destruo, caso ela tenha sido criada em meio ao pulo
+        if (create_hitbox) instance_destroy(obj_player_hitbox);
+            
         state = player_state.JUMP;
     }
 	
@@ -654,8 +657,11 @@ move_player = function()
     //////////////////////////
    #region Lógica da esquiva
 
-    if (input_esquive && chao)
+    if (input_esquive && chao && !create_hitbox)
     {
+        //SE a hitbox foi criada, eu destruo, caso ela tenha sido criada em meio a esquiva.
+        if (create_hitbox) instance_destroy(obj_player_hitbox);
+        
         velh = dir * esquive_force;
         velv = 0;
         hurt_invencible = true;
@@ -663,8 +669,11 @@ move_player = function()
     }
     
     //SE não estou no chão e quero usar a esquiva, eu preciso ter a esquiva no ar
-    if (input_esquive && !chao && esquive_air_qtd > 0)
+    if (input_esquive && !chao && esquive_air_qtd > 0 && !create_hitbox)
     {
+        //SE a hitbox foi criada, eu destruo, caso ela tenha sido criada em meio a esquiva.
+        if (create_hitbox) instance_destroy(obj_player_hitbox);
+        
         velh = dir * esquive_force;
         velv = 0;
         hurt_invencible = true;
@@ -948,7 +957,15 @@ state_attack = function() //Estado ATAQUE / ATTACK
     //Criação da hitbox no frame ativo
     if (floor(image_ind) == 2 && !create_hitbox)
     {
-        instance_create_layer(x + 6 * dir, y - sprite_height + 10, layer, obj_player_hitbox);
+        //SE não estou parado eu crio mais ainda na minha frente a hitbox
+        if (velh != 0)
+        {
+            instance_create_layer(x + 35 * dir, y - sprite_height + 10, layer, obj_player_hitbox);
+        }
+        else {
+        	instance_create_layer(x + 15 * dir, y - sprite_height + 10, layer, obj_player_hitbox);
+        }
+        
         create_hitbox = true;
     }
     
@@ -966,7 +983,6 @@ state_attack = function() //Estado ATAQUE / ATTACK
     {
         // Congela no último frame enquanto o timer corre
         image_spd = 0;
-        
         
         // SE tem combo buffered E ainda cabe mais um golpe: encadeia
         if (combo_buffered && combo_count < 2) // máximo 3 golpes (0, 1, 2)
@@ -995,7 +1011,7 @@ state_attack = function() //Estado ATAQUE / ATTACK
         }
     }
     
-    
+    //SE o ataque terminou
     if (attack_done)
     {
         image_ind = 0; 
