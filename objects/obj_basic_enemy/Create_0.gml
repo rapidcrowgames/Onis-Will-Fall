@@ -44,18 +44,20 @@ in_chase             = false; //Avisa se está ou não em CHASE com o player
 target               = noone; //O alvo que está perseguindo
 player_last_position = noone; //Pega a última posição do player
 
+//Variáveis de patrulha
+patrol_left          = x - p_left;
+patrol_right         = x + p_left;
+
 //Variáveis do estado LOAD_ATTACK
 timer_load_attack    = 0.7; //Segundos
 
 //Variáveis do estado HURT
 damage_done          = false; //Garante que sofreu o dano apenas uma vez
 
-
 //Variáveis de particulas
 particula            = noone; //Variável que cuida da criação especifica de uma particula
 part_exists          = false; //Identifica se já foi criada a particula
 part_timer           = 1.2; //Tempo para deletar a particula após ser criada
-
 
 //Variáveis de som
 attack_sound         = false;
@@ -318,31 +320,12 @@ enemy_collide_correction = function() //Colisão com outro inimigo
 
 enemy_change_direction = function() //Faz o inimigo mudar de direção ao colidir com bloco azul
 {
-    //SE ele colidir com o bloco azul, 1 pixel na lateral dele
-    if (place_meeting(x + sign(dir), y, obj_enemy_collision))
+    //SE ele chegar no limite da patrulha, ele muda de direção
+    if (x < patrol_left or x > patrol_right)
     {
-        dir *= -1; //Ele muda minha direção
-        
-        exit;
+        dir *= -1;
     }
     
-    // Recuperação: se entrou no bloco por algum motivo
-    // Descobre qual lado está livre e empurra para lá
-    if (place_meeting(x, y, obj_enemy_collision))
-    {
-        // Testa lado esquerdo
-        if (!place_meeting(x - 1, y, obj_enemy_collision))
-        {
-            dir = -1;
-            x -= 4;
-        }
-        // Testa lado direito
-        else if (!place_meeting(x + 1, y, obj_enemy_collision))
-        {
-            dir = 1;
-            x += 4;
-        }
-    }
 }
 
 #endregion
@@ -480,9 +463,6 @@ state_chase = function() //PERSEGUIÇÃO
     
     //define a velocidade da animação
     image_spd = image_speed / 5;
-    
-    //SE eu bater no bloco de colisão eu mudo de direção
-    enemy_change_direction();
     
     //Eu defino o player como ALVO se ele EXISTIR
     if (instance_exists(obj_player)) target = obj_player;

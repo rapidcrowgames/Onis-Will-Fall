@@ -23,6 +23,7 @@ repeat(abs(velh))
 		//Saio do laço
 		break;
 	}
+    
 	else
 	{
 		//Se ainda não colidi, então me movo 1 pixel por vez.
