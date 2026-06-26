@@ -326,6 +326,12 @@ enemy_change_direction = function() //Faz o inimigo mudar de direção ao colidi
         dir *= -1;
     }
     
+    //Ou se o inimigo colidir com a parede, ele muda de direção
+    if (place_meeting(x + sign(dir), y, obj_colisao))
+    {
+        dir *= -1;
+    }
+    
 }
 
 #endregion

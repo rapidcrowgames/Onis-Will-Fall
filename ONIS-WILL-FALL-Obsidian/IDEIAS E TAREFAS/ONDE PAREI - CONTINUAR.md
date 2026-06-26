@@ -25,8 +25,8 @@
 
 - Após terminar o protótipo voltar o valor da globla.snd para 1
 - Adicionar uma música de fundo (feito)
-- Fazer os levels
-- Fazer o fim
+- Fazer os levels (feito)
+- Fazer o fim (feito)
 - Fazer o tutorial
 
 
