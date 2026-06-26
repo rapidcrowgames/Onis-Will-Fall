@@ -1,7 +1,12 @@
 {
   "$GMWindowsOptions":"v2",
   "%Name":"Windows",
-  "ConfigValues":{},
+  "ConfigValues":{
+    "windows_normal":{
+      "option_windows_description_info":"prototype",
+      "option_windows_executable_name":"onis_will_fall.exe",
+    },
+  },
   "name":"Windows",
   "option_windows_allow_fullscreen_switching":false,
   "option_windows_borderless":false,

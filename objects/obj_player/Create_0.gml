@@ -4,6 +4,9 @@
 //////////////////////////////
 #region Variáveis de controle
 
+//Oculta o mouse
+window_set_cursor(cr_none);
+
 //Variávis de personagem (vida, mana, etc...)
 life = 5; //Inicialmente 5 vidas
 
