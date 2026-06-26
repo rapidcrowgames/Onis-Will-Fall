@@ -22,10 +22,10 @@ gravity_real_time();
 update_outline();
 
 //Garante que o inimigo não entre no chão
-ground_collide_correction();
+//ground_collide_correction(); (desativado no momento)
 
 //Garante que um inimigo não entre um dentro do outro
-//enemy_collide_correction();
+//enemy_collide_correction(); (desativado no momento)
 
 //Retorna do efeito de esticar
 return_squash_stretch(0.7);
