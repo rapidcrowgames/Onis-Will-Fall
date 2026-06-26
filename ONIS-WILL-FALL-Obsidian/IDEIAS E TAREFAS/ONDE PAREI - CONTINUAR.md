@@ -7,3 +7,7 @@
 - Adicionar o estado de desnorteado / estado pré-finalização onde o inimigo vai ficar desnorteado para depois finalizar ele. (só depois de ter um protótipo consolidado)
 
 - Fazer em breve após protótipo a lógica de mexer a câmera com o analógico do controle e com as teclas do teclado (pesquisar para ver quais as teclas mais comuns para isso)
+
+
+
+O QUE MELHORAR APÓS PROTÓTIPO:
