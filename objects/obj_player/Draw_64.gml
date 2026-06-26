@@ -17,4 +17,23 @@ if (restart_death)
     
     //Reseta as configurações do texto
     draw_set_font(-1);
+    draw_set_halign(-1);
+    draw_set_valign(-1);
+}
+else {
+	//Desenha na tela a quantidade de vida e tiros
+    //Configura fonte e alinhamento
+    draw_set_font(fnt_death);
+    
+    //desenha as lifes
+    draw_text(20, 20, "Vidas:" + " " + string(life));
+    
+    //Desenha os tiros
+    draw_text(20, 60, "Shots:" + " " + string(shot_item));
+    
+    //Reseta as configurações do texto
+    draw_set_font(-1);
+    draw_set_halign(-1);
+    draw_set_valign(-1);
+
 }

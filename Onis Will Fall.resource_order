@@ -41,6 +41,7 @@
     {"name":"Timelines","order":8,"path":"folders/Timelines.yy",},
   ],
   "ResourceOrderSettings":[
+    {"name":"fnt_tutorial","order":1,"path":"fonts/fnt_tutorial/fnt_tutorial.yy",},
     {"name":"obj_death_ground_rm","order":2,"path":"objects/obj_death_ground_rm/obj_death_ground_rm.yy",},
     {"name":"obj_enemy_collision","order":2,"path":"objects/obj_enemy_collision/obj_enemy_collision.yy",},
     {"name":"obj_hitbox_enemy","order":1,"path":"objects/obj_hitbox_enemy/obj_hitbox_enemy.yy",},
@@ -51,6 +52,7 @@
     {"name":"obj_sound_controller","order":1,"path":"objects/obj_sound_controller/obj_sound_controller.yy",},
     {"name":"obj_trigger_tp","order":3,"path":"objects/obj_trigger_tp/obj_trigger_tp.yy",},
     {"name":"obj_trigger","order":1,"path":"objects/obj_trigger/obj_trigger.yy",},
+    {"name":"obj_tutorial_jump","order":1,"path":"objects/obj_tutorial_jump/obj_tutorial_jump.yy",},
     {"name":"ps_blood","order":1,"path":"particles/ps_blood/ps_blood.yy",},
     {"name":"ps_parry","order":2,"path":"particles/ps_parry/ps_parry.yy",},
     {"name":"rm_death","order":1,"path":"rooms/rm_death/rm_death.yy",},

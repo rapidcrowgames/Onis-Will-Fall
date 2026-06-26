@@ -28,8 +28,9 @@
 - Fazer os levels (feito)
 - Fazer o fim (feito)
 - Fazer o tutorial
+- Fazer hud de LIFES e SHOTS (feito)
 - Testar com os controles 
-- Fazer um formulário
+- Fazer um formulário (feito)- esta em google forms ou google formularios, algo assim.
 
 
 - Fazer escadas e a lógica para o player subir nas escadas (escadas de cenário mesmo, na horizontal e não vertical) - (feito)

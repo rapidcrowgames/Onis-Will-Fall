@@ -65,6 +65,7 @@
   "name":"Onis Will Fall",
   "resources":[
     {"id":{"name":"fnt_death","path":"fonts/fnt_death/fnt_death.yy",},},
+    {"id":{"name":"fnt_tutorial","path":"fonts/fnt_tutorial/fnt_tutorial.yy",},},
     {"id":{"name":"obj_basic_enemy","path":"objects/obj_basic_enemy/obj_basic_enemy.yy",},},
     {"id":{"name":"obj_camera","path":"objects/obj_camera/obj_camera.yy",},},
     {"id":{"name":"obj_colisao","path":"objects/obj_colisao/obj_colisao.yy",},},
@@ -81,6 +82,8 @@
     {"id":{"name":"obj_sound_controller","path":"objects/obj_sound_controller/obj_sound_controller.yy",},},
     {"id":{"name":"obj_trigger_tp","path":"objects/obj_trigger_tp/obj_trigger_tp.yy",},},
     {"id":{"name":"obj_trigger","path":"objects/obj_trigger/obj_trigger.yy",},},
+    {"id":{"name":"obj_tutorial_jump","path":"objects/obj_tutorial_jump/obj_tutorial_jump.yy",},},
+    {"id":{"name":"obj_tutorial_move","path":"objects/obj_tutorial_move/obj_tutorial_move.yy",},},
     {"id":{"name":"obj_txt_end_game","path":"objects/obj_txt_end_game/obj_txt_end_game.yy",},},
     {"id":{"name":"ps_blood","path":"particles/ps_blood/ps_blood.yy",},},
     {"id":{"name":"ps_double_parry","path":"particles/ps_double_parry/ps_double_parry.yy",},},
