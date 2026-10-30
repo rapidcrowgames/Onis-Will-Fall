@@ -51,6 +51,17 @@ I refined the **timing and interaction between combat mechanics**, using feedbac
 
 This is an **experimental prototype still in development**, not a finished commercial release.
 
+
+## 🎮 Download & Play
+
+Try the early prototype and experience the combat system firsthand!
+
+**Platform:** Windows  
+**Status:** Prototype
+
+[▶ Download Oni's Will Fall on itch.io](https://rapid-crow-games.itch.io/onis-will-fall-prototype-build)
+
+
 ## Portfolio
 
 [See more of my work](https://richardportfolio-app.base44.app/)
